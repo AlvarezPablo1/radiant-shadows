@@ -25,6 +25,7 @@ const paths: Record<string, string> = {
   chevron: 'M6 9l6 6 6-6',
   plus: 'M12 5v14 M5 12h14',
   minus: 'M5 12h14',
+  logout: 'M15 4h4v16h-4 M10 8l-4 4 4 4 M6 12h10',
   image: 'M3 5h18v14H3z M3 16l5-5 4 4 3-3 6 6 M15.5 8.5h.01',
   shape: 'M12 3l9 9-9 9-9-9z',
   text: 'M5 6V4h14v2 M12 4v16 M9 20h6',
