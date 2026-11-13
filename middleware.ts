@@ -2,12 +2,12 @@ import { next } from '@vercel/functions'
 import { COOKIE, isValidSession, readCookie } from './server/session.js'
 
 /**
- * Acceso sólo para el staff: sin sesión válida no se entrega nada de la app
- * (ni el código ni las fotos). La pantalla de login y sus recursos quedan libres.
+ * Acceso sólo para el staff al mediakit (/mediakit) y a las fotos de los jugadores.
+ * La home pública y la pantalla de login quedan libres.
  */
 export const config = {
   runtime: 'nodejs',
-  matcher: ['/((?!login\\.html|api/login|favicon\\.png|brand/logos/rs-positive\\.png|brand/mascots/kael-dragon\\.png).*)'],
+  matcher: ['/mediakit', '/mediakit/:path*', '/brand/players/:path*', '/api/logout'],
 }
 
 export default async function middleware(request: Request) {

@@ -15,6 +15,6 @@ export async function POST(request: Request) {
 
   return new Response(null, {
     status: 303,
-    headers: { Location: `${origin}/`, 'Set-Cookie': sessionCookie(await createSession()) },
+    headers: { Location: `${origin}/mediakit`, 'Set-Cookie': sessionCookie(await createSession()) },
   })
 }
