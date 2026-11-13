@@ -2058,7 +2058,7 @@ h4 {
   font-size: 11px;
   color: var(--muted);
 }
-.side-head.actions a.tbtn {
-  margin-right: auto;
+.side-head a.logout {
+  margin-left: auto;
   text-decoration: none;
 }

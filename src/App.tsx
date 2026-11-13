@@ -169,6 +169,9 @@ export default function App() {
             <strong>RADIANT SHADOWS</strong>
             <span>Creador de publicaciones</span>
           </div>
+          <a className="tbtn icon logout" href="/api/logout" title="Cerrar sesión" aria-label="Cerrar sesión">
+            <Icon name="logout" />
+          </a>
         </div>
         <div className="tabs">
           {(
@@ -296,9 +299,6 @@ export default function App() {
 
       <aside className="right">
         <div className="side-head actions">
-          <a className="tbtn icon" href="/api/logout" title="Cerrar sesión" aria-label="Cerrar sesión">
-            <Icon name="logout" />
-          </a>
           <button className="tbtn icon" onClick={s.undo} disabled={!s.canUndo} title="Deshacer (⌘Z)" aria-label="Deshacer">
             <Icon name="undo" />
           </button>
