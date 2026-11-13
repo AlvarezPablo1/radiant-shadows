@@ -1,4 +1,4 @@
-import { createSession, safeEqual, sessionCookie } from '../server/session'
+import { createSession, safeEqual, sessionCookie } from '../server/session.js'
 
 /** POST /api/login — valida la contraseña del staff y deja una sesión firmada por 30 días */
 export async function POST(request: Request) {

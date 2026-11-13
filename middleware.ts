@@ -1,5 +1,5 @@
 import { next } from '@vercel/functions'
-import { COOKIE, isValidSession, readCookie } from './server/session'
+import { COOKIE, isValidSession, readCookie } from './server/session.js'
 
 /**
  * Acceso sólo para el staff: sin sesión válida no se entrega nada de la app

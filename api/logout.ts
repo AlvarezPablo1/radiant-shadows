@@ -1,4 +1,4 @@
-import { sessionCookie } from '../server/session'
+import { sessionCookie } from '../server/session.js'
 
 /** GET /api/logout — cierra la sesión y vuelve al login */
 export function GET(request: Request) {
