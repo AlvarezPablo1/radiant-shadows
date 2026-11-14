@@ -1,5 +1,5 @@
-import { placeColor, type Achievement } from '../../data/achievements'
-import { Reveal } from '../Reveal'
+import { placeColor, type Achievement } from '../../../shared/content/achievements'
+import { Reveal } from '../ui/Reveal'
 
 /** Un logro: el puesto bien grande con su color (oro, plata, bronce) y el torneo, el equipo y quién lo organizó */
 export function AchievementCard({ achievement }: { achievement: Achievement }) {

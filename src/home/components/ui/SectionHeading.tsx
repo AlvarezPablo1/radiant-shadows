@@ -1,4 +1,4 @@
-import { Kicker } from './Kicker'
+import { Kicker } from '../../../shared/ui/Kicker'
 
 /** Título de una sección de la home: kicker chico y título grande, centrados */
 export function SectionHeading({ kicker, title, id }: { kicker: string; title: string; id?: string }) {

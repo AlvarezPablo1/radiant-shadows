@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
-import { LEGAL_DOCS, type LegalDoc } from '../data/legal'
-import { SOCIALS } from '../data/socials'
-import { SocialIcon } from './socials/SocialIcon'
+import { LEGAL_DOCS, type LegalDoc } from '../../data/legal'
+import { SOCIALS } from '../../data/socials'
+import { SocialIcon } from '../socials/SocialIcon'
 
 /** Pie de página en una sola línea: años y legales a la izquierda, redes a la derecha */
 export function Footer({ onLegal }: { onLegal: (doc: LegalDoc) => void }) {

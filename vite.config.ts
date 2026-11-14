@@ -9,9 +9,9 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        home: resolve(__dirname, 'index.html'),
-        mediakit: resolve(__dirname, 'mediakit/index.html'),
-        admin: resolve(__dirname, 'admin/index.html'),
+        home: resolve(import.meta.dirname, 'index.html'),
+        mediakit: resolve(import.meta.dirname, 'mediakit/index.html'),
+        admin: resolve(import.meta.dirname, 'admin/index.html'),
       },
     },
   },

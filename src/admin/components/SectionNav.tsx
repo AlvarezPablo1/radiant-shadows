@@ -1,6 +1,6 @@
-import type { CollectionKey } from '../../home/data/collections'
-import type { Content } from '../../home/data/content'
-import { cx } from '../../home/lib/cx'
+import type { CollectionKey } from '../../shared/content/collections'
+import type { Content } from '../../shared/content/content'
+import { cx } from '../../shared/lib/cx'
 import { SCHEMAS } from '../schemas'
 
 const GROUPS: { title: string; keys: CollectionKey[] }[] = [

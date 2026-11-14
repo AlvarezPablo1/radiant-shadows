@@ -1,5 +1,5 @@
-import type { Member } from '../../data/rosters'
-import { cx } from '../../lib/cx'
+import type { Member } from '../../../shared/content/rosters'
+import { cx } from '../../../shared/lib/cx'
 import { MemberInfo } from './MemberInfo'
 import { Silhouette } from './Silhouette'
 

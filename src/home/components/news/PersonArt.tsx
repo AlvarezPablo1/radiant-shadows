@@ -1,4 +1,4 @@
-import { cx } from '../../lib/cx'
+import { cx } from '../../../shared/lib/cx'
 
 /**
  * Placa de persona (como la de las incorporaciones): fondo violeta oscuro con el dragón de la marca,

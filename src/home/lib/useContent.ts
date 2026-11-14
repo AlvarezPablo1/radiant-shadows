@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react'
-import { DEFAULT_CONTENT, type Content } from '../data/content'
+import { DEFAULT_CONTENT, type Content } from '../../shared/content/content'
 
 export const ContentContext = createContext<Content>(DEFAULT_CONTENT)
 

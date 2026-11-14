@@ -1,6 +1,6 @@
-import type { Person } from '../../data/people'
+import type { Person } from '../../../shared/content/people'
 import type { Page } from '../../types'
-import { PageHeader } from '../PageHeader'
+import { PageHeader } from '../ui/PageHeader'
 import { PersonRow } from './PersonRow'
 
 /** Pantalla de personas (staff, creadores): encabezado y una fila por persona, alternando imagen-texto y texto-imagen */

@@ -1,7 +1,7 @@
 import { useContent } from '../../lib/useContent'
 import { AchievementCard } from '../achievements/AchievementCard'
-import { SectionHeading } from '../SectionHeading'
-import { ActionButton } from './ActionButton'
+import { SectionHeading } from '../ui/SectionHeading'
+import { ActionButton } from '../../../shared/ui/ActionButton'
 
 /** Los mejores resultados (mejor puesto primero) con link a la sección Logros */
 export function AchievementsHighlight() {

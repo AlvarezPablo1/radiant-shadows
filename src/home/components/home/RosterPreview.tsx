@@ -1,9 +1,9 @@
-import { rankIcon } from '../../data/ranks'
-import { ofTeam } from '../../data/rosters'
+import { rankIcon } from '../../../shared/content/ranks'
+import { ofTeam } from '../../../shared/content/rosters'
 import { useContent } from '../../lib/useContent'
-import { Reveal } from '../Reveal'
-import { SectionHeading } from '../SectionHeading'
-import { ActionButton } from './ActionButton'
+import { Reveal } from '../ui/Reveal'
+import { SectionHeading } from '../ui/SectionHeading'
+import { ActionButton } from '../../../shared/ui/ActionButton'
 
 /** Vista previa del roster masculino: fotos en fila con rol y rango, y link al equipo completo */
 export function RosterPreview() {

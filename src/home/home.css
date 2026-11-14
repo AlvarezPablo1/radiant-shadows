@@ -1,3 +1,5 @@
 /* sólo mira los archivos de la home, no los del mediakit */
 @import 'tailwindcss' source('.');
+/* piezas compartidas con /admin (fondo, modal, selects, botones) */
+@source '../shared';
 @import './theme.css';

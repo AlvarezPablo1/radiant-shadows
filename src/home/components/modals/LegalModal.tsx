@@ -1,7 +1,7 @@
-import type { LegalDoc } from '../data/legal'
-import { Kicker } from './Kicker'
-import { Modal } from './Modal'
-import { Soon } from './Soon'
+import type { LegalDoc } from '../../data/legal'
+import { Kicker } from '../../../shared/ui/Kicker'
+import { Modal } from '../../../shared/ui/Modal'
+import { Soon } from '../ui/Soon'
 
 /** Modal de los textos legales del footer; por ahora sólo avisa que vienen pronto */
 export function LegalModal({ doc, onClose }: { doc: LegalDoc | null; onClose: () => void }) {

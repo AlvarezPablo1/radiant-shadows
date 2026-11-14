@@ -379,7 +379,9 @@ export function selectedPeople(d: PostDoc, r: Roster): Person[] {
     const p = all.find((x) => x.id === d.people[0]) ?? r.players[0]
     return p ? [p] : []
   }
-  if (d.people.length) return d.people.map((id) => all.find((x) => x.id === id)).filter(Boolean) as Person[]
+  // los elegidos a mano (si alguno ya no está en el roster, se ignora; si no queda ninguno, van los titulares)
+  const chosen = d.people.map((id) => all.find((x) => x.id === id)).filter(Boolean) as Person[]
+  if (chosen.length) return chosen
   return r.players.filter((x) => x.active)
 }
 

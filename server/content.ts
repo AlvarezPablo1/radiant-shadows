@@ -1,5 +1,5 @@
 import { get, put } from '@vercel/blob'
-import { COLLECTION_KEYS, type CollectionKey } from '../src/home/data/collections.js'
+import { COLLECTION_KEYS, type CollectionKey } from '../src/shared/content/collections.js'
 
 /**
  * Contenido editable guardado en Vercel Blob: un JSON por sección en content/<sección>.json.

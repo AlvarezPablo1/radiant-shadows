@@ -1,8 +1,8 @@
 import { siInstagram, siTwitch, siX, type SimpleIcon } from 'simple-icons'
-import { handleFromUrl, type Person } from '../../data/people'
-import { cx } from '../../lib/cx'
-import { useInView } from '../../lib/hooks'
-import { Kicker } from '../Kicker'
+import { handleFromUrl, type Person } from '../../../shared/content/people'
+import { cx } from '../../../shared/lib/cx'
+import { useInView } from '../../../shared/lib/hooks'
+import { Kicker } from '../../../shared/ui/Kicker'
 import { Silhouette } from '../roster/Silhouette'
 import { SocialIcon } from '../socials/SocialIcon'
 

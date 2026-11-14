@@ -1,6 +1,6 @@
 import { requireSession } from '../../server/auth.js'
 import { writeCollection } from '../../server/content.js'
-import { isCollectionKey } from '../../src/home/data/collections.js'
+import { isCollectionKey } from '../../src/shared/content/collections.js'
 
 const MAX_BYTES = 500_000
 

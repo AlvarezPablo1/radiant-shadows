@@ -1,4 +1,4 @@
-import type { CalendarEvent } from '../data/events'
+import type { CalendarEvent } from '../../shared/content/events'
 import type { Team } from '../data/teams'
 import type { Page } from '../types'
 import { upcomingMatches } from './events'

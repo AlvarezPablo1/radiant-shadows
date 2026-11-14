@@ -1,4 +1,4 @@
-import { EVENT_TYPES, type CalendarEvent } from '../../data/events'
+import { EVENT_TYPES, type CalendarEvent } from '../../../shared/content/events'
 import { dayLabel, shortDayLabel } from '../../lib/calendar'
 
 interface Props {

@@ -1,25 +1,45 @@
-# Radiant Shadows · Creador de publicaciones
+# Radiant Shadows
 
-Editor de placas para Instagram (Historia 1080×1920, Feed 1080×1350) y X (1600×900), con la identidad de Radiant Shadows.
+Sitio del equipo de Valorant: la web pública, el panel de contenido y el creador de publicaciones del staff.
 
 ```bash
 npm install
-npm run dev      # http://localhost:5173
-npm run build    # genera dist/ (sitio estático, se puede subir a cualquier hosting)
+npm run dev        # solo el front (http://localhost:5173)
+npm run dev:full   # front + funciones de /api con vercel dev (usa .env.admin.local)
+npm run staging    # deploy de prueba en Vercel (no toca producción)
+npm run build
 ```
 
-## Qué hace
-- Plantillas por tipo: Matchday, Resultado, Posición de torneo, Bienvenida, Despedida, Cumpleaños, Tryouts, Roster oficial, Comunicado, Comunidad/Educativo, Stream ON.
-- Regla de relevancia: los tipos no importantes (4° puesto o menos, comunicados no organizacionales, matchday, etc.) no se pueden exportar al Feed de IG. Se configura en `src/data/postTypes.ts` → `feed`.
-- Logo automático según el roster (MAIN / GC) y el resultado: violeta en victoria, blanco en derrota.
-- Imagen principal: jugadores, mascotas (Kael / Nyra) o sin fotos.
-- Todo es editable: mover, escalar, rotar, capas, textos, colores, filtros, brillo, fundido.
-- Fotos del roster precargadas en el navegador; al subir una pregunta si ya es PNG y si no le quita el fondo (IA en el navegador, el modelo se descarga la primera vez).
-- Fondos de marca generados (humo, fuego, hex, escamas, partículas, siluetas) + fondos propios subidos.
-- Generador de copy sin IA ni negritas, con [ROL] @cuenta por red y hashtags.
-- Checklist antes de descargar. Descarga PNG/JPG de uno o todos los formatos.
+## Estructura
 
-## Tipografías
-Cooper BT y Proxima Nova tienen licencia: se usan sustitutos (Fraunces / Montserrat) hasta que se suban los archivos reales en la pestaña **Marca**.
+```
+index.html            /           web pública
+admin/index.html      /admin      panel para editar el contenido
+mediakit/index.html   /mediakit   creador de publicaciones
 
-Los datos (roster, fotos, fuentes, borrador) se guardan en el navegador de cada persona.
+src/
+  home/       web pública: componentes por sección (nav, hero, news, roster…), layout, ui propia y datos del sitio
+  admin/      panel /admin: formularios por sección (schemas.ts) y guardado
+  mediakit/   creador de placas: editor (react-konva), diseños en data/layout/, paneles en components/
+  shared/     lo que usan dos o más apps
+    content/  modelo y contenido por defecto (noticias, jugadores, staff, logros, calendario…)
+    ui/       piezas visuales comunes (Modal, Select, ActionButton, Background…)
+    lib/      utilidades (cx, hooks)
+
+api/          funciones de Vercel (contenido, login del admin, formulario de contacto)
+server/       lógica del servidor compartida por las funciones (lectura/escritura en Vercel Blob)
+public/brand/ logos, mascotas, fotos de jugadores e imágenes de noticias
+```
+
+Reglas: componentes en TSX + Tailwind, claros y de 250 líneas como máximo por archivo.
+
+## Contenido
+
+Lo que se edita desde /admin se guarda en Vercel Blob. Mientras no se guardó nada de una sección, se usa el contenido por defecto de `src/shared/content/`.
+
+## Mediakit
+
+- Plantillas por tipo (Matchday, Resultado, Torneo, Bienvenida, Despedida, Cumpleaños, MVP, Roster, Comunicado…) y diseños (Centrado, Impacto, Neón, Tipográfico, Póster, Marco).
+- Regla de relevancia: los tipos no importantes no se exportan al Feed de IG; se configura en `src/mediakit/data/postTypes.ts` → `feed`.
+- Logo automático según el roster (MAIN / GC): blanco sólo en las derrotas.
+- Jugadores y cuerpo técnico salen de /admin (los mismos que la web). En el navegador de cada persona sólo quedan los titulares elegidos, fotos alternativas para las placas, fuentes y el borrador.

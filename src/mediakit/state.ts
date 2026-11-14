@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { makeRecipe } from './lib/background'
-import { DEFAULT_ROSTERS, withOfficialPlayers } from './data/roster'
+import { useRosters } from './useRosters'
 import { postType } from './data/postTypes'
 import { buildLayout } from './data/layouts'
-import { FORMAT_IDS, FORMATS, type FormatId, type Layer, type PostDoc, type Roster, type RosterId } from './types'
+import { FORMAT_IDS, FORMATS, type FormatId, type Layer, type PostDoc, type RosterId } from './types'
 import { newId, reflowRow } from './data/layouts'
 
 /** propiedades de posición/tamaño: son propias de cada formato. Todo lo demás (estilo) se sincroniza. */
@@ -11,7 +11,6 @@ export const GEOMETRY = new Set(['x', 'y', 'width', 'height', 'rotation', 'fontS
 const keyOf = (l: Layer) => l.key ?? l.name
 
 const LS_DOC = 'rs-doc-v1'
-const LS_ROSTERS = 'rs-rosters-v1'
 
 export function newDoc(type: string, roster: RosterId = 'main', prev?: PostDoc): PostDoc {
   const t = postType(type)
@@ -58,10 +57,7 @@ export function useAppState() {
       )
     return d
   })
-  const [rosters, setRosters] = useState<Record<RosterId, Roster>>(() => {
-    const r = load(LS_ROSTERS, DEFAULT_ROSTERS)
-    return { ...r, main: withOfficialPlayers(r.main) }
-  })
+  const { rosters, ready: rostersReady, tweaks, tweakPerson } = useRosters()
   const [format, setFormat] = useState<FormatId>('story')
   const [selection, setSelection] = useState<string[]>([])
   const selected = selection.length ? selection[selection.length - 1] : null
@@ -79,21 +75,23 @@ export function useAppState() {
     .filter((p) => p.active)
     .map((p) => p.id + (p.photo ?? ''))
     .join(',')
-  const lastActive = useRef(activeKey)
+  // se compara recién cuando llegó el roster de /admin: esa primera carga no borra el borrador
+  const lastActive = useRef<string | null>(null)
   useEffect(() => {
-    if (lastActive.current === activeKey) return
+    if (!rostersReady) return
+    if (lastActive.current === null || lastActive.current === activeKey) {
+      lastActive.current = activeKey
+      return
+    }
     lastActive.current = activeKey
     if (postType(doc.type).people === 'many') setDocRaw((d) => ({ ...d, people: [], layers: {} }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeKey])
+  }, [activeKey, rostersReady])
 
   useEffect(() => {
     const id = setTimeout(() => localStorage.setItem(LS_DOC, JSON.stringify(doc)), 300)
     return () => clearTimeout(id)
   }, [doc])
-  useEffect(() => {
-    localStorage.setItem(LS_ROSTERS, JSON.stringify(rosters))
-  }, [rosters])
 
   /** Cambia el documento guardando historial (agrupa cambios seguidos de <600ms, ej. arrastrar un slider). */
   const setDoc = useCallback((fn: (d: PostDoc) => PostDoc) => {
@@ -250,7 +248,6 @@ export function useAppState() {
   /** Cambios de diseño: regeneran la composición en todos los formatos (los textos editados se mantienen). */
   const relayout = useCallback((fn: (d: PostDoc) => PostDoc) => setDoc((d) => ({ ...fn(d), layers: {} })), [setDoc])
 
-  const updateRoster = useCallback((id: RosterId, fn: (r: Roster) => Roster) => setRosters((rs) => ({ ...rs, [id]: fn(rs[id]) })), [])
 
   return {
     doc,
@@ -258,8 +255,8 @@ export function useAppState() {
     relayout,
     rosters,
     roster,
-    updateRoster,
-    setRosters,
+    tweaks,
+    tweakPerson,
     format,
     setFormat,
     selected,

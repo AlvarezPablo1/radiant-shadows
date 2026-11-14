@@ -1,6 +1,6 @@
 import type { MouseEvent } from 'react'
-import { cx } from '../../lib/cx'
-import { useScrolled } from '../../lib/hooks'
+import { cx } from '../../../shared/lib/cx'
+import { useScrolled } from '../../../shared/lib/hooks'
 import { CONTACT_PATH, isActive } from '../../lib/route'
 import { TEAM_BRAND, type Team } from '../../data/teams'
 import type { Page } from '../../types'

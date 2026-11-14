@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Kicker } from '../home/components/Kicker'
+import { Kicker } from '../shared/ui/Kicker'
 import { inputCls } from './components/styles'
 
 /** Login del staff: el formulario va directo a /api/login, que vuelve a /admin (con ?error=1 si falla) */

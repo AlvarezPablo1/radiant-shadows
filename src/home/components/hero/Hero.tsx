@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
-import { cx } from '../lib/cx'
-import { enter } from '../lib/enter'
-import type { Team } from '../data/teams'
-import type { Page } from '../types'
+import { cx } from '../../../shared/lib/cx'
+import { enter } from '../../lib/enter'
+import type { Team } from '../../data/teams'
+import type { Page } from '../../types'
 import { Dragon } from './Dragon'
-import { Kicker } from './Kicker'
-import { Soon } from './Soon'
+import { Kicker } from '../../../shared/ui/Kicker'
+import { Soon } from '../ui/Soon'
 
 interface Props {
   page: Page

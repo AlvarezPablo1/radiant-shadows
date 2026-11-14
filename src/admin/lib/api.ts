@@ -1,6 +1,6 @@
-import type { CollectionKey } from '../../home/data/collections'
+import type { CollectionKey } from '../../shared/content/collections'
 import { compressImage } from './compress'
-import { DEFAULT_CONTENT, type Content } from '../../home/data/content'
+import { DEFAULT_CONTENT, type Content } from '../../shared/content/content'
 
 /** Sesión iniciada en /admin */
 export async function hasSession() {

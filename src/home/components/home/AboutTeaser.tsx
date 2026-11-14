@@ -1,8 +1,8 @@
 import { ABOUT_PILLARS } from '../../data/about'
 import { PillarIcon } from '../about/PillarIcon'
-import { Reveal } from '../Reveal'
-import { SectionHeading } from '../SectionHeading'
-import { ActionButton } from './ActionButton'
+import { Reveal } from '../ui/Reveal'
+import { SectionHeading } from '../ui/SectionHeading'
+import { ActionButton } from '../../../shared/ui/ActionButton'
 
 /** "Quiénes somos" en corto: los tres pilares en una línea cada uno y link a la sección */
 export function AboutTeaser() {

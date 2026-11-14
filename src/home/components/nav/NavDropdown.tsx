@@ -1,8 +1,8 @@
 import { useCallback, useRef, useState } from 'react'
-import { cx } from '../../lib/cx'
-import { useEscape } from '../../lib/hooks'
+import { cx } from '../../../shared/lib/cx'
+import { useEscape } from '../../../shared/lib/hooks'
 import type { Page } from '../../types'
-import { Chevron } from '../Chevron'
+import { Chevron } from '../../../shared/ui/Chevron'
 import { navLink, navLinkActive } from './navStyles'
 
 interface Props {

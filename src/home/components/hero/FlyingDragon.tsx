@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
-import { TEAM_BRAND, type Team } from '../data/teams'
-import { useMediaQuery } from '../lib/hooks'
+import { TEAM_BRAND, type Team } from '../../data/teams'
+import { useMediaQuery } from '../../../shared/lib/hooks'
 import { Dragon } from './Dragon'
 
 /** primera vez que vuela después de cargar, y pausa entre vuelos (ms) */

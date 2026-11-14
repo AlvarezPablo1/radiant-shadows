@@ -1,4 +1,4 @@
-import { MATCH_TYPES, type CalendarEvent } from '../data/events'
+import { MATCH_TYPES, type CalendarEvent } from '../../shared/content/events'
 import { todayKey } from './calendar'
 
 /** por fecha y después por hora */

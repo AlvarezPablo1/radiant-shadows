@@ -1,5 +1,5 @@
 import type { FieldDef } from '../schemas'
-import { Select } from '../../home/components/Select'
+import { Select } from '../../shared/ui/Select'
 import { ImageField } from './ImageField'
 import { LinkField } from './LinkField'
 import { inputCls } from './styles'

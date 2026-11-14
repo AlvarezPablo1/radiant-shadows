@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Background } from '../home/components/Background'
-import type { Content } from '../home/data/content'
+import { Background } from '../shared/ui/Background'
+import type { Content } from '../shared/content/content'
 import { Dashboard } from './Dashboard'
 import { LoginScreen } from './LoginScreen'
 import { hasSession, loadContent } from './lib/api'

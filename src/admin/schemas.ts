@@ -1,8 +1,8 @@
-import type { CollectionKey } from '../home/data/collections'
-import { COUNTRIES } from '../home/data/countries'
-import { EVENT_TYPES } from '../home/data/events'
-import { NEWS_CATEGORIES } from '../home/data/news'
-import { RANKS } from '../home/data/ranks'
+import type { CollectionKey } from '../shared/content/collections'
+import { COUNTRIES } from '../shared/content/countries'
+import { EVENT_TYPES } from '../shared/content/events'
+import { NEWS_CATEGORIES } from '../shared/content/news'
+import { RANKS } from '../shared/content/ranks'
 import type { Item } from './lib/item'
 
 export interface FieldDef {
@@ -57,6 +57,7 @@ const photoScale: FieldDef = {
 const memberFields = (role: FieldDef): FieldDef[] => [
   { key: 'team', label: 'Equipo', type: 'select', required: true, options: TEAMS, help: 'Define en qué página aparece: Masculino o Game Changers' },
   { key: 'name', label: 'Nombre (nick)', type: 'text', required: true },
+  { key: 'realName', label: 'Nombre y apellido', type: 'text', help: 'Opcional. Se usa en las placas de MVP del mediakit' },
   role,
   rank,
   nationality,
@@ -64,6 +65,8 @@ const memberFields = (role: FieldDef): FieldDef[] => [
   photo,
   photoScale,
   tracker,
+  { key: 'instagram', label: 'Instagram', type: 'url', placeholder: 'https://www.instagram.com/…', help: 'Opcional. El mediakit lo usa para arrobar en los copys' },
+  { key: 'x', label: 'X (Twitter)', type: 'url', placeholder: 'https://x.com/…' },
 ]
 
 /** Staff y creadores comparten forma */

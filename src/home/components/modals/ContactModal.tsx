@@ -1,9 +1,9 @@
 import { useState, type ReactNode, type SubmitEvent } from 'react'
-import { CONTACT_SUBJECTS } from '../data/contact'
-import { cx } from '../lib/cx'
-import { Kicker } from './Kicker'
-import { Modal } from './Modal'
-import { Select } from './Select'
+import { CONTACT_SUBJECTS } from '../../data/contact'
+import { cx } from '../../../shared/lib/cx'
+import { Kicker } from '../../../shared/ui/Kicker'
+import { Modal } from '../../../shared/ui/Modal'
+import { Select } from '../../../shared/ui/Select'
 
 interface Props {
   open: boolean

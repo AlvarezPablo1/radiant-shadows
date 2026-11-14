@@ -1,7 +1,7 @@
-import { cx } from '../lib/cx'
-import { enter } from '../lib/enter'
-import type { Page } from '../types'
-import { Kicker } from './Kicker'
+import { cx } from '../../../shared/lib/cx'
+import { enter } from '../../lib/enter'
+import type { Page } from '../../types'
+import { Kicker } from '../../../shared/ui/Kicker'
 
 /** Encabezado centrado de las pantallas internas: kicker, título y texto, con entrada escalonada */
 export function PageHeader({ page, ready }: { page: Page; ready: boolean }) {

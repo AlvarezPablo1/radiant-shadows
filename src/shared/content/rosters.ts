@@ -1,5 +1,7 @@
 export interface Member {
   name: string
+  /** nombre y apellido (el mediakit lo usa en las placas de MVP) */
+  realName?: string
   /** "Masculino" o "Game Changers"; si falta, es del masculino */
   team?: string
   /** foto recortada sin fondo; si falta se muestra una silueta */
@@ -16,6 +18,9 @@ export interface Member {
   age?: number
   /** perfil en tracker.gg para ver sus stats */
   tracker?: string
+  /** redes: el mediakit las usa para arrobar en los copys */
+  instagram?: string
+  x?: string
 }
 
 /** Roster masculino (MAIN). Los datos que falten se muestran como "—" */

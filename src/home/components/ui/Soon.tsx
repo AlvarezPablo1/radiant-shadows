@@ -1,4 +1,4 @@
-import { cx } from '../lib/cx'
+import { cx } from '../../../shared/lib/cx'
 
 /** Cartel "Próximamente" con un punto que late */
 export function Soon({ className }: { className?: string }) {

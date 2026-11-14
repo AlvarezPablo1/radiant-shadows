@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import { cx } from '../lib/cx'
-import { useInView } from '../lib/hooks'
+import { cx } from '../../../shared/lib/cx'
+import { useInView } from '../../../shared/lib/hooks'
 
 /** Envoltorio que aparece (sube y se hace visible) cuando llega a la pantalla con el scroll */
 export function Reveal({ children, className, as: Tag = 'section', label }: { children: ReactNode; className?: string; as?: 'section' | 'div'; label?: string }) {

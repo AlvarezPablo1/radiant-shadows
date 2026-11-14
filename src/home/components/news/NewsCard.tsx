@@ -1,6 +1,6 @@
-import { NEWS_CATEGORIES, type NewsItem } from '../../data/news'
-import { cx } from '../../lib/cx'
-import { Reveal } from '../Reveal'
+import { NEWS_CATEGORIES, type NewsItem } from '../../../shared/content/news'
+import { cx } from '../../../shared/lib/cx'
+import { Reveal } from '../ui/Reveal'
 import { NewsAction } from './NewsAction'
 import { NewsVisual } from './NewsVisual'
 

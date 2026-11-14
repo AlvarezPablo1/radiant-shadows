@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
-import type { Member } from '../../data/rosters'
-import { cx } from '../../lib/cx'
-import { useMediaQuery } from '../../lib/hooks'
+import type { Member } from '../../../shared/content/rosters'
+import { cx } from '../../../shared/lib/cx'
+import { useMediaQuery } from '../../../shared/lib/hooks'
 import { CarouselControls } from './CarouselControls'
 import { MemberCard } from './MemberCard'
 

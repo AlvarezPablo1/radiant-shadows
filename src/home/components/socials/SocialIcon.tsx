@@ -1,5 +1,5 @@
 import type { SimpleIcon } from 'simple-icons'
-import { cx } from '../../lib/cx'
+import { cx } from '../../../shared/lib/cx'
 
 /** Logo oficial de una red (de simple-icons), en el color del texto */
 export function SocialIcon({ icon, className }: { icon: SimpleIcon; className?: string }) {

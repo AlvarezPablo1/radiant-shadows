@@ -1,7 +1,7 @@
-import { EVENT_TYPES, type CalendarEvent } from '../../data/events'
+import { EVENT_TYPES, type CalendarEvent } from '../../../shared/content/events'
 import { fromKey, todayKey } from '../../lib/calendar'
-import { useInView } from '../../lib/hooks'
-import { cx } from '../../lib/cx'
+import { useInView } from '../../../shared/lib/hooks'
+import { cx } from '../../../shared/lib/cx'
 
 interface Props {
   matches: CalendarEvent[]

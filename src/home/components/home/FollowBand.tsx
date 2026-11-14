@@ -1,6 +1,6 @@
 import { SOCIALS } from '../../data/socials'
-import { Reveal } from '../Reveal'
-import { SectionHeading } from '../SectionHeading'
+import { Reveal } from '../ui/Reveal'
+import { SectionHeading } from '../ui/SectionHeading'
 import { SocialIcon } from '../socials/SocialIcon'
 
 /** Franja de redes: Twitch destacado (los partidos en vivo) y el resto de las redes al lado */

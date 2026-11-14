@@ -1,6 +1,6 @@
 import { useContent } from '../../lib/useContent'
 import type { Page } from '../../types'
-import { PageHeader } from '../PageHeader'
+import { PageHeader } from '../ui/PageHeader'
 import { AchievementCard } from './AchievementCard'
 
 /** "Logros": un casillero por resultado, del más destacado al menos */

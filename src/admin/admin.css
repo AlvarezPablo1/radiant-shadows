@@ -2,6 +2,7 @@
 @import 'tailwindcss' source('.');
 @source '../home/components';
 @source '../home/lib';
+@source '../shared';
 @import '../home/theme.css';
 
 /* la tarjeta del login tiembla si la contraseña es incorrecta */

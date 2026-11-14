@@ -1,10 +1,10 @@
-import { EVENT_TYPES } from '../../data/events'
+import { EVENT_TYPES } from '../../../shared/content/events'
 import { dayLabel } from '../../lib/calendar'
 import { eventStart, upcomingMatches } from '../../lib/events'
 import { useContent } from '../../lib/useContent'
-import { useNow } from '../../lib/hooks'
-import { Reveal } from '../Reveal'
-import { ActionButton } from './ActionButton'
+import { useNow } from '../../../shared/lib/hooks'
+import { Reveal } from '../ui/Reveal'
+import { ActionButton } from '../../../shared/ui/ActionButton'
 
 /** Franja con el próximo partido y una cuenta regresiva en vivo (sale de los eventos del calendario) */
 export function NextMatch() {

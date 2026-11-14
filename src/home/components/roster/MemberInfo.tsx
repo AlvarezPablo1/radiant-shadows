@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
-import type { Member } from '../../data/rosters'
-import { countryFlag } from '../../data/countries'
-import { rankIcon } from '../../data/ranks'
-import { cx } from '../../lib/cx'
+import type { Member } from '../../../shared/content/rosters'
+import { countryFlag } from '../../../shared/content/countries'
+import { rankIcon } from '../../../shared/content/ranks'
+import { cx } from '../../../shared/lib/cx'
 
 interface Props {
   member: Member

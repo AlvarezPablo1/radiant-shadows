@@ -1,6 +1,6 @@
-import { TEAM_BRAND, type Team } from '../data/teams'
-import { cx } from '../lib/cx'
-import { useWink } from '../lib/hooks'
+import { TEAM_BRAND, type Team } from '../../data/teams'
+import { cx } from '../../../shared/lib/cx'
+import { useWink } from '../../../shared/lib/hooks'
 
 /** La mascota del equipo flotando; cada tanto guiña el ojo (la versión guiñando va encima y aparece un instante) */
 export function Dragon({ team = 'main' }: { team?: Team }) {

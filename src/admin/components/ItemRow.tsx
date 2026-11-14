@@ -1,7 +1,7 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useState } from 'react'
-import { cx } from '../../home/lib/cx'
+import { cx } from '../../shared/lib/cx'
 import type { Item } from '../lib/item'
 import type { CollectionSchema } from '../schemas'
 import { smallBtn } from './styles'

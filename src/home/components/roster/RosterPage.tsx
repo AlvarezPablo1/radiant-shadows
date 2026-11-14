@@ -1,8 +1,8 @@
-import type { Member } from '../../data/rosters'
+import type { Member } from '../../../shared/content/rosters'
 import { enter } from '../../lib/enter'
 import type { Page } from '../../types'
-import { Kicker } from '../Kicker'
-import { PageHeader } from '../PageHeader'
+import { Kicker } from '../../../shared/ui/Kicker'
+import { PageHeader } from '../ui/PageHeader'
 import { MemberRow } from './MemberRow'
 
 interface Props {

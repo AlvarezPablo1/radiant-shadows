@@ -1,4 +1,4 @@
-import { cx } from './cx'
+import { cx } from '../../shared/lib/cx'
 
 /** Entrada escalonada: cada bloque aparece un poco después del anterior cuando `ready` es true */
 export const enter = (ready: boolean, delay: string) =>

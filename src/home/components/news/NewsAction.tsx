@@ -1,4 +1,4 @@
-import type { NewsItem } from '../../data/news'
+import type { NewsItem } from '../../../shared/content/news'
 
 /** Botón de la noticia: "contacto" abre el formulario; los links externos, en otra pestaña */
 export function NewsAction({ action, onContact }: { action: NonNullable<NewsItem['action']>; onContact: () => void }) {

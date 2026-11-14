@@ -1,8 +1,8 @@
 import { useState, type MouseEvent } from 'react'
-import { cx } from '../lib/cx'
-import { CONTACT_PATH, isActive } from '../lib/route'
-import type { Page } from '../types'
-import { Chevron } from './Chevron'
+import { cx } from '../../../shared/lib/cx'
+import { CONTACT_PATH, isActive } from '../../lib/route'
+import type { Page } from '../../types'
+import { Chevron } from '../../../shared/ui/Chevron'
 
 interface Props {
   sections: Page[]

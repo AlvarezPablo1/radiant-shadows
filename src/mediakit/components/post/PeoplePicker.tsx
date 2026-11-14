@@ -30,11 +30,7 @@ export function PeoplePicker({ s }: { s: AppState }) {
   const changePhoto = async (p: Person) => {
     const ref = await ui.uploadPhoto()
     if (!ref) return
-    s.updateRoster(doc.roster, (r) => ({
-      ...r,
-      players: r.players.map((x) => (x.id === p.id ? { ...x, photo: ref } : x)),
-      staff: r.staff.map((x) => (x.id === p.id ? { ...x, photo: ref } : x)),
-    }))
+    s.tweakPerson(p.id, { photo: ref })
   }
 
   if (t.people === 'none') return null

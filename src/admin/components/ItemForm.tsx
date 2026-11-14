@@ -1,6 +1,6 @@
 import { useState, type SubmitEvent } from 'react'
-import { Modal } from '../../home/components/Modal'
-import { Kicker } from '../../home/components/Kicker'
+import { Modal } from '../../shared/ui/Modal'
+import { Kicker } from '../../shared/ui/Kicker'
 import { getField, setField, type Item } from '../lib/item'
 import type { CollectionSchema } from '../schemas'
 import { Field } from './Field'

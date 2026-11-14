@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Select } from '../../home/components/Select'
+import { Select } from '../../shared/ui/Select'
 import { DESTINATIONS } from '../lib/destinations'
 import { inputCls } from './styles'
 

@@ -1,4 +1,4 @@
-import { cx } from '../../lib/cx'
+import { cx } from '../../../shared/lib/cx'
 
 interface Props {
   names: string[]

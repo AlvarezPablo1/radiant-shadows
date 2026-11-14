@@ -1,6 +1,6 @@
 import { useContent } from '../../lib/useContent'
 import type { Page } from '../../types'
-import { PageHeader } from '../PageHeader'
+import { PageHeader } from '../ui/PageHeader'
 import { NewsCard } from './NewsCard'
 
 /** "Noticias": la más nueva en un bloque grande (2×2) y el resto alrededor, en grilla de 3 */

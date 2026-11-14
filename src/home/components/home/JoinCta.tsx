@@ -1,5 +1,5 @@
-import { Reveal } from '../Reveal'
-import { ActionButton } from './ActionButton'
+import { Reveal } from '../ui/Reveal'
+import { ActionButton } from '../../../shared/ui/ActionButton'
 
 /** Llamado final: tryouts, sponsors o prensa, con el botón que abre el formulario de contacto */
 export function JoinCta({ onContact }: { onContact: () => void }) {

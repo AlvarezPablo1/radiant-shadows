@@ -1,8 +1,8 @@
 import { ABOUT_CLOSING, ABOUT_PILLARS, type Pillar } from '../../data/about'
-import { cx } from '../../lib/cx'
-import { useInView } from '../../lib/hooks'
+import { cx } from '../../../shared/lib/cx'
+import { useInView } from '../../../shared/lib/hooks'
 import type { Page } from '../../types'
-import { PageHeader } from '../PageHeader'
+import { PageHeader } from '../ui/PageHeader'
 import { PillarIcon } from './PillarIcon'
 
 /** "Quiénes somos": párrafo de presentación, tres pilares en columnas y cierre con "El fuego sigue" */

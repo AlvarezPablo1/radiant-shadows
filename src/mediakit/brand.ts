@@ -52,12 +52,3 @@ export const MASCOTS: MascotAsset[] = [
   { id: 'duo-victoria', label: 'Kael y Nyra · victoria', src: '/brand/mascots/duo-victoria.png', who: 'duo' },
 ]
 export const mascot = (id: string) => MASCOTS.find((m) => m.id === id)?.src ?? MASCOTS[0].src
-
-/** Fotos oficiales del roster MAIN (con camiseta, recortadas) */
-export const PLAYER_PHOTOS: Record<string, string> = {
-  Aku: '/brand/players/aku.png',
-  Gabzera: '/brand/players/gabzera.png',
-  Reko: '/brand/players/reko.png',
-  Skull: '/brand/players/skull.png',
-  Splotza: '/brand/players/splotza.png',
-}

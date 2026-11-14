@@ -1,6 +1,6 @@
-import type { NewsItem } from '../../data/news'
-import { ofTeam } from '../../data/rosters'
-import { cx } from '../../lib/cx'
+import type { NewsItem } from '../../../shared/content/news'
+import { ofTeam } from '../../../shared/content/rosters'
+import { cx } from '../../../shared/lib/cx'
 import { useContent } from '../../lib/useContent'
 import { PersonArt } from './PersonArt'
 
