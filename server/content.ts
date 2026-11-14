@@ -1,4 +1,4 @@
-import { put } from '@vercel/blob'
+import { get, put } from '@vercel/blob'
 import { COLLECTION_KEYS, type CollectionKey } from '../src/home/data/collections.js'
 
 /**
@@ -14,10 +14,17 @@ function storeUrl() {
 
 const path = (key: CollectionKey) => `content/${key}.json`
 
-/** Una sección guardada, o null si nunca se guardó desde /admin. `fresh` saltea la caché del CDN. */
+/**
+ * Una sección guardada, o null si nunca se guardó desde /admin.
+ * `fresh` (el admin) lee directo del almacenamiento: el CDN guarda cada archivo hasta 60 s y,
+ * sin esto, al recargar el admin justo después de guardar se veía la versión anterior.
+ */
 export async function readCollection(key: CollectionKey, fresh = false): Promise<unknown[] | null> {
-  const url = `${storeUrl()}/${path(key)}${fresh ? `?t=${Date.now()}` : ''}`
-  const res = await fetch(url, fresh ? { cache: 'no-store' } : undefined)
+  if (fresh) {
+    const blob = await get(path(key), { access: 'public', useCache: false })
+    return blob?.stream ? ((await new Response(blob.stream).json()) as unknown[]) : null
+  }
+  const res = await fetch(`${storeUrl()}/${path(key)}`)
   if (res.status === 404) return null
   if (!res.ok) throw new Error(`No se pudo leer ${key}: ${res.status}`)
   return (await res.json()) as unknown[]

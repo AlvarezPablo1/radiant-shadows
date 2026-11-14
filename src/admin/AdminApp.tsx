@@ -4,6 +4,7 @@ import type { Content } from '../home/data/content'
 import { Dashboard } from './Dashboard'
 import { LoginScreen } from './LoginScreen'
 import { hasSession, loadContent } from './lib/api'
+import { preloadCutout } from './lib/cutout'
 
 const YEAR = new Date().getFullYear()
 
@@ -19,6 +20,9 @@ export function AdminApp() {
         if (!ok) return setState({ kind: 'login' })
         history.replaceState(null, '', '/admin') // saca el ?error=1 si venía del login
         setState({ kind: 'ready', content: await loadContent() })
+        // la herramienta para quitar fondos pesa: se baja en segundo plano, sin frenar el panel
+        const idle = window.requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 1500))
+        idle(() => preloadCutout())
       })
       .catch((e: Error) => setState({ kind: 'error', message: e.message }))
   }, [])

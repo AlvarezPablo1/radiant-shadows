@@ -25,7 +25,7 @@ export function Field({ field, value, onChange }: Props) {
   }
 
   let control
-  if (field.type === 'image') control = <ImageField id={id} value={text} onChange={onChange} />
+  if (field.type === 'image') control = <ImageField id={id} value={text} onChange={onChange} cutout={field.cutout} />
   else if (field.type === 'link') control = <LinkField id={id} value={text} onChange={onChange} />
   else if (field.type === 'textarea')
     control = <textarea id={id} rows={3} value={text} required={field.required} placeholder={field.placeholder} onChange={(e) => onChange(e.target.value)} className={inputCls + ' resize-y'} />

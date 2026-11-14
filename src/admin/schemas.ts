@@ -14,6 +14,8 @@ export interface FieldDef {
   placeholder?: string
   help?: string
   step?: number
+  /** imágenes de personas: ofrecer quitar el fondo al subir */
+  cutout?: boolean
 }
 
 export interface CollectionSchema {
@@ -40,7 +42,7 @@ const PLAYER_ROLES = opts(['Duelista', 'Iniciador', 'Controlador', 'Centinela', 
 const nationality: FieldDef = { key: 'nationality', label: 'Nacionalidad', type: 'select', options: opts(COUNTRIES.map((c) => c.name)) }
 const rank: FieldDef = { key: 'rank', label: 'Rango', type: 'select', options: opts([...RANKS].reverse()), help: 'Según su tracker' }
 const age: FieldDef = { key: 'age', label: 'Edad', type: 'number' }
-const photo: FieldDef = { key: 'photo', label: 'Foto', type: 'image', help: 'Recortada y con fondo transparente (PNG), como las actuales' }
+const photo: FieldDef = { key: 'photo', label: 'Foto', type: 'image', cutout: true, help: 'Se le quita el fondo automáticamente al subirla, para que quede como las demás' }
 const tracker: FieldDef = { key: 'tracker', label: 'Tracker (tracker.gg)', type: 'url', placeholder: 'https://tracker.gg/valorant/profile/…' }
 const photoScale: FieldDef = {
   key: 'photoScale',

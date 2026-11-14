@@ -10,12 +10,14 @@ interface Props {
   active: boolean
   /** hay otro seleccionado: este se apaga un poco */
   dimmed: boolean
+  /** celular: no es el del centro del carrusel; queda desenfocado y más chico */
+  blurred?: boolean
   onSelect: () => void
   onLeave: () => void
 }
 
 /** Foto de un integrante; al seleccionarlo se destaca y muestra su ficha */
-export function MemberCard({ member, showRank, active, dimmed, onSelect, onLeave }: Props) {
+export function MemberCard({ member, showRank, active, dimmed, blurred, onSelect, onLeave }: Props) {
   return (
     // contenedor enfocable (no <button>) porque la ficha tiene un link adentro
     <div
@@ -31,8 +33,9 @@ export function MemberCard({ member, showRank, active, dimmed, onSelect, onLeave
       className={cx(
         'relative h-full w-full cursor-pointer outline-none',
         'transition-[opacity,filter,scale] duration-300 ease-out-soft',
-        active ? 'z-10 scale-105' : 'scale-100',
+        active ? 'z-10 scale-105 max-md:scale-100' : 'scale-100',
         dimmed && 'opacity-35 grayscale-70',
+        blurred && 'scale-[0.86] opacity-45 blur-[3px] grayscale-40',
       )}
     >
       {/* al seleccionar: dos líneas verticales de neón a los costados, sin cerrar arriba ni abajo */}

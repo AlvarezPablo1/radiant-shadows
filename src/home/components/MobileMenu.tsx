@@ -10,41 +10,45 @@ interface Props {
   onContact: () => void
 }
 
-const item = 'animate-menu-in py-1.5 font-display text-[44px] tracking-[0.04em]'
+// el tamaño se ajusta al alto de la pantalla, así entran todas las opciones en celulares chicos
+const item = 'animate-menu-in py-1.5 font-display text-[clamp(22px,min(7vw,4.2vh),30px)] tracking-[0.06em]'
 const delay = (i: number) => ({ animationDelay: `${i * 0.04}s` })
 
 /** Menú a pantalla completa del celular (se monta sólo cuando está abierto) */
 export function MobileMenu({ sections, page, onContact }: Props) {
   return (
+    // se puede scrollear si no entra; "my-auto" centra las opciones cuando sobra lugar y las deja arriba cuando no
     <div
       id="menu"
-      className="fixed inset-0 z-19 hidden flex-col justify-center gap-1.5 bg-night/97 px-8 pt-[calc(var(--header-h)+24px)] pb-20 max-md:flex"
+      className="fixed inset-0 z-19 hidden flex-col overflow-y-auto overscroll-contain bg-night px-8 pt-[calc(var(--header-h)+16px)] pb-[calc(32px+env(safe-area-inset-bottom,0px))] max-md:flex"
     >
-      {sections.map((s, i) => {
-        if (s.children) return <MenuGroup key={s.path} section={s} page={page} index={i} />
-        if (s.path === CONTACT_PATH) {
-          const open = (e: MouseEvent) => {
-            e.preventDefault()
-            onContact()
+      <nav aria-label="Menú" className="my-auto flex flex-col gap-1">
+        {sections.map((s, i) => {
+          if (s.children) return <MenuGroup key={s.path} section={s} page={page} index={i} />
+          if (s.path === CONTACT_PATH) {
+            const open = (e: MouseEvent) => {
+              e.preventDefault()
+              onContact()
+            }
+            return (
+              <a
+                key={s.path}
+                href={s.path}
+                onClick={open}
+                style={delay(i)}
+                className="mt-5 animate-menu-in rounded-full bg-cta pt-2 pb-1.5 text-center font-display text-[19px] tracking-[0.12em] text-white shadow-[0_6px_22px_rgb(122_40_226/0.45)]"
+              >
+                {s.label}
+              </a>
+            )
           }
           return (
-            <a
-              key={s.path}
-              href={s.path}
-              onClick={open}
-              style={delay(i)}
-              className={cx(item, 'mt-7 rounded-full bg-cta pt-3.5 pb-2.5 text-center text-[32px] text-white shadow-[0_8px_28px_rgb(122_40_226/0.45)]')}
-            >
+            <a key={s.path} href={s.path} style={delay(i)} className={cx(item, 'border-b border-violet-hi/15', s === page ? 'text-lilac' : 'text-mist')}>
               {s.label}
             </a>
           )
-        }
-        return (
-          <a key={s.path} href={s.path} style={delay(i)} className={cx(item, 'border-b border-violet-hi/15', s === page ? 'text-lilac' : 'text-mist')}>
-            {s.label}
-          </a>
-        )
-      })}
+        })}
+      </nav>
     </div>
   )
 }
@@ -67,7 +71,7 @@ function MenuGroup({ section, page, index }: { section: Page; page: Page; index:
       {open && (
         <div className="flex flex-col border-l-2 border-violet-hi/40 pt-1 pb-2 pl-4">
           {section.children!.map((c) => (
-            <a key={c.path} href={c.path} className={cx('py-1 font-display text-[28px] tracking-[0.04em]', c === page ? 'text-lilac' : 'text-haze')}>
+            <a key={c.path} href={c.path} className={cx('py-1 font-display text-[clamp(17px,min(5vw,3.2vh),22px)] tracking-[0.06em]', c === page ? 'text-lilac' : 'text-haze')}>
               {c.label}
             </a>
           ))}

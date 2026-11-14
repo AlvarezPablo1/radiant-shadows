@@ -7,10 +7,14 @@
     "dev": "vite",
     "dev:full": "sh -c 'set -a; [ -f .env.admin.local ] && . ./.env.admin.local; set +a; exec vercel dev \"$@\"' --",
     "build": "tsc -b && vite build",
+    "staging": "vercel deploy",
     "lint": "oxlint",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@imgly/background-removal": "^1.7.0",
     "@vercel/blob": "^2.9.0",
     "@vercel/functions": "^3.11.2",

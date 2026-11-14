@@ -1,11 +1,13 @@
-import { useState } from 'react'
+import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core'
+import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable'
+import { useEffect, useState } from 'react'
 import { ActionButton } from '../../home/components/home/ActionButton'
 import { cx } from '../../home/lib/cx'
 import { saveCollection } from '../lib/api'
 import type { Item } from '../lib/item'
 import type { CollectionSchema } from '../schemas'
 import { ItemForm } from './ItemForm'
-import { iconBtn, smallBtn } from './styles'
+import { ItemRow } from './ItemRow'
 
 interface Props {
   schema: CollectionSchema
@@ -16,11 +18,31 @@ interface Props {
 
 type Status = { kind: 'idle' | 'saving' | 'ok' | 'error'; text?: string }
 
-/** Lista de una sección: agregar, editar, borrar y reordenar. Cada cambio se guarda al momento. */
+/** id estable de cada fila (sale del contenido, no de la posición, así no cambia al arrastrar) */
+function rowIds(items: Item[]) {
+  const seen = new Map<string, number>()
+  return items.map((it) => {
+    const base = JSON.stringify(it)
+    const n = (seen.get(base) ?? 0) + 1
+    seen.set(base, n)
+    return `${base}#${n}`
+  })
+}
+
+/** Lista de una sección: agregar, editar (tocando la fila), borrar y reordenar arrastrando. Cada cambio se guarda al momento. */
 export function CollectionEditor({ schema, items, onSaved }: Props) {
   const [editing, setEditing] = useState<{ item: Item; index: number | null } | null>(null)
-  const [confirmDelete, setConfirmDelete] = useState<number | null>(null)
   const [status, setStatus] = useState<Status>({ kind: 'idle' })
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }))
+  const ids = rowIds(items)
+  const saving = status.kind === 'saving'
+
+  // el aviso de "guardado" se va solo; los errores quedan hasta la próxima acción
+  useEffect(() => {
+    if (status.kind !== 'ok') return
+    const t = setTimeout(() => setStatus({ kind: 'idle' }), 2500)
+    return () => clearTimeout(t)
+  }, [status])
 
   async function commit(next: Item[], done: string) {
     setStatus({ kind: 'saving' })
@@ -38,78 +60,74 @@ export function CollectionEditor({ schema, items, onSaved }: Props) {
     setEditing(null)
     commit(next, editing?.index == null ? 'Agregado' : 'Cambios guardados')
   }
-  const remove = (index: number) => {
-    setConfirmDelete(null)
-    commit(items.filter((_, i) => i !== index), 'Borrado')
+  const onDragEnd = ({ active, over }: DragEndEvent) => {
+    if (!over || active.id === over.id) return
+    commit(arrayMove(items, ids.indexOf(String(active.id)), ids.indexOf(String(over.id))), 'Orden guardado')
   }
-  const move = (index: number, by: -1 | 1) => {
-    const next = [...items]
-    ;[next[index], next[index + by]] = [next[index + by], next[index]]
-    commit(next, 'Orden guardado')
-  }
+  const add = () => setEditing({ item: schema.blank(), index: null })
 
   return (
-    <section aria-labelledby="section-title" className="flex flex-col gap-6">
+    <section aria-labelledby="section-title" className="flex flex-col gap-5 pb-24 md:pb-0">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div className="min-w-0">
-          <h1 id="section-title" className="font-brand-title text-[clamp(24px,2.8vw,35px)] text-white">
+          <h1 id="section-title" className="font-brand-title text-[clamp(22px,2.8vw,35px)] text-white max-md:hidden">
             {schema.label.toUpperCase()}
           </h1>
-          <p className="mt-2 max-w-150 text-[15px] text-body">{schema.description}</p>
+          <p className="mt-2 max-w-150 text-[14px] text-body max-md:mt-0">{schema.description}</p>
         </div>
-        <ActionButton onClick={() => setEditing({ item: schema.blank(), index: null })}>AGREGAR</ActionButton>
+        <ActionButton onClick={add} className="max-md:hidden">
+          AGREGAR
+        </ActionButton>
       </header>
 
-      <p role="status" className={cx('min-h-5 text-sm', status.kind === 'error' ? 'text-danger' : status.kind === 'ok' ? 'text-success' : 'text-muted')}>
-        {status.kind === 'saving' ? 'Guardando…' : status.kind === 'ok' ? `✓ ${status.text}. La web se actualiza en hasta un minuto.` : status.text}
-      </p>
+      {items.length > 1 && <p className="-mt-2 text-xs text-muted">Arrastrá desde ⠿ para cambiar el orden. Tocá una fila para editarla.</p>}
 
       {items.length === 0 ? (
         <p className="rounded-3xl border border-dashed border-violet-hi/30 px-6 py-12 text-center text-muted">Todavía no hay nada cargado. Tocá "Agregar" para sumar {schema.singular}.</p>
       ) : (
-        <ul className="flex flex-col gap-3">
-          {items.map((item, i) => (
-            <li key={i} className="flex items-center gap-4 rounded-2xl border border-violet-hi/20 bg-night/55 p-3 pr-4 backdrop-blur-md max-sm:flex-wrap">
-              {schema.image && (
-                <span className="grid size-16 shrink-0 place-items-center overflow-hidden rounded-xl bg-[linear-gradient(to_bottom,rgb(122_40_226/0.3),rgb(0_0_16/0.6))]">
-                  {schema.image(item) ? <img src={schema.image(item)} alt="" className="max-h-full max-w-full object-contain" /> : <img src="/brand/logos/rs-positive.png" alt="" className="w-8 opacity-50" />}
-                </span>
-              )}
-              <span className="min-w-0 flex-1">
-                <span className="block truncate font-display text-[24px] leading-tight tracking-[0.04em] text-white">{schema.title(item) || '(sin título)'}</span>
-                <span className="block truncate text-sm text-muted">{schema.subtitle(item)}</span>
-              </span>
-
-              {confirmDelete === i ? (
-                <span className="flex items-center gap-2 text-sm">
-                  <span className="text-danger">¿Borrar?</span>
-                  <button type="button" className={smallBtn + ' border-danger/60 text-danger'} onClick={() => remove(i)}>
-                    Sí, borrar
-                  </button>
-                  <button type="button" className={smallBtn} onClick={() => setConfirmDelete(null)}>
-                    No
-                  </button>
-                </span>
-              ) : (
-                <span className="flex items-center gap-1">
-                  <button type="button" className={iconBtn} aria-label="Subir" disabled={i === 0 || status.kind === 'saving'} onClick={() => move(i, -1)}>
-                    ↑
-                  </button>
-                  <button type="button" className={iconBtn} aria-label="Bajar" disabled={i === items.length - 1 || status.kind === 'saving'} onClick={() => move(i, 1)}>
-                    ↓
-                  </button>
-                  <button type="button" className={smallBtn} onClick={() => setEditing({ item, index: i })}>
-                    Editar
-                  </button>
-                  <button type="button" className={smallBtn} onClick={() => setConfirmDelete(i)}>
-                    Borrar
-                  </button>
-                </span>
-              )}
-            </li>
-          ))}
-        </ul>
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+          <SortableContext items={ids} strategy={verticalListSortingStrategy}>
+            <ul className="flex flex-col gap-2.5">
+              {items.map((item, i) => (
+                <ItemRow
+                  key={ids[i]}
+                  id={ids[i]}
+                  item={item}
+                  schema={schema}
+                  disabled={saving}
+                  onEdit={() => setEditing({ item, index: i })}
+                  onDelete={() => commit(items.filter((_, j) => j !== i), 'Borrado')}
+                />
+              ))}
+            </ul>
+          </SortableContext>
+        </DndContext>
       )}
+
+      {/* aviso de guardado: abajo, flotante */}
+      {status.kind !== 'idle' && (
+        <p
+          role="status"
+          className={cx(
+            'fixed bottom-6 left-1/2 z-30 -translate-x-1/2 rounded-full border px-5 py-2.5 text-sm whitespace-nowrap shadow-[0_10px_30px_rgb(0_0_0/0.5)] backdrop-blur-md max-md:bottom-24',
+            status.kind === 'error' ? 'border-danger/50 bg-night/90 text-danger' : status.kind === 'ok' ? 'border-success/40 bg-night/90 text-success' : 'border-violet-hi/40 bg-night/90 text-mist',
+          )}
+        >
+          {status.kind === 'saving' ? 'Guardando…' : status.kind === 'ok' ? `✓ ${status.text}` : status.text}
+        </p>
+      )}
+
+      {/* celular: botón flotante para agregar */}
+      <button
+        type="button"
+        onClick={add}
+        aria-label={`Agregar ${schema.singular}`}
+        className="fixed right-5 bottom-[calc(20px+env(safe-area-inset-bottom,0px))] z-20 hidden size-15 cursor-pointer place-items-center rounded-full bg-cta text-white shadow-cta max-md:grid"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true" className="size-7 fill-none stroke-current stroke-[2.5]">
+          <path d="M12 5v14M5 12h14" strokeLinecap="round" />
+        </svg>
+      </button>
 
       <ItemForm schema={schema} item={editing?.item ?? null} isNew={editing?.index == null} onSave={save} onClose={() => setEditing(null)} />
     </section>
