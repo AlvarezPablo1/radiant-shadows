@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import type { Member } from '../../data/rosters'
+import { countryFlag } from '../../data/countries'
 import { rankIcon } from '../../data/ranks'
 import { cx } from '../../lib/cx'
 
@@ -20,7 +21,7 @@ export function MemberInfo({ member, showRank, open }: Props) {
   )
   const rows: [string, ReactNode][] = [
     ...(showRank ? [['Rango', rank] as [string, ReactNode]] : []),
-    ['Nacionalidad', member.nationality ? `${member.flag ?? ''} ${member.nationality}`.trim() : '—'],
+    ['Nacionalidad', member.nationality ? `${member.flag || countryFlag(member.nationality)} ${member.nationality}`.trim() : '—'],
     ['Edad', member.age ? `${member.age} años` : '—'],
   ]
   return (

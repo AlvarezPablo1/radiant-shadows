@@ -1,5 +1,4 @@
-import { CREATORS, STAFF } from '../data/people'
-import { MAIN_PLAYERS, MAIN_STAFF } from '../data/rosters'
+import { useContent } from '../lib/useContent'
 import type { Page } from '../types'
 import { AboutPage } from './about/AboutPage'
 import { AchievementsPage } from './achievements/AchievementsPage'
@@ -20,6 +19,7 @@ interface Props {
 
 /** Elige qué pantalla mostrar según la sección; las que todavía no tienen contenido muestran el héroe con "Próximamente" */
 export function PageView({ page, isHome, ready, onContact }: Props) {
+  const content = useContent()
   if (isHome) return <HomePage page={page} ready={ready} onContact={onContact} />
   switch (page.path) {
     case '/quienes-somos':
@@ -31,11 +31,11 @@ export function PageView({ page, isHome, ready, onContact }: Props) {
     case '/calendario':
       return <CalendarPage page={page} ready={ready} />
     case '/equipo/masculino':
-      return <RosterPage page={page} players={MAIN_PLAYERS} staff={MAIN_STAFF} ready={ready} />
+      return <RosterPage page={page} players={content.players} staff={content.coaches} ready={ready} />
     case '/equipo/staff':
-      return <PeoplePage page={page} people={STAFF} ready={ready} />
+      return <PeoplePage page={page} people={content.staff} ready={ready} />
     case '/equipo/creadores':
-      return <PeoplePage page={page} people={CREATORS} ready={ready} />
+      return <PeoplePage page={page} people={content.creators} ready={ready} />
     default:
       return <Hero page={page} isHome={isHome} ready={ready} />
   }

@@ -1,16 +1,17 @@
-import { MAIN_PLAYERS } from '../../data/rosters'
 import { rankIcon } from '../../data/ranks'
+import { useContent } from '../../lib/useContent'
 import { Reveal } from '../Reveal'
 import { SectionHeading } from '../SectionHeading'
 import { ActionButton } from './ActionButton'
 
 /** Vista previa del roster masculino: fotos en fila con rol y rango, y link al equipo completo */
 export function RosterPreview() {
+  const { players } = useContent()
   return (
     <Reveal label="Nuestro roster" className="px-16 max-lg:px-10 max-md:px-4">
       <SectionHeading kicker="Roster masculino" title="NUESTROS DRAGONES" />
       <ul className="mt-10 grid grid-cols-[repeat(auto-fit,minmax(0,1fr))] gap-5 max-md:grid-cols-1">
-        {MAIN_PLAYERS.map((p) => {
+        {players.map((p) => {
           const icon = rankIcon(p.rank)
           return (
             <li key={p.name}>

@@ -5,12 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:full": "sh -c 'set -a; [ -f .env.admin.local ] && . ./.env.admin.local; set +a; exec vercel dev \"$@\"' --",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview"
   },
   "dependencies": {
     "@imgly/background-removal": "^1.7.0",
+    "@vercel/blob": "^2.9.0",
     "@vercel/functions": "^3.11.2",
     "konva": "^10.9.1",
     "react": "^19.3.1",

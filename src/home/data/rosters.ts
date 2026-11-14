@@ -31,5 +31,5 @@ export const MAIN_STAFF: Member[] = [
   { name: 'Wasi', role: 'Coach', rank: 'Inmortal 3', nationality: 'Argentina', flag: '🇦🇷', age: 22,
     tracker: 'https://tracker.gg/valorant/profile/riot/NEVER%20GIVE%20UP%23Was/overview?playlist=premier&platform=pc' },
   { name: 'Skull', role: 'Assistant coach', photo: '/brand/players/skull.png', rank: 'Inmortal 2', nationality: 'Argentina', flag: '🇦🇷', age: 19,
-    tracker: 'https://tracker.gg/valorant/premier/teams/de60d80d-de79-419e-8b8b-68b768dadbdb' },
+    tracker: 'https://tracker.gg/valorant/profile/riot/Skull%23UNDER/overview?playlist=premier&platform=pc' },
 ]

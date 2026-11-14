@@ -1,15 +1,15 @@
 import { EVENT_TYPES } from '../../data/events'
 import { dayLabel } from '../../lib/calendar'
 import { eventStart, upcomingMatches } from '../../lib/events'
+import { useContent } from '../../lib/useContent'
 import { useNow } from '../../lib/hooks'
 import { Reveal } from '../Reveal'
 import { ActionButton } from './ActionButton'
 
-const next = upcomingMatches(1)[0]
-
 /** Franja con el próximo partido y una cuenta regresiva en vivo (sale de los eventos del calendario) */
 export function NextMatch() {
   const now = useNow()
+  const next = upcomingMatches(useContent().events, 1)[0]
   if (!next) return null
   const color = EVENT_TYPES[next.type].color
   const left = Math.max(0, eventStart(next).getTime() - now)

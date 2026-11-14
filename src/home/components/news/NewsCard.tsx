@@ -1,4 +1,5 @@
 import { NEWS_CATEGORIES, type NewsItem } from '../../data/news'
+import { useContent } from '../../lib/useContent'
 import { cx } from '../../lib/cx'
 import { Reveal } from '../Reveal'
 
@@ -47,20 +48,21 @@ export function NewsCard({ item, featured, onContact }: Props) {
 
 /** Foto (o foto grupal) de la noticia o, si no tiene, el logo sobre un degradé del color de la categoría */
 function Visual({ item, color, className }: { item: NewsItem; color: string; className: string }) {
+  const group = useContent().players.filter((p) => p.photo)
   return (
     <div
       style={{ background: `radial-gradient(ellipse at 50% 80%, ${color}55, transparent 70%), linear-gradient(to bottom, rgb(122 40 226 / 0.35), rgb(0 0 16 / 0.7))` }}
       className={cx('relative shrink-0 overflow-hidden', className)}
     >
-      {item.group ? (
-        // foto grupal: los jugadores uno al lado del otro, pisándose un poco
+      {item.showRoster && group.length > 0 ? (
+        // foto grupal del roster actual: los jugadores uno al lado del otro, pisándose un poco
         <div className="absolute inset-x-0 top-4 bottom-0 flex justify-center">
-          {item.group.map((g, i) => (
+          {group.map((p, i) => (
             <img
-              key={g.photo}
-              src={g.photo}
+              key={p.photo}
+              src={p.photo}
               alt=""
-              style={{ height: `${(g.scale ?? 1) * 112}%`, zIndex: i === Math.floor(item.group!.length / 2) ? 2 : 1 }}
+              style={{ height: `${(p.photoScale ?? 1) * 112}%`, zIndex: i === Math.floor(group.length / 2) ? 2 : 1 }}
               className="relative -mx-[4%] w-auto max-w-none object-contain object-top mask-b-from-60% mask-b-to-100%"
             />
           ))}
@@ -85,7 +87,8 @@ function Action({ action, onContact }: { action: NonNullable<NewsItem['action']>
       </svg>
     </>
   )
-  return 'contact' in action ? (
+  // "contacto" abre el formulario; los links externos, en otra pestaña
+  return action.href === 'contacto' ? (
     <button type="button" onClick={onContact} className={cls}>
       {label}
     </button>

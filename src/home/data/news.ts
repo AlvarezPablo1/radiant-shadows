@@ -1,5 +1,3 @@
-import { MAIN_PLAYERS } from './rosters'
-
 export type NewsCategory = 'competencia' | 'logro' | 'tryouts' | 'jugadores' | 'despedida' | 'incorporacion'
 
 export interface NewsItem {
@@ -14,10 +12,10 @@ export interface NewsItem {
   until?: string
   /** foto recortada; si falta se usa el fondo del color de la categoría */
   image?: string
-  /** varias fotos juntas, como foto grupal (en lugar de `image`) */
-  group?: { photo: string; scale?: number }[]
-  /** a dónde lleva el botón: una sección del sitio, un link externo (se abre en otra pestaña) o "contact" para abrir el formulario */
-  action?: { label: string; href: string } | { label: string; contact: true }
+  /** mostrar como imagen la foto grupal del roster masculino actual (en lugar de `image`) */
+  showRoster?: boolean
+  /** botón: texto y destino (una sección como "/logros", un link externo, o "contacto" para abrir el formulario) */
+  action?: { label: string; href: string }
 }
 
 export const NEWS_CATEGORIES: Record<NewsCategory, { label: string; color: string }> = {
@@ -45,8 +43,7 @@ export const NEWS: NewsItem[] = [
     title: 'Abrimos tryouts para el roster masculino',
     summary: '¿Querés competir con los dragones? Anotate en el formulario: la inscripción cierra el 5 de diciembre.',
     until: '2026-12-05',
-    // el roster actual, tomado de rosters.ts para que se actualice solo
-    group: MAIN_PLAYERS.filter((p) => p.photo).map((p) => ({ photo: p.photo!, scale: p.photoScale })),
+    showRoster: true,
     action: { label: 'Anotarme', href: 'https://docs.google.com/forms/d/e/1FAIpQLSc20k3rxQAPz-ZAH98pqGfIzGil9HjlLDfc4M-AIq5Vc5jRNg/viewform' },
   },
   {

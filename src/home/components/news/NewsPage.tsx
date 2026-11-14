@@ -1,11 +1,11 @@
-import { NEWS } from '../../data/news'
+import { useContent } from '../../lib/useContent'
 import type { Page } from '../../types'
 import { PageHeader } from '../PageHeader'
 import { NewsCard } from './NewsCard'
 
 /** "Noticias": la más nueva destacada a todo el ancho y el resto en grilla */
 export function NewsPage({ page, ready, onContact }: { page: Page; ready: boolean; onContact: () => void }) {
-  const [featured, ...rest] = NEWS
+  const [featured, ...rest] = useContent().news
   return (
     <main className="relative z-2 mx-auto min-h-svh w-full max-w-page pt-[calc(var(--header-h)+32px)] pb-24 max-md:pt-[calc(var(--header-h)+16px)] max-md:pb-16">
       <PageHeader page={page} ready={ready} />

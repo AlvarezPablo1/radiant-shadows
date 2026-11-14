@@ -1,12 +1,11 @@
-import { ACHIEVEMENTS } from '../../data/achievements'
+import { useContent } from '../../lib/useContent'
 import { AchievementCard } from '../achievements/AchievementCard'
 import { SectionHeading } from '../SectionHeading'
 import { ActionButton } from './ActionButton'
 
 /** Los mejores resultados (mejor puesto primero) con link a la sección Logros */
-const TOP = [...ACHIEVEMENTS].sort((a, b) => a.place - b.place).slice(0, 2)
-
 export function AchievementsHighlight() {
+  const TOP = [...useContent().achievements].sort((a, b) => a.place - b.place).slice(0, 2)
   if (TOP.length === 0) return null
   return (
     <section aria-label="Logros destacados" className="px-16 max-lg:px-10 max-md:px-4">

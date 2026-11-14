@@ -2,8 +2,8 @@ import { next } from '@vercel/functions'
 import { COOKIE, isValidSession, readCookie } from './server/session.js'
 
 /**
- * Acceso sólo para el staff al mediakit (/mediakit).
- * La home pública (con las fotos de los jugadores) y la pantalla de login quedan libres.
+ * Acceso sólo para el staff al mediakit (/mediakit): sin sesión, se manda a /admin para iniciarla.
+ * El panel /admin muestra su propio login, y sus APIs (/api/admin/*) chequean la sesión ellas mismas.
  */
 export const config = {
   runtime: 'nodejs',
@@ -16,7 +16,7 @@ export default async function middleware(request: Request) {
   const url = new URL(request.url)
   const wantsPage = request.method === 'GET' && (request.headers.get('accept') ?? '').includes('text/html')
   if (wantsPage) {
-    url.pathname = '/login.html'
+    url.pathname = '/admin'
     url.search = ''
     return Response.redirect(url, 307)
   }

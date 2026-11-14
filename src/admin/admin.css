@@ -1,0 +1,17 @@
+/* panel /admin: mira sus archivos y los componentes de la web que reutiliza */
+@import 'tailwindcss' source('.');
+@source '../home/components';
+@source '../home/lib';
+@import '../home/theme.css';
+
+/* la tarjeta del login tiembla si la contraseña es incorrecta */
+@keyframes shake {
+  20%,
+  60% {
+    translate: -8px 0;
+  }
+  40%,
+  80% {
+    translate: 8px 0;
+  }
+}

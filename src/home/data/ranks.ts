@@ -1,13 +1,25 @@
 /**
- * Ícono de cada rango de Valorant (imágenes oficiales del juego, guardadas en /brand/ranks).
+ * Rangos de Valorant con su ícono (imágenes oficiales del juego, guardadas en /brand/ranks).
  * "Inmortal" sin número usa el ícono de Inmortal 1.
  */
-const RANK_ICONS: Record<string, string> = {
+const TIERS: [name: string, file: string][] = [
+  ['Hierro', 'iron'],
+  ['Bronce', 'bronze'],
+  ['Plata', 'silver'],
+  ['Oro', 'gold'],
+  ['Platino', 'platinum'],
+  ['Diamante', 'diamond'],
+  ['Ascendente', 'ascendant'],
+  ['Inmortal', 'immortal'],
+]
+
+/** todos los rangos, de menor a mayor: "Hierro 1" … "Inmortal 3", "Radiante" */
+export const RANKS: string[] = [...TIERS.flatMap(([name]) => [1, 2, 3].map((d) => `${name} ${d}`)), 'Radiante']
+
+const ICONS: Record<string, string> = {
+  ...Object.fromEntries(TIERS.flatMap(([name, file]) => [1, 2, 3].map((d) => [`${name} ${d}`.toLowerCase(), `/brand/ranks/${file}-${d}.png`]))),
   inmortal: '/brand/ranks/immortal-1.png',
-  'inmortal 1': '/brand/ranks/immortal-1.png',
-  'inmortal 2': '/brand/ranks/immortal-2.png',
-  'inmortal 3': '/brand/ranks/immortal-3.png',
   radiante: '/brand/ranks/radiant.png',
 }
 
-export const rankIcon = (rank?: string) => (rank ? RANK_ICONS[rank.trim().toLowerCase()] : undefined)
+export const rankIcon = (rank?: string) => (rank ? ICONS[rank.trim().toLowerCase()] : undefined)

@@ -9,10 +9,12 @@ interface Props {
   labelledBy: string
   children: ReactNode
   className?: string
+  /** más ancho, para formularios largos (admin) */
+  wide?: boolean
 }
 
 /** Modal base: fondo oscuro, tarjeta con la × y cierre con Escape o click afuera */
-export function Modal({ open, onClose, labelledBy, children, className }: Props) {
+export function Modal({ open, onClose, labelledBy, children, className, wide }: Props) {
   const dialog = useRef<HTMLDialogElement>(null)
 
   useScrollLock(open)
@@ -29,7 +31,10 @@ export function Modal({ open, onClose, labelledBy, children, className }: Props)
       onClose={onClose}
       // click afuera de la tarjeta cierra
       onClick={(e) => e.target === e.currentTarget && onClose()}
-      className="m-auto max-h-[calc(100dvh-32px)] w-[min(520px,calc(100%-32px))] overflow-visible bg-transparent p-0 text-fg backdrop:bg-night/72 backdrop:backdrop-blur-[6px] open:animate-pop-in open:backdrop:animate-fade-in"
+      className={cx(
+        'm-auto max-h-[calc(100dvh-32px)] overflow-visible bg-transparent p-0 text-fg backdrop:bg-night/72 backdrop:backdrop-blur-[6px] open:animate-pop-in open:backdrop:animate-fade-in',
+        wide ? 'w-[min(680px,calc(100%-32px))]' : 'w-[min(520px,calc(100%-32px))]',
+      )}
     >
       <div
         className={cx(

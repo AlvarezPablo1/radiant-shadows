@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
-import { EVENT_TYPES, EVENTS, type CalendarEvent } from '../../data/events'
+import { EVENT_TYPES, type CalendarEvent } from '../../data/events'
+import { useContent } from '../../lib/useContent'
 import { upcomingEvents, upcomingMatches } from '../../lib/events'
 import { addMonths, fromKey, monthLabel, todayKey } from '../../lib/calendar'
 import { cx } from '../../lib/cx'
@@ -15,15 +16,16 @@ export function CalendarPage({ page, ready }: { page: Page; ready: boolean }) {
   const [selected, setSelected] = useState(todayKey)
   const [month, setMonth] = useState(() => addMonths(new Date(), 0))
 
+  const { events } = useContent()
   const byDay = useMemo(() => {
     const map = new Map<string, CalendarEvent[]>()
-    for (const e of [...EVENTS].sort((a, b) => (a.time ?? '').localeCompare(b.time ?? ''))) {
+    for (const e of [...events].sort((a, b) => (a.time ?? '').localeCompare(b.time ?? ''))) {
       map.set(e.date, [...(map.get(e.date) ?? []), e])
     }
     return map
-  }, [])
-  const upcoming = useMemo(() => upcomingEvents(4), [])
-  const matches = useMemo(() => upcomingMatches(6), [])
+  }, [events])
+  const upcoming = useMemo(() => upcomingEvents(events, 4), [events])
+  const matches = useMemo(() => upcomingMatches(events, 6), [events])
   const calendar = useRef<HTMLElement>(null)
 
   // elegir un día de otro mes (los grises) también cambia de mes
