@@ -20,7 +20,7 @@ export const SECTIONS: Page[] = [
   {
     path: '/equipo', label: 'Nuestro equipo', kicker: 'Radiant Shadows', title: 'NUESTRO EQUIPO', script: 'próximamente', text: '',
     children: [
-      { path: '/equipo/masculino', label: 'Masculino', kicker: 'Nuestro equipo', title: 'MASCULINO', script: 'próximamente', text: 'Conocé a los dragones del roster masculino: jugadores, roles y su camino en cada competencia.' },
+      { path: '/equipo/masculino', label: 'Main', kicker: 'Nuestro equipo', title: 'MAIN', script: 'próximamente', text: 'Conocé a los dragones del roster masculino: jugadores, roles y su camino en cada competencia.' },
       { path: '/equipo/game-changers', label: 'Game Changers', kicker: 'Nuestro equipo', title: 'GAME CHANGERS', script: 'próximamente', text: 'Conocé a las dragonas de Game Changers: jugadoras, roles y su camino en cada competencia.' },
       { path: '/equipo/creadores', label: 'Creadores de contenido', kicker: 'Nuestro equipo', title: 'CREADORES DE CONTENIDO', script: 'próximamente', text: 'Las caras que llevan el fuego de Radiant Shadows a streams, videos y redes.' },
       { path: '/equipo/staff', label: 'Staff', kicker: 'Nuestro equipo', title: 'STAFF', script: 'próximamente', text: 'La gente que trabaja detrás de escena para que los dragones compitan y crezcan.' },

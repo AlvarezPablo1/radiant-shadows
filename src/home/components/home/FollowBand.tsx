@@ -3,7 +3,7 @@ import { Reveal } from '../Reveal'
 import { SectionHeading } from '../SectionHeading'
 import { SocialIcon } from '../socials/SocialIcon'
 
-/** Franja de redes: Twitch destacado (los partidos en vivo) y X / Instagram al lado */
+/** Franja de redes: Twitch destacado (los partidos en vivo) y el resto de las redes al lado */
 export function FollowBand() {
   const twitch = SOCIALS.find((s) => s.name === 'Twitch')!
   const others = SOCIALS.filter((s) => s !== twitch)

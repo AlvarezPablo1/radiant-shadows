@@ -12,6 +12,8 @@ export interface NewsItem {
   until?: string
   /** foto recortada; si falta se usa el fondo del color de la categoría */
   image?: string
+  /** nombre grande en la placa cuando la imagen es de una persona (si falta, se toma del jugador de la foto) */
+  person?: string
   /** mostrar como imagen la foto grupal del roster masculino actual (en lugar de `image`) */
   showRoster?: boolean
   /** botón: texto y destino (una sección como "/logros", un link externo, o "contacto" para abrir el formulario) */

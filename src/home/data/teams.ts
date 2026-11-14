@@ -6,13 +6,13 @@ export type Team = 'main' | 'gc'
  */
 export const TEAM_BRAND: Record<Team, { logo: string; mascot: string; wink: string; flight?: { webm: string; hevc: string; poster: string } }> = {
   main: {
-    logo: '/brand/logos/rs-positive.webp',
+    logo: '/brand/logos/rs-nav.webp',
     mascot: '/brand/mascots/kael-dragon.webp',
     wink: '/brand/mascots/kael-dragon-wink.webp',
     flight: { webm: '/brand/mascots/kael-volando.webm', hevc: '/brand/mascots/kael-volando-hevc.mp4', poster: '/brand/mascots/kael-volando-poster.webp' },
   },
   gc: {
-    logo: '/brand/logos/gc-positive.webp',
+    logo: '/brand/logos/gc-nav.webp',
     mascot: '/brand/mascots/nyra-gc.webp',
     wink: '/brand/mascots/nyra-gc-wink.webp',
     // sin video: el que había no quedaba bien recortado, se usa la imagen quieta que guiña

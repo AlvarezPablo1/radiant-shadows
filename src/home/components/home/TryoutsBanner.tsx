@@ -8,7 +8,7 @@ export function TryoutsBanner({ onContact }: { onContact: () => void }) {
   if (!tryouts || (tryouts.until && todayKey() > tryouts.until)) return null
   return (
     <section aria-label="Tryouts abiertos" className="px-16 max-lg:px-10 max-md:px-4">
-      <NewsCard item={tryouts} featured onContact={onContact} />
+      <NewsCard item={tryouts} variant="banner" onContact={onContact} />
     </section>
   )
 }
