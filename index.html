@@ -11,8 +11,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rock+Salt&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <title>Radiant Shadows · Esports de Valorant</title>
     <style>
-      /* Entrada: el logo se acerca hasta la cara del dragón y por ahí aparece la página (estilo X).
-         Va acá para que esté listo antes de pintar. */
+      /* Entrada: el logo crece hacia la cara del dragón y, mientras crece, el fondo se desvanece
+         y aparece la página detrás. Va acá para que esté listo antes de pintar. */
       #splash {
         display: none;
       }
@@ -28,13 +28,7 @@
         position: absolute;
         inset: 0;
         background: #000010;
-        /* todo cubierto menos la silueta del logo: el logo es la "ventana" */
-        -webkit-mask: url(/brand/logos/rs-positive.png) center / 160px auto no-repeat, linear-gradient(#000 0 0);
-        -webkit-mask-composite: xor;
-        mask: url(/brand/logos/rs-positive.png) center / 160px auto no-repeat exclude, linear-gradient(#000 0 0);
-        /* cabeza del dragón (61.2% / 24.7% del logo) */
-        transform-origin: calc(50% + 17.9px) calc(50% - 39.8px);
-        animation: splash-zoom 1.6s linear forwards;
+        animation: splash-cover 1.6s linear forwards;
       }
       #splash .logo {
         position: absolute;
@@ -43,32 +37,46 @@
         width: 160px;
         height: auto;
         translate: -50% -50%;
+        /* cabeza del dragón (61.2% / 24.7% del logo) */
         transform-origin: 61.2% 24.7%;
         filter: drop-shadow(0 0 28px rgba(142, 68, 255, 0.7));
+        will-change: transform, opacity;
         animation:
           splash-zoom 1.6s linear forwards,
           splash-logo 1.6s linear forwards;
       }
+      /* quieto, un pequeño amague hacia atrás y después crece hasta salirse de la pantalla */
       @keyframes splash-zoom {
         0%,
         38% {
           transform: scale(1);
           animation-timing-function: ease-in-out;
         }
-        52% {
+        50% {
           transform: scale(0.86);
-          animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
+          animation-timing-function: cubic-bezier(0.55, 0, 0.85, 0.35);
         }
         100% {
-          transform: scale(220);
+          transform: scale(40);
         }
       }
       @keyframes splash-logo {
         0%,
-        58% {
+        62% {
           opacity: 1;
         }
-        74%,
+        92%,
+        100% {
+          opacity: 0;
+        }
+      }
+      /* el fondo oscuro se va mientras el logo crece: la home aparece detrás */
+      @keyframes splash-cover {
+        0%,
+        54% {
+          opacity: 1;
+        }
+        84%,
         100% {
           opacity: 0;
         }
@@ -99,6 +107,6 @@
     </script>
 
     <div id="app"></div>
-    <script type="module" src="/src/home/home.ts"></script>
+    <script type="module" src="/src/home/main.tsx"></script>
   </body>
 </html>
