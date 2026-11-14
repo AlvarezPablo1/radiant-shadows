@@ -111,3 +111,16 @@ export function useNow(intervalMs = 1000) {
   }, [intervalMs])
   return now
 }
+
+/** true mientras se cumpla la media query (se actualiza si cambia el tamaño de la ventana) */
+export function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(() => window.matchMedia(query).matches)
+  useEffect(() => {
+    const mq = window.matchMedia(query)
+    const onChange = () => setMatches(mq.matches)
+    onChange()
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [query])
+  return matches
+}

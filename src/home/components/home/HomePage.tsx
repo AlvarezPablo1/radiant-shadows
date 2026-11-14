@@ -1,4 +1,5 @@
 import type { Page } from '../../types'
+import { FlyingDragon } from '../FlyingDragon'
 import { Hero } from '../Hero'
 import { AboutTeaser } from './AboutTeaser'
 import { AchievementsHighlight } from './AchievementsHighlight'
@@ -17,6 +18,7 @@ export function HomePage({ page, ready, onContact }: { page: Page; ready: boolea
         page={page}
         isHome
         ready={ready}
+        art={<FlyingDragon />}
         actions={
           <div className="mt-8 flex flex-wrap gap-3 max-md:justify-center">
             <ActionButton href="/equipo/masculino">CONOCÉ AL EQUIPO</ActionButton>

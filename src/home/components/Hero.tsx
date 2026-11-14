@@ -12,13 +12,15 @@ interface Props {
   ready: boolean
   /** botones en lugar del cartel "Próximamente" (en la home) */
   actions?: ReactNode
+  /** imagen del costado; por defecto, Kael quieto guiñando */
+  art?: ReactNode
 }
 
 /** Bloque principal: título de la sección, texto y el dragón */
-export function Hero({ page, isHome, ready, actions }: Props) {
+export function Hero({ page, isHome, ready, actions, art }: Props) {
   return (
-    <main className="relative z-2 mx-auto grid min-h-svh max-w-page items-center gap-8 px-16 pt-[calc(var(--header-h)+40px)] pb-30 max-md:min-h-0 max-md:grid-cols-1 max-md:content-start max-md:gap-2 max-md:px-4 max-md:pt-[calc(var(--header-h)+16px)] max-md:pb-8 max-md:text-center grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
-      <div className="relative">
+    <main className="relative z-2 mx-auto grid min-h-svh max-w-page items-center overflow-x-clip gap-8 px-16 pt-[calc(var(--header-h)+40px)] pb-30 max-md:min-h-0 max-md:grid-cols-1 max-md:content-start max-md:gap-2 max-md:px-4 max-md:pt-[calc(var(--header-h)+16px)] max-md:pb-8 max-md:text-center grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+      <div className="relative z-1">
         <div className={enter(ready, 'delay-0')}>
           <Kicker>{page.kicker}</Kicker>
         </div>
@@ -50,13 +52,13 @@ export function Hero({ page, isHome, ready, actions }: Props) {
         </div>
       </div>
 
-      <Art ready={ready} />
+      <Art ready={ready}>{art ?? <Dragon />}</Art>
     </main>
   )
 }
 
-/** El dragón flotando con un halo violeta detrás */
-function Art({ ready }: { ready: boolean }) {
+/** La imagen del costado (el dragón) con un halo violeta detrás */
+function Art({ ready, children }: { ready: boolean; children: ReactNode }) {
   return (
     <div
       aria-hidden="true"
@@ -67,7 +69,7 @@ function Art({ ready }: { ready: boolean }) {
         enter(ready, 'delay-200'),
       )}
     >
-      <Dragon />
+      {children}
     </div>
   )
 }
