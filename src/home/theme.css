@@ -114,6 +114,11 @@
 }
 
 @layer base {
+  /* sin zoom con los dedos (pellizco ni doble toque); se puede scrollear normal. Ver también public/no-zoom.js */
+  html,
+  body {
+    touch-action: pan-x pan-y;
+  }
   :root {
     /* barra de redes + nav: el contenido arranca debajo de las dos */
     --bar-h: 34px;

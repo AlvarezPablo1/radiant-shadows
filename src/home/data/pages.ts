@@ -16,7 +16,7 @@ export const HOME: Page = {
  * el resto a la derecha (lo que pasa: noticias y calendario, después la tienda y al final el botón de contacto).
  */
 export const SECTIONS: Page[] = [
-  { path: '/quienes-somos', label: 'Quiénes somos', kicker: 'Radiant Shadows', title: 'QUIÉNES SOMOS', script: 'el fuego sigue', text: 'Radiant Shadows es una organización de esports de Valorant nacida en 2025 en Argentina. Competimos con nuestro roster masculino y nuestro equipo de Game Changers, con una idea clara: detrás de cada partida hay mucho más que un juego.' },
+  { path: '/quienes-somos', label: 'Quiénes somos', kicker: 'Radiant Shadows', title: 'QUIÉNES SOMOS', script: 'el fuego sigue', text: 'Somos una organización de esports en crecimiento, con una estructura competitiva enfocada en VALORANT. Trabajamos para consolidarnos en la escena Tier 3, desarrollar talento y construir equipos preparados para competir al máximo nivel, con la mirada puesta en los Open Qualifiers, Game Changers y el crecimiento dentro del ecosistema competitivo' },
   {
     path: '/equipo', label: 'Nuestro equipo', kicker: 'Radiant Shadows', title: 'NUESTRO EQUIPO', script: 'próximamente', text: '',
     children: [

@@ -2,7 +2,8 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+    <script src="/no-zoom.js"></script>
     <meta name="theme-color" content="#000010" />
     <meta name="description" content="Radiant Shadows — equipo de esports de Valorant. El fuego sigue." />
     <link rel="icon" type="image/png" href="/favicon.png" />
@@ -46,6 +47,12 @@
         animation:
           splash-zoom 1.6s linear forwards,
           splash-logo 1.6s linear forwards;
+      }
+      /* en celular crece desde el centro del logo: hacia la cabeza del dragón se corría a un costado en pantallas angostas */
+      @media (max-width: 860px) {
+        #splash .logo {
+          transform-origin: 50% 50%;
+        }
       }
       /* quieto, un pequeño amague hacia atrás y después crece hasta salirse de la pantalla */
       @keyframes splash-zoom {

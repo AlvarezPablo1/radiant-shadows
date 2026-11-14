@@ -119,6 +119,8 @@ export function Select({ id, name, value, onChange, options, placeholder, requir
         <ul
           id={listId}
           role="listbox"
+          // si el desplegable está dentro de un <label>, un toque en la lista "activaría" el label y volvería a abrirla
+          onClick={(e) => e.preventDefault()}
           style={{ position: 'fixed', left: pos.left, width: pos.width, top: pos.top, bottom: pos.bottom }}
           className="z-100 max-h-64 animate-fade-in overflow-y-auto rounded-xl border border-violet-hi/35 bg-[#0d0524] p-1.5 shadow-[0_18px_40px_rgb(0_0_0/0.6)]"
         >
