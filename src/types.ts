@@ -46,6 +46,8 @@ export interface RowInfo {
   dense?: boolean
   /** grilla fija de columnas (ej. 3 en historias); si no, una columna por jugador */
   cols?: number
+  /** tamaño elegido a mano para este jugador (1 = el de la fila); se respeta al reacomodar */
+  scale?: number
   /** zona de la foto dentro de la columna (si difiere del panel) */
   py?: number
   ph?: number

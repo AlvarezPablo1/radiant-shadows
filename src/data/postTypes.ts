@@ -26,6 +26,8 @@ export interface PostType {
   bgPreset: (d: PostDoc) => string
   /** ¿se puede publicar en Feed IG? */
   feed: (d: PostDoc) => boolean
+  /** ¿se puede publicar en Historia IG? (por defecto sí) */
+  story?: (d: PostDoc) => boolean
   checklist: string[]
 }
 
@@ -135,6 +137,7 @@ export const POST_TYPES: PostType[] = [
     ],
     bgPreset: () => 'competitivo',
     feed: () => true,
+    story: () => false,
     checklist: ['Nombre correcto', 'Rol correcto', '@ correcto', 'Foto/material aprobado', 'Fecha de incorporación confirmada', 'Copy revisado', 'Revisar ortografía', 'Revisar etiquetas'],
   },
   {
@@ -147,6 +150,7 @@ export const POST_TYPES: PostType[] = [
     fields: [{ key: 'phrase', label: 'Frase (opcional)', kind: 'text', placeholder: 'Ej: Gracias por cada ronda' }],
     bgPreset: () => 'derrota',
     feed: () => true,
+    story: () => false,
     checklist: ['Nombre correcto', 'Rol correcto', '@ correcto', 'Foto/material aprobado', 'Copy revisado', 'Revisar ortografía', 'Revisar etiquetas'],
   },
   {
@@ -335,14 +339,6 @@ export const CATEGORIES: Category[] = [
     ],
   },
   {
-    id: 'competencia',
-    label: 'Competencia',
-    options: [
-      { label: 'Anuncio de torneo', type: 'competencia' },
-      { label: 'Tryouts', type: 'tryouts' },
-    ],
-  },
-  {
     id: 'comunidad',
     label: 'Comunidad',
     options: [
@@ -424,16 +420,17 @@ export function computeValues(d: PostDoc, r: Roster): Record<string, string> {
         title: o === 'loss' ? 'DERROTA' : o === 'win' ? 'VICTORIA' : o === 'draw' ? 'EMPATE' : 'RESULTADO',
         score: `${f.scoreUs || '0'}  -  ${f.scoreThem || '0'}`,
         sub: [f.tournament || 'TORNEO', f.map].filter(Boolean).join('  •  '),
-        info: 'VS ' + (f.rival || 'RIVAL').toUpperCase(),
+        info: '',
       })
       break
     }
     case 'torneo': {
       const n = Math.min(6, Math.max(1, Number(f.place || 1)))
       Object.assign(v, {
-        kicker: n === 1 ? 'Somos' : n <= 3 ? 'Orgullosos' : n === 6 ? 'Fuimos parte de' : 'Terminamos',
-        title: PLACE[n],
-        sub: f.tournament || 'TORNEO',
+        kicker: n === 1 ? 'Somos' : n <= 3 ? 'Orgullosos' : n === 6 ? 'Somos parte' : 'Terminamos',
+        // en participación el titular es el torneo (no se repite abajo)
+        title: n === 6 ? (f.tournament || 'TORNEO').toUpperCase() : PLACE[n],
+        sub: n === 6 ? '' : f.tournament || 'TORNEO',
         info: f.prize || '',
       })
       break
@@ -445,7 +442,7 @@ export function computeValues(d: PostDoc, r: Roster): Record<string, string> {
       Object.assign(v, { kicker: 'Gracias', title: (p0?.name || 'NOMBRE').toUpperCase(), sub: (p0?.role || '').toUpperCase(), info: f.phrase || 'Por cada ronda jugada con nuestros colores' })
       break
     case 'cumple':
-      Object.assign(v, { kicker: 'FELIZ', title: 'CUMPLE', sub: (p0?.name || 'NOMBRE').toUpperCase(), info: f.phrase || '' })
+      Object.assign(v, { kicker: 'FELIZ', title: 'CUMPLEAÑOS', sub: (p0?.name || 'NOMBRE').toUpperCase(), info: f.phrase || '' })
       break
     case 'tryouts':
       Object.assign(v, {
@@ -522,13 +519,13 @@ export function computeValues(d: PostDoc, r: Roster): Record<string, string> {
     panelDay: [dayName(f.date), fmtDate(f.date).replace('/', '.')].filter(Boolean).join(' '),
     panelRight: (d.type === 'matchday' ? [f.phase, f.tournament].filter(Boolean).join(' · ') || 'TORNEO' : v.sub || v.team).toUpperCase(),
     script: d.type === 'matchday' ? 'hoy' : d.type === 'resultado' && outcome(d) === 'win' ? 'ganamos' : '',
-    patternRow: Array(5).fill(d.type === 'matchday' && title === 'MATCHDAY' ? 'MATCH DAY' : title).join(' · ') + ' ·',
+    patternRow: Array(3).fill(d.type === 'matchday' && title === 'MATCHDAY' ? 'MATCH DAY' : title).join(' · ') + ' ·',
     bigData: d.type === 'matchday' ? f.time || '--:--' : d.type === 'resultado' ? `${f.scoreUs || '0'}-${f.scoreThem || '0'}` : '',
     bigUnit: d.type === 'matchday' ? 'ART' : '',
     script2: d.type === 'matchday' ? 'a jugar' : d.type === 'resultado' && outcome(d) === 'win' ? 'ganamos' : d.type === 'torneo' && Number(f.place || 1) === 1 ? 'campeones' : '',
     rivalUpper: (f.rival || 'EQUIPO RIVAL').toUpperCase(),
     sideline: `${v.team} · VALORANT · TEMPORADA ${year()}`,
-    neonLeft: (d.type === 'cumple' ? v.sub : d.type === 'bienvenida' || d.type === 'despedida' ? v.sub : v.sub || v.team).toUpperCase(),
+    neonLeft: (d.type === 'torneo' && !v.sub ? '' : d.type === 'cumple' ? v.sub : d.type === 'bienvenida' || d.type === 'despedida' ? v.sub : v.sub || v.team).toUpperCase(),
     neonRight: (d.type === 'matchday'
       ? [dayName(f.date), fmtDate(f.date).replace('/', '.'), f.time && f.time + ' ART'].filter(Boolean).join(' · ') || 'FECHA · HORA'
       : d.type === 'resultado'
@@ -549,7 +546,8 @@ export function computeValues(d: PostDoc, r: Roster): Record<string, string> {
 
 /** Fuentes de imagen enlazadas. */
 export function resolveImageBind(bind: string, d: PostDoc, r: Roster): string | undefined {
-  if (bind === 'logo:team') return LOGOS[r.id][isWin(d) === false ? 'negative' : 'positive']
+  // el logo blanco es sólo para las derrotas; en todo lo demás va el de color (MAIN o GC)
+  if (bind === 'logo:team') return LOGOS[r.id][outcome(d) === 'loss' ? 'negative' : 'positive']
   if (bind === 'logo:rival') return d.fields.rivalLogo || undefined
   if (bind === 'mascot') return mascot(d.mascot)
   if (bind === 'logo:tournament') return d.fields.tournamentLogo || undefined

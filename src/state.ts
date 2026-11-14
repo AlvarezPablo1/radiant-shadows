@@ -170,8 +170,13 @@ export function useAppState() {
               return l
             })
           }
-          // fila de jugadores: al ocultar/mostrar (en los 3 formatos) o mover en X (en este) se reacomoda sola
-          if (src.row && 'visible' in patch) for (const f of FORMAT_IDS) all[f] = reflowRow(all[f])
+          // fila de jugadores: al ocultar/mostrar (en los 3 formatos) o mover en X (en este) se reacomoda sola.
+          // Si se le cambió el tamaño, se guarda su escala y queda donde lo dejaste (antes lo movía y le devolvía el tamaño)
+          const resized = src.type === 'image' && 'width' in patch && typeof patch.width === 'number'
+          if (src.row && resized) {
+            const k = ((src.row.scale ?? 1) * (patch.width as number)) / src.width
+            all[format] = all[format].map((l) => (l.id === id ? ({ ...l, row: { ...l.row!, scale: k } } as Layer) : l))
+          } else if (src.row && 'visible' in patch) for (const f of FORMAT_IDS) all[f] = reflowRow(all[f])
           else if (src.row && 'x' in patch) all[format] = reflowRow(all[format])
         }
         return { ...d, layers: all }

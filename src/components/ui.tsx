@@ -15,6 +15,36 @@ export function Field({ label, hint, children }: { label: string; hint?: string;
   )
 }
 
+/** Sección plegable "Opciones avanzadas": recuerda si quedó abierta */
+export function Advanced({ children, title = 'Opciones avanzadas' }: { children: ReactNode; title?: string }) {
+  const read = () => {
+    try {
+      return localStorage.getItem('rs-advanced') === '1'
+    } catch {
+      return false
+    }
+  }
+  return (
+    <details
+      className="advanced"
+      open={read()}
+      onToggle={(e) => {
+        try {
+          localStorage.setItem('rs-advanced', (e.currentTarget as HTMLDetailsElement).open ? '1' : '0')
+        } catch {
+          /* sin almacenamiento: no pasa nada */
+        }
+      }}
+    >
+      <summary>
+        <Icon name="right" size={12} />
+        {title}
+      </summary>
+      <div className="advanced-body">{children}</div>
+    </details>
+  )
+}
+
 export function Slider({
   label,
   value,

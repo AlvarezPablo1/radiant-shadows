@@ -2062,3 +2062,68 @@ h4 {
   margin-left: auto;
   text-decoration: none;
 }
+
+/* opciones avanzadas (plegable) */
+.advanced {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+.advanced > summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  list-style: none;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  padding: 4px 0;
+  user-select: none;
+}
+.advanced > summary::-webkit-details-marker {
+  display: none;
+}
+.advanced > summary:hover {
+  color: var(--fg, #fff);
+}
+.advanced > summary svg {
+  transition: transform 0.15s;
+}
+.advanced[open] > summary svg {
+  transform: rotate(90deg);
+}
+.advanced-body {
+  padding-top: 8px;
+}
+
+/* íconos de los diseños Póster y Marco */
+.di-poster::before {
+  left: 0;
+  right: 0;
+  top: 5px;
+  bottom: 9px;
+  opacity: 0.4;
+}
+.di-poster::after {
+  left: 3px;
+  right: 3px;
+  bottom: 5px;
+  height: 7px;
+}
+.di-frame::before {
+  left: 3px;
+  right: 3px;
+  top: 3px;
+  height: 17px;
+  opacity: 0.45;
+  outline: 1.5px solid var(--ember, #ffa53a);
+  outline-offset: 1px;
+}
+.di-frame::after {
+  left: 4px;
+  width: 12px;
+  bottom: 5px;
+  height: 5px;
+}

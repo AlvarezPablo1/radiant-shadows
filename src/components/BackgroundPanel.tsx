@@ -84,7 +84,7 @@ export function BackgroundPanel({ s }: { s: AppState }) {
         )}
       </Step>
 
-      <Step title="Ajustes avanzados" defaultOpen={false}>
+      <Step title="Opciones avanzadas" defaultOpen={false}>
         <Field label="Tono">
           <Seg
             value={bg.tone}

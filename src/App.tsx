@@ -63,6 +63,7 @@ export default function App() {
   const values = useMemo(() => computeValues(doc, roster), [doc, roster])
   const imageFor = useCallback((l: ImageLayer) => (l.bind ? resolveImageBind(l.bind, doc, roster) : l.src), [doc, roster])
   const feedOk = t.feed(doc)
+  const storyOk = !t.story || t.story(doc)
 
   useEffect(() => {
     const el = wrapRef.current
@@ -80,6 +81,7 @@ export default function App() {
       ui.toast('Recordá que las publicaciones no tan relevantes no van en este formato (Feed IG).', 'warn')
       return
     }
+    if (f === 'story' && !storyOk) return
     s.setSelected(null)
     s.setFormat(f)
   }
@@ -193,10 +195,11 @@ export default function App() {
         {left === 'brand' && <BrandPanel />}
       </aside>
 
-      <main className="center">
+      {/* clic en cualquier lugar fuera del diseño (área gris, barra de arriba): deselecciona */}
+      <main className="center" onMouseDown={(e) => !(e.target as Element).closest('.konvajs-content') && s.setSelected(null)}>
         <div className="canvas-bar">
           <nav className="formats" aria-label="Formato">
-            {FORMAT_IDS.map((f) => {
+            {FORMAT_IDS.filter((f) => f !== 'story' || storyOk).map((f) => {
               const off = f === 'feed' && !feedOk
               return (
                 <button key={f} className={(format === f ? 'on ' : '') + (off ? 'off' : '')} onClick={() => goFormat(f)} title={off ? 'Las publicaciones no tan relevantes no van en este formato' : `${FORMATS[f].w}×${FORMATS[f].h}`}>
