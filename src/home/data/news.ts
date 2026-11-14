@@ -34,7 +34,7 @@ export const NEWS: NewsItem[] = [
     category: 'incorporacion',
     title: 'Se suma como nuestro nuevo assistant coach: Skull',
     summary: '¡Bienvenido al cuerpo técnico del roster masculino!',
-    image: '/brand/players/skull.png',
+    image: '/brand/players/skull.webp',
     action: { label: 'Ver equipo', href: '/equipo/masculino' },
   },
   {
@@ -58,7 +58,7 @@ export const NEWS: NewsItem[] = [
     category: 'jugadores',
     title: 'Splotza, tercera mejor performance de la primera fase de OQ1',
     summary: 'Nuestro controlador terminó entre los tres mejores rendimientos de la primera fase.',
-    image: '/brand/players/splotza.png',
+    image: '/brand/players/splotza.webp',
     action: { label: 'Ver roster', href: '/equipo/masculino' },
   },
   {
@@ -73,7 +73,7 @@ export const NEWS: NewsItem[] = [
     category: 'despedida',
     title: 'Despedimos a nuestro gran jugador: Gabzera',
     summary: 'Gracias por todo lo que diste con estos colores. ¡Éxitos en lo que viene!',
-    image: '/brand/players/gabzera.png',
+    image: '/brand/players/gabzera.webp',
   },
   {
     id: 'despedida-kisa',

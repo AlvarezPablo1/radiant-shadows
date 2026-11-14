@@ -18,11 +18,11 @@ export interface Member {
 
 /** Roster masculino (MAIN). Los datos que falten se muestran como "—" */
 export const MAIN_PLAYERS: Member[] = [
-  { name: 'Aku', photo: '/brand/players/aku.png', photoScale: 0.86, role: 'Duelista', rank: 'Radiante', nationality: 'Argentina', flag: '🇦🇷', age: 19,
+  { name: 'Aku', photo: '/brand/players/aku.webp', photoScale: 0.86, role: 'Duelista', rank: 'Radiante', nationality: 'Argentina', flag: '🇦🇷', age: 19,
     tracker: 'https://tracker.gg/valorant/profile/riot/akuzera%23sfb/overview?platform=pc&playlist=competitive&season=d816f426-48ea-f052-117f-9697a155b319' },
-  { name: 'Reko', photo: '/brand/players/reko.png', role: 'Iniciador', rank: 'Inmortal 1', nationality: 'Uruguay', flag: '🇺🇾', age: 18,
+  { name: 'Reko', photo: '/brand/players/reko.webp', role: 'Iniciador', rank: 'Inmortal 1', nationality: 'Uruguay', flag: '🇺🇾', age: 18,
     tracker: 'https://tracker.gg/valorant/profile/riot/Reko%2318y/overview?platform=pc&playlist=competitive&season=d816f426-48ea-f052-117f-9697a155b319' },
-  { name: 'Splotza', photo: '/brand/players/splotza.png', role: 'Controlador', rank: 'Inmortal 3', nationality: 'Argentina', flag: '🇦🇷', age: 18,
+  { name: 'Splotza', photo: '/brand/players/splotza.webp', role: 'Controlador', rank: 'Inmortal 3', nationality: 'Argentina', flag: '🇦🇷', age: 18,
     tracker: 'https://tracker.gg/valorant/profile/riot/NEVER%20GIVE%20UP%23Was/overview?playlist=premier&platform=pc' },
 ]
 
@@ -30,6 +30,6 @@ export const MAIN_PLAYERS: Member[] = [
 export const MAIN_STAFF: Member[] = [
   { name: 'Wasi', role: 'Coach', rank: 'Inmortal 3', nationality: 'Argentina', flag: '🇦🇷', age: 22,
     tracker: 'https://tracker.gg/valorant/profile/riot/NEVER%20GIVE%20UP%23Was/overview?playlist=premier&platform=pc' },
-  { name: 'Skull', role: 'Assistant coach', photo: '/brand/players/skull.png', rank: 'Inmortal 2', nationality: 'Argentina', flag: '🇦🇷', age: 19,
+  { name: 'Skull', role: 'Assistant coach', photo: '/brand/players/skull.webp', rank: 'Inmortal 2', nationality: 'Argentina', flag: '🇦🇷', age: 19,
     tracker: 'https://tracker.gg/valorant/profile/riot/Skull%23UNDER/overview?playlist=premier&platform=pc' },
 ]

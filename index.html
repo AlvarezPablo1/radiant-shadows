@@ -3,18 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
-    <script src="/no-zoom.js"></script>
+    <script src="/no-zoom.js" defer></script>
     <meta name="theme-color" content="#000010" />
     <meta name="description" content="Radiant Shadows — equipo de esports de Valorant. El fuego sigue." />
     <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Saira:wdth,wght@125,600&family=Rock+Salt&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <!-- tipografías sin frenar el primer dibujo de la página: se cargan en paralelo y se aplican al llegar -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Saira:wdth,wght@125,600&family=Rock+Salt&family=Sora:wght@400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Saira:wdth,wght@125,600&family=Rock+Salt&family=Sora:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Saira:wdth,wght@125,600&family=Rock+Salt&family=Sora:wght@400;500;600;700&display=swap" /></noscript>
     <!-- silueta del dragón de la transición entre secciones: lista antes del primer click -->
     <link rel="preload" href="/brand/mascots/dragon-silueta.png" as="image" />
     <title>Radiant Shadows · Esports de Valorant</title>
     <style>
-      /* Entrada: el logo crece hacia la cara del dragón y, mientras crece, el fondo se desvanece
+      /* Entrada: el logo crece desde el centro de la pantalla y, mientras crece, el fondo se desvanece
          y aparece la página detrás. Va acá para que esté listo antes de pintar. */
       #splash {
         display: none;
@@ -40,19 +44,13 @@
         width: 160px;
         height: auto;
         translate: -50% -50%;
-        /* cabeza del dragón (61.2% / 24.7% del logo) */
-        transform-origin: 61.2% 24.7%;
+        /* crece desde su centro: queda centrado en la pantalla en todas las resoluciones */
+        transform-origin: 50% 50%;
         filter: drop-shadow(0 0 28px rgba(142, 68, 255, 0.7));
         will-change: transform, opacity;
         animation:
           splash-zoom 1.6s linear forwards,
           splash-logo 1.6s linear forwards;
-      }
-      /* en celular crece desde el centro del logo: hacia la cabeza del dragón se corría a un costado en pantallas angostas */
-      @media (max-width: 860px) {
-        #splash .logo {
-          transform-origin: 50% 50%;
-        }
       }
       /* quieto, un pequeño amague hacia atrás y después crece hasta salirse de la pantalla */
       @keyframes splash-zoom {
@@ -113,7 +111,7 @@
   <body>
     <div id="splash" aria-hidden="true">
       <div class="cover"></div>
-      <img class="logo" src="/brand/logos/rs-positive.png" alt="" />
+      <img class="logo" src="/brand/logos/rs-positive.webp" alt="" />
     </div>
     <script>
       // una sola vez por visita, y nunca si la persona pidió menos movimiento

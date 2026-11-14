@@ -23,7 +23,7 @@ export function Dashboard({ initial }: { initial: Content }) {
 
   const logo = (
     <a href="/" className="flex items-center gap-3">
-      <img src="/brand/logos/rs-positive.png" alt="" className="size-11 drop-shadow-[0_0_14px_rgb(142_68_255/0.5)]" />
+      <img src="/brand/logos/rs-positive.webp" alt="" className="size-11 drop-shadow-[0_0_14px_rgb(142_68_255/0.5)]" />
       <span className="font-display text-[24px] leading-none tracking-[0.05em] text-white">
         RS <span className="text-lilac">ADMIN</span>
       </span>
@@ -34,7 +34,7 @@ export function Dashboard({ initial }: { initial: Content }) {
     <>
       {/* celular: barra fija con la sección actual y el menú */}
       <header className="sticky top-0 z-30 hidden items-center justify-between gap-3 border-b border-violet-hi/20 bg-night/90 px-4 py-3 backdrop-blur-md max-md:flex">
-        <img src="/brand/logos/rs-positive.png" alt="" className="size-9" />
+        <img src="/brand/logos/rs-positive.webp" alt="" className="size-9" />
         <span className="min-w-0 flex-1 truncate font-brand-title text-[18px] text-white">{schema.label.toUpperCase()}</span>
         <button
           type="button"

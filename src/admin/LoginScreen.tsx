@@ -14,7 +14,7 @@ export function LoginScreen() {
           (error ? 'animate-[shake_0.4s]' : '')
         }
       >
-        <img src="/brand/logos/rs-positive.png" alt="Radiant Shadows" className="size-20 drop-shadow-[0_0_20px_rgb(142_68_255/0.6)]" />
+        <img src="/brand/logos/rs-positive.webp" alt="Radiant Shadows" className="size-20 drop-shadow-[0_0_20px_rgb(142_68_255/0.6)]" />
         <Kicker className="mt-5">Radiant Shadows</Kicker>
         <h1 className="mt-2 font-brand-title text-[35px] text-white">
           PANEL <span className="text-lilac">ADMIN</span>

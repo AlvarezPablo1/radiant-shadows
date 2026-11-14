@@ -71,7 +71,7 @@ function Visual({ item, color, className }: { item: NewsItem; color: string; cla
       ) : item.image ? (
         <img src={item.image} alt="" className="absolute top-4 left-1/2 h-[115%] w-auto max-w-none -translate-x-1/2 object-contain object-top mask-b-from-60% mask-b-to-100%" />
       ) : (
-        <img src="/brand/logos/rs-positive.png" alt="" className="absolute top-1/2 left-1/2 w-2/5 max-w-40 -translate-1/2 opacity-80 drop-shadow-[0_0_30px_rgb(142_68_255/0.6)]" />
+        <img src="/brand/logos/rs-positive.webp" alt="" className="absolute top-1/2 left-1/2 w-2/5 max-w-40 -translate-1/2 opacity-80 drop-shadow-[0_0_30px_rgb(142_68_255/0.6)]" />
       )}
     </div>
   )

@@ -1,4 +1,5 @@
 import type { CollectionKey } from '../../home/data/collections'
+import { compressImage } from './compress'
 import { DEFAULT_CONTENT, type Content } from '../../home/data/content'
 
 /** Sesión iniciada en /admin */
@@ -29,10 +30,10 @@ export async function saveCollection(key: CollectionKey, items: unknown[]) {
   if (!r.ok) throw new Error(await errorText(r))
 }
 
-/** Sube una imagen y devuelve su URL pública */
+/** Sube una imagen (achicada y en WebP) y devuelve su URL pública */
 export async function uploadImage(file: File): Promise<string> {
   const body = new FormData()
-  body.append('file', file)
+  body.append('file', await compressImage(file))
   const r = await fetch('/api/admin/upload', { method: 'POST', body })
   if (!r.ok) throw new Error(await errorText(r))
   return ((await r.json()) as { url: string }).url

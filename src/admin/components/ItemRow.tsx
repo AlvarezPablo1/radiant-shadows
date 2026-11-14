@@ -48,7 +48,7 @@ export function ItemRow({ id, item, schema, disabled, onEdit, onDelete }: Props)
       <button type="button" onClick={onEdit} className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-left">
         {schema.image && (
           <span className="grid size-14 shrink-0 place-items-center overflow-hidden rounded-xl bg-[linear-gradient(to_bottom,rgb(122_40_226/0.3),rgb(0_0_16/0.6))]">
-            {image ? <img src={image} alt="" className="max-h-full max-w-full object-contain" /> : <img src="/brand/logos/rs-positive.png" alt="" className="w-7 opacity-50" />}
+            {image ? <img src={image} alt="" className="max-h-full max-w-full object-contain" /> : <img src="/brand/logos/rs-positive.webp" alt="" className="w-7 opacity-50" />}
           </span>
         )}
         <span className="min-w-0">
