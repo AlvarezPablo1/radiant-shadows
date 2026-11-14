@@ -22,7 +22,7 @@ export interface NewsItem {
 
 export const NEWS_CATEGORIES: Record<NewsCategory, { label: string; color: string }> = {
   competencia: { label: 'Competencia', color: '#8e44ff' },
-  logro: { label: 'Logro', color: '#dfe3ee' },
+  logro: { label: 'Logro', color: '#ffd27a' },
   tryouts: { label: 'Tryouts', color: '#ff6fb5' },
   jugadores: { label: 'Jugadores', color: '#3dd6c6' },
   despedida: { label: 'Despedida', color: '#c79bff' },
