@@ -16,7 +16,7 @@ export interface Person {
 export const STAFF: Person[] = [
   {
     role: 'CEO',
-    name: 'Bianca Marguiles',
+    name: 'Bianca Margulies',
     nick: 'Caby',
     age: 33,
     instagram: 'https://www.instagram.com/bianmargulies/',
