@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { cx } from '../lib/cx'
 import { enter } from '../lib/enter'
+import type { Team } from '../data/teams'
 import type { Page } from '../types'
 import { Dragon } from './Dragon'
 import { Kicker } from './Kicker'
@@ -12,12 +13,13 @@ interface Props {
   ready: boolean
   /** botones en lugar del cartel "Próximamente" (en la home) */
   actions?: ReactNode
-  /** imagen del costado; por defecto, Kael quieto guiñando */
+  /** imagen del costado; por defecto, la mascota del equipo guiñando */
   art?: ReactNode
+  team?: Team
 }
 
 /** Bloque principal: título de la sección, texto y el dragón */
-export function Hero({ page, isHome, ready, actions, art }: Props) {
+export function Hero({ page, isHome, ready, actions, art, team }: Props) {
   return (
     <main className="relative z-2 mx-auto grid min-h-svh max-w-page items-center overflow-x-clip gap-8 px-16 pt-[calc(var(--header-h)+40px)] pb-30 max-md:min-h-0 max-md:grid-cols-1 max-md:content-start max-md:gap-2 max-md:px-4 max-md:pt-[calc(var(--header-h)+16px)] max-md:pb-8 max-md:text-center grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
       <div className="relative z-1">
@@ -56,7 +58,7 @@ export function Hero({ page, isHome, ready, actions, art }: Props) {
         </div>
       </div>
 
-      <Art ready={ready}>{art ?? <Dragon />}</Art>
+      <Art ready={ready}>{art ?? <Dragon team={team} />}</Art>
     </main>
   )
 }

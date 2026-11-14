@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { TEAM_BRAND, type Team } from '../data/teams'
 import { useMediaQuery } from '../lib/hooks'
 import { Dragon } from './Dragon'
 
@@ -8,14 +9,15 @@ const BETWEEN_FLIGHTS: [number, number] = [8000, 12000]
 
 // Safari reproduce WebM pero sin transparencia: ahí va la versión HEVC con canal alfa
 const isSafari = /^((?!chrome|android|crios|fxios).)*safari/i.test(navigator.userAgent)
-const SRC = isSafari ? '/brand/mascots/kael-volando-hevc.mp4' : '/brand/mascots/kael-volando.webm'
 
 /**
- * Kael sentado que, cada tanto, levanta vuelo y vuelve a sentarse (video con fondo transparente).
+ * La mascota del equipo sentada que, cada tanto, levanta vuelo y vuelve a sentarse (video con fondo transparente).
+ * Hoy sólo Kael tiene video; los equipos sin video muestran la mascota quieta guiñando.
  * Los bordes se suavizan apenas: en algunos cuadros los cuernos y las alas tocan el borde del video original.
  * En celular y con "reducir movimiento" se muestra el dragón quieto de siempre (y el video ni se descarga).
  */
-export function FlyingDragon() {
+export function FlyingDragon({ team = 'main' }: { team?: Team }) {
+  const { flight } = TEAM_BRAND[team]
   const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
   const mobile = useMediaQuery('(width < 861px)')
   const calm = reducedMotion || mobile
@@ -23,7 +25,7 @@ export function FlyingDragon() {
 
   useEffect(() => {
     const v = video.current
-    if (calm || !v) return
+    if (calm || !flight || !v) return
     let timer: ReturnType<typeof setTimeout>
     const fly = () => {
       v.currentTime = 0
@@ -47,14 +49,16 @@ export function FlyingDragon() {
       window.removeEventListener('load', load)
       v.removeEventListener('ended', rest)
     }
-  }, [calm])
+  }, [calm, flight, team])
 
-  if (calm) return <Dragon />
+  // sin video para este equipo: la mascota quieta guiñando
+  if (calm || !flight) return <Dragon team={team} />
   return (
     <video
+      key={team}
       ref={video}
-      src={SRC}
-      poster="/brand/mascots/kael-volando-poster.webp"
+      src={isSafari ? flight.hevc : flight.webm}
+      poster={flight.poster}
       muted
       playsInline
       preload="none"

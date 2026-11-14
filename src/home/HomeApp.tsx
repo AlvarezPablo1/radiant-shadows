@@ -7,6 +7,8 @@ import { MobileMenu } from './components/MobileMenu'
 import { PageTransition } from './components/PageTransition'
 import { Nav } from './components/nav/Nav'
 import { PageView } from './components/PageView'
+import { activeTeam } from './lib/team'
+import { useContent } from './lib/useContent'
 import type { LegalDoc } from './data/legal'
 import { HOME, SECTIONS } from './data/pages'
 import { useEscape, useReveal, useScrollLock } from './lib/hooks'
@@ -21,6 +23,7 @@ const year = new Date().getFullYear()
 /** Sitio público de Radiant Shadows: arma la página y maneja el menú y los modales */
 export function HomeApp() {
   const ready = useReveal()
+  const team = activeTeam(page, isHome, useContent().events)
   const leaving = useLinkTransition()
   const [menuOpen, setMenuOpen] = useState(false)
   // si se entró por /contacto, el formulario arranca abierto
@@ -47,9 +50,9 @@ export function HomeApp() {
   return (
     <>
       <Background year={year} />
-      <Nav sections={SECTIONS} page={page} ready={ready} menuOpen={menuOpen} onToggleMenu={() => setMenuOpen((o) => !o)} onContact={openContact} />
+      <Nav sections={SECTIONS} page={page} team={team} ready={ready} menuOpen={menuOpen} onToggleMenu={() => setMenuOpen((o) => !o)} onContact={openContact} />
       {menuOpen && <MobileMenu sections={SECTIONS} page={page} onContact={openContact} />}
-      <PageView page={page} isHome={isHome} ready={ready} onContact={openContact} />
+      <PageView page={page} isHome={isHome} ready={ready} onContact={openContact} team={team} />
       <Footer onLegal={setLegal} />
       <ContactModal open={contactOpen} onClose={closeContact} />
       <LegalModal doc={legal} onClose={() => setLegal(null)} />

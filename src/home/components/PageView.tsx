@@ -1,4 +1,5 @@
 import { useContent } from '../lib/useContent'
+import type { Team } from '../data/teams'
 import type { Page } from '../types'
 import { AboutPage } from './about/AboutPage'
 import { AchievementsPage } from './achievements/AchievementsPage'
@@ -15,12 +16,13 @@ interface Props {
   ready: boolean
   /** abre el formulario de contacto (lo usan la home y noticias) */
   onContact: () => void
+  team: Team
 }
 
 /** Elige qué pantalla mostrar según la sección; las que todavía no tienen contenido muestran el héroe con "Próximamente" */
-export function PageView({ page, isHome, ready, onContact }: Props) {
+export function PageView({ page, isHome, ready, onContact, team }: Props) {
   const content = useContent()
-  if (isHome) return <HomePage page={page} ready={ready} onContact={onContact} />
+  if (isHome) return <HomePage page={page} ready={ready} onContact={onContact} team={team} />
   switch (page.path) {
     case '/quienes-somos':
       return <AboutPage page={page} ready={ready} />
@@ -37,6 +39,6 @@ export function PageView({ page, isHome, ready, onContact }: Props) {
     case '/equipo/creadores':
       return <PeoplePage page={page} people={content.creators} ready={ready} />
     default:
-      return <Hero page={page} isHome={isHome} ready={ready} />
+      return <Hero page={page} isHome={isHome} ready={ready} team={team} />
   }
 }

@@ -2,6 +2,7 @@ import type { MouseEvent } from 'react'
 import { cx } from '../../lib/cx'
 import { useScrolled } from '../../lib/hooks'
 import { CONTACT_PATH, isActive } from '../../lib/route'
+import { TEAM_BRAND, type Team } from '../../data/teams'
 import type { Page } from '../../types'
 import { NavDropdown } from './NavDropdown'
 import { TopBar } from './TopBar'
@@ -10,6 +11,8 @@ import { navCta, navLink, navLinkActive } from './navStyles'
 interface Props {
   sections: Page[]
   page: Page
+  /** equipo activo: define el logo del centro (RS o GC) */
+  team: Team
   ready: boolean
   menuOpen: boolean
   onToggleMenu: () => void
@@ -17,7 +20,7 @@ interface Props {
 }
 
 /** Barra superior: redes arriba, links a los lados del logo, y la hamburguesa en celular */
-export function Nav({ sections, page, ready, menuOpen, onToggleMenu, onContact }: Props) {
+export function Nav({ sections, page, team, ready, menuOpen, onToggleMenu, onContact }: Props) {
   const scrolled = useScrolled()
 
   const renderLink = (s: Page) => {
@@ -59,7 +62,7 @@ export function Nav({ sections, page, ready, menuOpen, onToggleMenu, onContact }
 
         <a href="/" aria-label="Radiant Shadows — inicio" className="group grid place-items-center max-md:col-start-2">
           <img
-            src="/brand/logos/rs-positive.png"
+            src={TEAM_BRAND[team].logo}
             alt=""
             className="size-14.5 drop-shadow-[0_0_14px_rgb(142_68_255/0.6)] transition-[rotate,scale,filter] duration-250 group-hover:scale-106 group-hover:-rotate-8 group-hover:drop-shadow-[0_0_22px_rgb(142_68_255/0.9)] max-md:size-12"
           />

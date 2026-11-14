@@ -1,3 +1,4 @@
+import type { Team } from '../../data/teams'
 import type { Page } from '../../types'
 import { FlyingDragon } from '../FlyingDragon'
 import { Hero } from '../Hero'
@@ -11,14 +12,15 @@ import { RosterPreview } from './RosterPreview'
 import { TryoutsBanner } from './TryoutsBanner'
 
 /** Home: héroe con botones y, al bajar, tryouts (mientras estén abiertos), próximo partido, roster, logros, quiénes somos, redes y contacto */
-export function HomePage({ page, ready, onContact }: { page: Page; ready: boolean; onContact: () => void }) {
+export function HomePage({ page, ready, onContact, team }: { page: Page; ready: boolean; onContact: () => void; team: Team }) {
   return (
     <>
       <Hero
         page={page}
         isHome
         ready={ready}
-        art={<FlyingDragon />}
+        // la mascota del equipo del próximo partido: Kael volando cada tanto (principal) o la dragona de GC guiñando
+        art={<FlyingDragon team={team} />}
         actions={
           <div className="mt-8 flex flex-wrap gap-3 max-md:justify-center">
             <ActionButton href="/equipo/masculino">CONOCÉ AL EQUIPO</ActionButton>
