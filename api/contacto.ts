@@ -5,7 +5,7 @@ import { CONTACT_SUBJECTS } from '../src/home/data/contact.js'
  * Variables: RESEND_API_KEY (obligatoria), CONTACT_TO y CONTACT_FROM (opcionales).
  */
 
-const TO = process.env.CONTACT_TO ?? 'radiant.shadowsss@gmail.com'
+const TO = process.env.CONTACT_TO ?? 'radiantshadowscontacto@gmail.com'
 // sin dominio propio Resend sólo deja enviar desde su dirección de prueba
 const FROM = process.env.CONTACT_FROM ?? 'Radiant Shadows <onboarding@resend.dev>'
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
