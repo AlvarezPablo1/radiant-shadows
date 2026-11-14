@@ -1,5 +1,7 @@
 export interface Member {
   name: string
+  /** "Masculino" o "Game Changers"; si falta, es del masculino */
+  team?: string
   /** foto recortada sin fondo; si falta se muestra una silueta */
   photo?: string
   /** achica la foto si viene recortada más cerca que las demás (1 = alto completo) */
@@ -33,3 +35,6 @@ export const MAIN_STAFF: Member[] = [
   { name: 'Skull', role: 'Assistant coach', photo: '/brand/players/skull.webp', rank: 'Inmortal 2', nationality: 'Argentina', flag: '🇦🇷', age: 19,
     tracker: 'https://tracker.gg/valorant/profile/riot/Skull%23UNDER/overview?playlist=premier&platform=pc' },
 ]
+
+/** Los integrantes de un equipo (los que no dicen equipo son del masculino) */
+export const ofTeam = (members: Member[], team: 'Masculino' | 'Game Changers') => members.filter((m) => (m.team ?? 'Masculino') === team)

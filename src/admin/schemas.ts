@@ -55,6 +55,7 @@ const photoScale: FieldDef = {
 
 /** Jugadores y cuerpo técnico del roster masculino comparten forma */
 const memberFields = (role: FieldDef): FieldDef[] => [
+  { key: 'team', label: 'Equipo', type: 'select', required: true, options: TEAMS, help: 'Define en qué página aparece: Masculino o Game Changers' },
   { key: 'name', label: 'Nombre (nick)', type: 'text', required: true },
   role,
   rank,
@@ -139,23 +140,23 @@ export const SCHEMAS: CollectionSchema[] = [
     key: 'players',
     label: 'Jugadores',
     singular: 'un jugador',
-    description: 'Roster masculino, en el orden en que aparecen en la fila.',
+    description: 'Jugadores de los dos equipos (Masculino y Game Changers), en el orden en que aparecen en la fila de cada uno.',
     fields: memberFields({ key: 'role', label: 'Rol', type: 'select', required: true, options: PLAYER_ROLES }),
     title: (i) => str(i.name),
-    subtitle: (i) => join(i.role, i.rank, i.nationality, i.age && `${str(i.age)} años`),
+    subtitle: (i) => join(i.team || 'Masculino', i.role, i.rank, i.age && `${str(i.age)} años`),
     image: (i) => str(i.photo) || undefined,
-    blank: () => ({}),
+    blank: () => ({ team: 'Masculino' }),
   },
   {
     key: 'coaches',
     label: 'Cuerpo técnico',
     singular: 'un integrante',
-    description: 'Coach y assistant coach del roster masculino (debajo de los jugadores).',
+    description: 'Coaches y assistant coaches de cada equipo (aparecen debajo de sus jugadores).',
     fields: memberFields({ key: 'role', label: 'Puesto', type: 'text', required: true, placeholder: 'Coach, Assistant coach…' }),
     title: (i) => str(i.name),
-    subtitle: (i) => join(i.role, i.rank, i.age && `${str(i.age)} años`),
+    subtitle: (i) => join(i.team || 'Masculino', i.role, i.rank, i.age && `${str(i.age)} años`),
     image: (i) => str(i.photo) || undefined,
-    blank: () => ({}),
+    blank: () => ({ team: 'Masculino' }),
   },
   {
     key: 'staff',

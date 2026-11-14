@@ -25,7 +25,8 @@ export function ItemForm({ schema, item, isNew, onSave, onClose }: Props) {
 }
 
 function FormBody({ schema, initial, isNew, onSave, onClose }: Omit<Props, 'item'> & { initial: Item }) {
-  const [draft, setDraft] = useState<Item>(initial)
+  // lo que falte (p. ej. el equipo en jugadores cargados antes de que existiera el campo) toma el valor por defecto de la sección
+  const [draft, setDraft] = useState<Item>(() => ({ ...schema.blank(), ...initial }))
 
   function submit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault()

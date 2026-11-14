@@ -1,4 +1,5 @@
 import { NEWS_CATEGORIES, type NewsItem } from '../../data/news'
+import { ofTeam } from '../../data/rosters'
 import { useContent } from '../../lib/useContent'
 import { cx } from '../../lib/cx'
 import { Reveal } from '../Reveal'
@@ -49,7 +50,7 @@ export function NewsCard({ item, featured, onContact }: Props) {
 
 /** Foto (o foto grupal) de la noticia o, si no tiene, el logo sobre un degradé del color de la categoría */
 function Visual({ item, color, className }: { item: NewsItem; color: string; className: string }) {
-  const group = useContent().players.filter((p) => p.photo)
+  const group = ofTeam(useContent().players, 'Masculino').filter((p) => p.photo)
   return (
     <div
       style={{ background: `radial-gradient(ellipse at 50% 80%, ${color}55, transparent 70%), linear-gradient(to bottom, rgb(122 40 226 / 0.35), rgb(0 0 16 / 0.7))` }}

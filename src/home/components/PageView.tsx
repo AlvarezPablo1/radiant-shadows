@@ -1,3 +1,4 @@
+import { ofTeam } from '../data/rosters'
 import { useContent } from '../lib/useContent'
 import type { Team } from '../data/teams'
 import type { Page } from '../types'
@@ -32,8 +33,15 @@ export function PageView({ page, isHome, ready, onContact, team }: Props) {
       return <NewsPage page={page} ready={ready} onContact={onContact} />
     case '/calendario':
       return <CalendarPage page={page} ready={ready} />
+    case '/equipo/game-changers': {
+      // mientras no haya jugadoras cargadas, la página queda con el "Próximamente"
+      const players = ofTeam(content.players, 'Game Changers')
+      const staff = ofTeam(content.coaches, 'Game Changers')
+      if (players.length === 0 && staff.length === 0) return <Hero page={page} isHome={isHome} ready={ready} team={team} />
+      return <RosterPage page={page} players={players} staff={staff} ready={ready} />
+    }
     case '/equipo/masculino':
-      return <RosterPage page={page} players={content.players} staff={content.coaches} ready={ready} />
+      return <RosterPage page={page} players={ofTeam(content.players, 'Masculino')} staff={ofTeam(content.coaches, 'Masculino')} ready={ready} />
     case '/equipo/staff':
       return <PeoplePage page={page} people={content.staff} ready={ready} />
     case '/equipo/creadores':

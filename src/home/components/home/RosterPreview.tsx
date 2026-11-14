@@ -1,4 +1,5 @@
 import { rankIcon } from '../../data/ranks'
+import { ofTeam } from '../../data/rosters'
 import { useContent } from '../../lib/useContent'
 import { Reveal } from '../Reveal'
 import { SectionHeading } from '../SectionHeading'
@@ -6,7 +7,7 @@ import { ActionButton } from './ActionButton'
 
 /** Vista previa del roster masculino: fotos en fila con rol y rango, y link al equipo completo */
 export function RosterPreview() {
-  const { players } = useContent()
+  const players = ofTeam(useContent().players, 'Masculino')
   return (
     <Reveal label="Nuestro roster" className="px-16 max-lg:px-10 max-md:px-4">
       <SectionHeading kicker="Roster masculino" title="NUESTROS DRAGONES" />
