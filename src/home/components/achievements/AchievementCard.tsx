@@ -25,7 +25,7 @@ export function AchievementCard({ achievement }: { achievement: Achievement }) {
           <span style={{ color }} className="font-display text-[17px] tracking-[0.3em]">
             {result.toUpperCase()}
           </span>
-          <h2 className="mt-1 font-display text-[clamp(40px,4vw,60px)] leading-[0.9] tracking-[0.02em] text-white [text-shadow:3px_3px_0_var(--color-violet)]">
+          <h2 className="mt-1 font-brand-title text-[clamp(22px,2.2vw,33px)] text-white">
             {tournament.toUpperCase()}
           </h2>
           <p className="mt-3 flex flex-wrap items-center gap-2 text-sm text-body max-md:justify-center">

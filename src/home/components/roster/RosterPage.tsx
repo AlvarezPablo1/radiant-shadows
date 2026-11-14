@@ -23,7 +23,7 @@ export function RosterPage({ page, players, staff, ready }: Props) {
       <section aria-labelledby="staff-title" className="mt-24 max-md:mt-16">
         <div className="text-center">
           <Kicker>Cuerpo técnico</Kicker>
-          <h2 id="staff-title" className="mt-2 font-display text-[clamp(40px,4.5vw,64px)] leading-none tracking-[0.02em] [text-shadow:3px_3px_0_var(--color-violet)]">
+          <h2 id="staff-title" className="mt-2 font-brand-title text-[clamp(22px,2.5vw,35px)]">
             STAFF
           </h2>
         </div>

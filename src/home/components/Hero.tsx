@@ -26,16 +26,20 @@ export function Hero({ page, isHome, ready, actions, art }: Props) {
         </div>
         <h1
           className={cx(
-            'mt-3.5 font-display leading-[0.86] font-normal tracking-[0.01em]',
-            'text-[clamp(64px,11vw,168px)] [text-shadow:6px_6px_0_var(--color-violet)]',
+            isHome
+              ? // RADIANT SHADOWS: letra ensanchada, bien espaciada y sin sombra
+                'mt-5 font-brand leading-[1.1] font-semibold tracking-[0.26em] [font-stretch:125%] text-[clamp(30px,5.4vw,80px)]'
+              : // título de cada sección, con el mismo estilo de marca
+                'mt-3.5 font-brand-title text-[clamp(23px,4.3vw,63px)]',
             enter(ready, 'delay-80'),
           )}
         >
           {isHome ? (
             <>
-              RADIANT
+              {/* el margen negativo compensa el espaciado que queda después de la última letra (centra bien en celular) */}
+              <span className="mr-[-0.26em] text-[#ece6f6]">RADIANT</span>
               <br />
-              <span className="text-lilac">SHADOWS</span>
+              <span className="mr-[-0.26em] text-[#9b5cff] [text-shadow:0_0_24px_rgb(142_68_255/0.45)]">SHADOWS</span>
             </>
           ) : (
             page.title

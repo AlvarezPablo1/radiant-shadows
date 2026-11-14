@@ -52,7 +52,7 @@ export function CollectionEditor({ schema, items, onSaved }: Props) {
     <section aria-labelledby="section-title" className="flex flex-col gap-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div className="min-w-0">
-          <h1 id="section-title" className="font-display text-[clamp(44px,5vw,64px)] leading-none tracking-[0.02em] text-white [text-shadow:3px_3px_0_var(--color-violet)]">
+          <h1 id="section-title" className="font-brand-title text-[clamp(24px,2.8vw,35px)] text-white">
             {schema.label.toUpperCase()}
           </h1>
           <p className="mt-2 max-w-150 text-[15px] text-body">{schema.description}</p>

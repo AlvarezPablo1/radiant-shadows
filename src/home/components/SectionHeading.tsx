@@ -5,7 +5,7 @@ export function SectionHeading({ kicker, title, id }: { kicker: string; title: s
   return (
     <div className="text-center">
       <Kicker>{kicker}</Kicker>
-      <h2 id={id} className="mt-2 font-display text-[clamp(40px,4.5vw,64px)] leading-none tracking-[0.02em] text-white [text-shadow:3px_3px_0_var(--color-violet)]">
+      <h2 id={id} className="mt-2 font-brand-title text-[clamp(22px,2.5vw,35px)] text-white">
         {title}
       </h2>
     </div>

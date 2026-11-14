@@ -25,7 +25,7 @@ export function NextMatch() {
       <div className="relative flex items-center justify-between gap-10 overflow-hidden rounded-3xl border border-violet-hi/30 bg-[linear-gradient(110deg,rgb(122_40_226/0.35),rgb(0_0_16/0.65)_60%)] px-12 py-10 backdrop-blur-md max-lg:flex-col max-lg:items-start max-md:items-center max-md:px-6 max-md:py-8 max-md:text-center">
         <div>
           <p className="font-display text-[15px] tracking-[0.3em] text-lilac">PRÓXIMO PARTIDO</p>
-          <p className="mt-2 font-display text-[clamp(36px,4vw,60px)] leading-none tracking-[0.02em] text-white [text-shadow:3px_3px_0_var(--color-violet)]">
+          <p className="mt-2 font-brand-title text-[clamp(20px,2.2vw,33px)] text-white">
             {next.opponent ? (
               <>
                 RS <span className="text-muted">VS</span> {next.opponent.toUpperCase()}

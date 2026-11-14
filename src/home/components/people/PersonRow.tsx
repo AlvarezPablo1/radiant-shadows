@@ -70,7 +70,7 @@ function InfoPanel({ person, reversed }: { person: Person; reversed: boolean }) 
     >
       <div className={cx('flex flex-col max-md:items-center', reversed && 'items-end')}>
         <Kicker>{person.role}</Kicker>
-        <h2 className="mt-3 font-display text-[clamp(52px,6vw,96px)] leading-[0.85] tracking-[0.02em] text-white [text-shadow:5px_5px_0_var(--color-violet)]">
+        <h2 className="mt-3 font-brand-title text-[clamp(29px,3.3vw,53px)] text-white">
           {person.nick.toUpperCase()}
         </h2>
         <p className="mt-3 text-[19px] font-semibold text-fg">

@@ -32,14 +32,15 @@ export function NewsCard({ item, featured, onContact }: Props) {
           </p>
           <h2
             className={cx(
-              'mt-3 font-display leading-[0.95] tracking-[0.02em] text-white',
-              featured ? 'text-[clamp(40px,4.4vw,64px)] [text-shadow:3px_3px_0_var(--color-violet)]' : 'text-[30px]',
+              'mt-3 text-white',
+              // la destacada usa el título de la marca; las demás, la letra angosta para que entren en la tarjeta
+              featured ? 'font-brand-title text-[clamp(22px,2.4vw,35px)]' : 'font-display text-[30px] leading-[0.95] tracking-[0.02em]',
             )}
           >
             {item.title.toUpperCase()}
           </h2>
           <p className={cx('mt-3 leading-[1.55] text-body', featured ? 'text-[17px]' : 'text-[15px]')}>{item.summary}</p>
-          {item.action && <Action action={item.action} onContact={onContact} />}
+          {item.action?.href && <Action action={item.action} onContact={onContact} />}
         </div>
       </article>
     </Reveal>
@@ -81,7 +82,7 @@ function Action({ action, onContact }: { action: NonNullable<NewsItem['action']>
     'mt-5 inline-flex w-fit cursor-pointer items-center gap-1.5 font-display text-[18px] tracking-[0.12em] text-lilac transition-colors duration-150 hover:text-white'
   const label = (
     <>
-      {action.label.toUpperCase()}
+      {(action.label || 'Ver más').toUpperCase()}
       <svg viewBox="0 0 24 24" aria-hidden="true" className="size-4 fill-none stroke-current stroke-[2.5]">
         <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
       </svg>

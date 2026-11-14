@@ -32,7 +32,7 @@ export function UpcomingMatches({ matches, onPick }: Props) {
         visible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0',
       )}
     >
-      <h2 id="matches-title" className="text-center font-display text-[clamp(40px,4.5vw,64px)] leading-none tracking-[0.02em] text-white [text-shadow:3px_3px_0_var(--color-violet)]">
+      <h2 id="matches-title" className="text-center font-brand-title text-[clamp(22px,2.5vw,35px)] text-white">
         PRÓXIMOS PARTIDOS
       </h2>
 

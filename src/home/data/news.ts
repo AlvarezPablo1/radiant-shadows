@@ -15,7 +15,7 @@ export interface NewsItem {
   /** mostrar como imagen la foto grupal del roster masculino actual (en lugar de `image`) */
   showRoster?: boolean
   /** botón: texto y destino (una sección como "/logros", un link externo, o "contacto" para abrir el formulario) */
-  action?: { label: string; href: string }
+  action?: { label?: string; href: string }
 }
 
 export const NEWS_CATEGORIES: Record<NewsCategory, { label: string; color: string }> = {

@@ -1,5 +1,7 @@
 import type { FieldDef } from '../schemas'
+import { Select } from '../../home/components/Select'
 import { ImageField } from './ImageField'
+import { LinkField } from './LinkField'
 import { inputCls } from './styles'
 
 interface Props {
@@ -24,18 +26,19 @@ export function Field({ field, value, onChange }: Props) {
 
   let control
   if (field.type === 'image') control = <ImageField id={id} value={text} onChange={onChange} />
+  else if (field.type === 'link') control = <LinkField id={id} value={text} onChange={onChange} />
   else if (field.type === 'textarea')
     control = <textarea id={id} rows={3} value={text} required={field.required} placeholder={field.placeholder} onChange={(e) => onChange(e.target.value)} className={inputCls + ' resize-y'} />
   else if (field.type === 'select')
     control = (
-      <select id={id} value={text} required={field.required} onChange={(e) => onChange(e.target.value)} className={inputCls + ' select-chevron cursor-pointer pr-10'}>
-        <option value="">{field.required ? 'Elegí una opción' : '—'}</option>
-        {field.options?.map((o) => (
-          <option key={o.value} value={o.value} className="bg-dark">
-            {o.label}
-          </option>
-        ))}
-      </select>
+      <Select
+        id={id}
+        value={text}
+        onChange={onChange}
+        required={field.required}
+        placeholder={field.required ? 'Elegí una opción' : '—'}
+        options={field.required ? (field.options ?? []) : [{ value: '', label: '—' }, ...(field.options ?? [])]}
+      />
     )
   else
     control = (

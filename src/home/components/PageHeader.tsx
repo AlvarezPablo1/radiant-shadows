@@ -12,7 +12,7 @@ export function PageHeader({ page, ready }: { page: Page; ready: boolean }) {
       </div>
       <h1
         className={cx(
-          'mt-3 font-display text-[clamp(48px,6vw,88px)] leading-[0.9] tracking-[0.01em] [text-shadow:4px_4px_0_var(--color-violet)]',
+          'mt-3 font-brand-title text-[clamp(26px,3.3vw,48px)]',
           enter(ready, 'delay-80'),
         )}
       >

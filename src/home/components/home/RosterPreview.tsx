@@ -28,7 +28,7 @@ export function RosterPreview() {
                   />
                 )}
                 <span className="absolute inset-x-0 bottom-0 flex flex-col items-center px-4 pb-6 text-center">
-                  <span className="font-display text-[40px] leading-none tracking-[0.06em] text-white [text-shadow:3px_3px_0_var(--color-violet),0_2px_16px_var(--color-night)]">
+                  <span className="font-brand-title text-[22px] text-white [text-shadow:0_2px_16px_var(--color-night)]">
                     {p.name.toUpperCase()}
                   </span>
                   <span className="mt-2 flex items-center gap-2 text-sm font-semibold text-mist">

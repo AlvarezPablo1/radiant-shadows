@@ -15,6 +15,8 @@
   --font-sans: Sora, system-ui, sans-serif;
   --font-display: 'Bebas Neue', sans-serif;
   --font-script: 'Rock Salt', cursive;
+  /* títulos de la marca: letra geométrica ensanchada (Saira al 125% de ancho) */
+  --font-brand: Saira, 'Arial', sans-serif;
 
   --color-night: #000010;
   --color-dark: #151c24;
@@ -188,20 +190,16 @@
     0 0 60px rgb(122 40 226 / 0.25);
 }
 
-/* flecha del desplegable "Motivo" */
-@utility select-chevron {
-  appearance: none;
-  background-image:
-    linear-gradient(45deg, transparent 50%, var(--color-lilac) 50%),
-    linear-gradient(135deg, var(--color-lilac) 50%, transparent 50%);
-  background-position:
-    calc(100% - 20px) 50%,
-    calc(100% - 15px) 50%;
-  background-size: 5px 5px;
-  background-repeat: no-repeat;
-}
-
 /* la silueta del logo, teñida de violeta */
 @utility tint-violet {
   filter: brightness(0) invert(0.6) sepia(1) hue-rotate(220deg) saturate(4);
+}
+
+/* títulos de la marca (como el RADIANT SHADOWS de la home): Saira ensanchada, espaciada y sin sombra desplazada */
+@utility font-brand-title {
+  font-family: var(--font-brand);
+  font-weight: 600;
+  font-stretch: 125%;
+  letter-spacing: 0.14em;
+  line-height: 1.12;
 }

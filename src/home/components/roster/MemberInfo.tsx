@@ -26,7 +26,7 @@ export function MemberInfo({ member, showRank, open }: Props) {
   ]
   return (
     <span className="absolute inset-x-0 bottom-0 flex flex-col items-center px-3 pb-5 text-center">
-      <span className="font-display text-[clamp(28px,2.8vw,44px)] leading-none tracking-[0.06em] text-white [text-shadow:3px_3px_0_var(--color-violet),0_2px_16px_var(--color-night)]">
+      <span className="font-brand-title text-[clamp(15px,1.5vw,24px)] text-white [text-shadow:0_2px_16px_var(--color-night)]">
         {member.name.toUpperCase()}
       </span>
       <span

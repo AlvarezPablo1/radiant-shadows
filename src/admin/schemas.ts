@@ -8,7 +8,7 @@ import type { Item } from './lib/item'
 export interface FieldDef {
   key: string
   label: string
-  type: 'text' | 'textarea' | 'number' | 'date' | 'time' | 'select' | 'url' | 'image' | 'checkbox'
+  type: 'text' | 'textarea' | 'number' | 'date' | 'time' | 'select' | 'url' | 'image' | 'checkbox' | 'link'
   options?: { value: string; label: string }[]
   required?: boolean
   placeholder?: string
@@ -89,8 +89,8 @@ export const SCHEMAS: CollectionSchema[] = [
       { key: 'image', label: 'Imagen', type: 'image', help: 'Opcional. Sin imagen se muestra el logo sobre el color de la categoría' },
       { key: 'showRoster', label: 'Usar la foto grupal del roster masculino actual', type: 'checkbox' },
       { key: 'until', label: 'Vigente hasta', type: 'date', help: 'Opcional. Después de esa fecha deja de mostrarse en la home' },
-      { key: 'action.label', label: 'Texto del botón', type: 'text', placeholder: 'Ver más' },
-      { key: 'action.href', label: 'Destino del botón', type: 'text', placeholder: '/logros, https://… o contacto', help: '"contacto" abre el formulario de contacto' },
+      { key: 'action.href', label: 'Botón: a dónde lleva', type: 'link', help: 'Elegí una sección del sitio, el formulario de contacto o un link externo (se abre en otra pestaña)' },
+      { key: 'action.label', label: 'Botón: texto', type: 'text', placeholder: 'Ver más' },
     ],
     title: (i) => str(i.title),
     subtitle: (i) => join(NEWS_CATEGORIES[i.category as keyof typeof NEWS_CATEGORIES]?.label, i.date),

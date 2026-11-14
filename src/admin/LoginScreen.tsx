@@ -16,7 +16,7 @@ export function LoginScreen() {
       >
         <img src="/brand/logos/rs-positive.png" alt="Radiant Shadows" className="size-20 drop-shadow-[0_0_20px_rgb(142_68_255/0.6)]" />
         <Kicker className="mt-5">Radiant Shadows</Kicker>
-        <h1 className="mt-2 font-display text-[64px] leading-none tracking-[0.02em] text-white [text-shadow:4px_4px_0_var(--color-violet)]">
+        <h1 className="mt-2 font-brand-title text-[35px] text-white">
           PANEL <span className="text-lilac">ADMIN</span>
         </h1>
         <span className="mt-2 -rotate-3 font-script text-[18px] text-ember">el fuego sigue</span>

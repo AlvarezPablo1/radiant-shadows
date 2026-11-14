@@ -3,6 +3,7 @@ import { CONTACT_SUBJECTS } from '../data/contact'
 import { cx } from '../lib/cx'
 import { Kicker } from './Kicker'
 import { Modal } from './Modal'
+import { Select } from './Select'
 
 interface Props {
   open: boolean
@@ -18,6 +19,7 @@ export function ContactModal({ open, onClose }: Props) {
   const [sending, setSending] = useState(false)
   // después del primer intento de envío se marcan en rojo los campos que faltan
   const [checked, setChecked] = useState(false)
+  const [subject, setSubject] = useState('')
 
   // al cerrar se limpia el aviso, así la próxima vez arranca sin mensajes viejos
   const close = () => {
@@ -46,6 +48,7 @@ export function ContactModal({ open, onClose }: Props) {
       })
       if (!res.ok) throw new Error(String(res.status))
       form.reset()
+      setSubject('')
       setChecked(false)
       setStatus({ text: '¡Gracias! Recibimos tu mensaje y te vamos a responder pronto.', kind: 'ok' })
     } catch {
@@ -74,16 +77,15 @@ export function ContactModal({ open, onClose }: Props) {
           <input name="email" type="email" autoComplete="email" required maxLength={120} className={input} />
         </Field>
         <Field label="Motivo">
-          <select name="subject" required defaultValue="" className={cx(input, 'select-chevron cursor-pointer pr-10 invalid:text-muted')}>
-            <option value="" disabled>
-              Elegí por qué nos escribís
-            </option>
-            {CONTACT_SUBJECTS.map((o) => (
-              <option key={o} className="bg-dark text-fg">
-                {o}
-              </option>
-            ))}
-          </select>
+          <Select
+            name="subject"
+            required
+            invalid={checked}
+            value={subject}
+            onChange={setSubject}
+            placeholder="Elegí por qué nos escribís"
+            options={CONTACT_SUBJECTS.map((o) => ({ value: o, label: o }))}
+          />
         </Field>
         <Field label="Mensaje" hint="(opcional)">
           <textarea name="message" rows={4} maxLength={2000} placeholder="Contanos un poco más" className={cx(input, 'h-24 resize-none')} />

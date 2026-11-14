@@ -38,7 +38,7 @@ function PillarCard({ pillar, delay }: { pillar: Pillar; delay: number }) {
       <span className="grid size-14 place-items-center rounded-2xl border border-violet-hi/40 bg-violet/25 text-lilac shadow-[0_0_24px_rgb(142_68_255/0.35)]">
         <PillarIcon id={pillar.id} className="size-7" />
       </span>
-      <h2 className="mt-6 font-display text-[40px] leading-none tracking-[0.04em] text-white [text-shadow:3px_3px_0_var(--color-violet)]">
+      <h2 className="mt-6 font-brand-title text-[22px] text-white">
         {pillar.title.toUpperCase()}
       </h2>
       <p className="mt-3 text-[16px] leading-[1.6] text-body">{pillar.text}</p>
@@ -62,7 +62,7 @@ function Closing() {
       <p className="mx-auto max-w-150 text-[18px] leading-[1.6] font-medium text-white [text-shadow:0_2px_14px_var(--color-night)] max-md:text-base">
         {ABOUT_CLOSING}
       </p>
-      <p className="mt-8 font-display text-[clamp(64px,10vw,150px)] leading-[0.9] tracking-[0.01em] text-white [text-shadow:6px_6px_0_var(--color-violet)]">
+      <p className="mt-8 font-brand-title text-[clamp(35px,5.5vw,82px)] text-white">
         EL FUEGO <span className="text-lilac">SIGUE</span>
       </p>
       <p className="mt-4 inline-block -rotate-3 font-script text-[clamp(18px,2vw,26px)] text-ember">#SomosDRAGONES</p>
