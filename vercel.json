@@ -3,6 +3,6 @@
   "rewrites": [
     { "source": "/mediakit", "destination": "/mediakit/index.html" },
     { "source": "/equipo/(masculino|game-changers|creadores|staff)", "destination": "/index.html" },
-    { "source": "/(quienes-somos|logros|shop|redes|calendario|contacto)", "destination": "/index.html" }
+    { "source": "/(quienes-somos|logros|shop|noticias|calendario|contacto)", "destination": "/index.html" }
   ]
 }

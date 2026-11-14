@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rock+Salt&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <!-- silueta del dragón de la transición entre secciones: lista antes del primer click -->
+    <link rel="preload" href="/brand/mascots/dragon-silueta.png" as="image" />
     <title>Radiant Shadows · Esports de Valorant</title>
     <style>
       /* Entrada: el logo crece hacia la cara del dragón y, mientras crece, el fondo se desvanece
@@ -86,6 +88,19 @@
           visibility: hidden;
         }
       }
+      /* Llegada desde otra sección: la página arranca tapada por la cortina del dragón y se destapa */
+      html.arriving::after {
+        content: '';
+        position: fixed;
+        inset: 0;
+        z-index: 90;
+        background: #0d0524;
+        pointer-events: none;
+        transition: opacity 0.5s ease;
+      }
+      html.arriving.arrived::after {
+        opacity: 0;
+      }
     </style>
   </head>
   <body>
@@ -98,6 +113,11 @@
       try {
         var s = document.getElementById('splash')
         var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        // venimos de otra sección con la transición del dragón: arrancar tapados
+        if (sessionStorage.getItem('rs-nav')) {
+          sessionStorage.removeItem('rs-nav')
+          document.documentElement.classList.add('arriving')
+        }
         if (!calm && !sessionStorage.getItem('rs-splash')) {
           sessionStorage.setItem('rs-splash', '1')
           s.dataset.play = ''

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 /** true cuando terminó la animación del logo (o enseguida si no hubo animación) */
 export function useReveal() {
@@ -54,4 +54,60 @@ export function useEscape(active: boolean, onEscape: () => void) {
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
   }, [active, onEscape])
+}
+
+/** true durante un instante cada tanto (entre `minMs` y `maxMs`, al azar); nunca con "reducir movimiento" */
+export function useWink(minMs = 5000, maxMs = 9000, durationMs = 180) {
+  const [winking, setWinking] = useState(false)
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    let timer: ReturnType<typeof setTimeout>
+    const schedule = () => {
+      timer = setTimeout(
+        () => {
+          setWinking(true)
+          timer = setTimeout(() => {
+            setWinking(false)
+            schedule()
+          }, durationMs)
+        },
+        minMs + Math.random() * (maxMs - minMs),
+      )
+    }
+    schedule()
+    return () => clearTimeout(timer)
+  }, [minMs, maxMs, durationMs])
+  return winking
+}
+
+/** true cuando el elemento entra en pantalla (una sola vez); con "reducir movimiento" ya arranca visible */
+export function useInView<T extends Element>(threshold = 0.2) {
+  const ref = useRef<T>(null)
+  const [visible, setVisible] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  useEffect(() => {
+    const el = ref.current
+    if (!el || visible) return
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true)
+          io.disconnect()
+        }
+      },
+      { threshold },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [threshold, visible])
+  return [ref, visible] as const
+}
+
+/** la hora actual, actualizada cada `intervalMs` (para cuentas regresivas) */
+export function useNow(intervalMs = 1000) {
+  const [now, setNow] = useState(() => Date.now())
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), intervalMs)
+    return () => clearInterval(id)
+  }, [intervalMs])
+  return now
 }

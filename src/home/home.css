@@ -12,6 +12,9 @@
   --breakpoint-md: 861px;
   --breakpoint-lg: 1081px;
 
+  /* ancho máximo de todo el contenido: max-w-page */
+  --container-page: 1440px;
+
   --font-sans: Sora, system-ui, sans-serif;
   --font-display: 'Bebas Neue', sans-serif;
   --font-script: 'Rock Salt', cursive;
@@ -41,6 +44,8 @@
   --animate-menu-in: menu-in 0.35s both;
   --animate-pop-in: pop-in 0.28s var(--ease-out-soft);
   --animate-fade-in: fade-in 0.28s ease;
+  --animate-dragon-fly: dragon-fly 0.8s cubic-bezier(0.45, 0, 0.55, 1) forwards;
+  --animate-curtain-in: curtain-in 0.7s cubic-bezier(0.6, 0, 0.4, 1) forwards;
 
   @keyframes drift {
     50% {
@@ -89,11 +94,32 @@
       opacity: 0;
     }
   }
+  /* el dragón entra por la derecha y sale por la izquierda */
+  @keyframes dragon-fly {
+    from {
+      translate: 0 -50%;
+    }
+    to {
+      translate: calc(-100vw - 100%) -50%;
+    }
+  }
+  /* la cortina oscura lo sigue hasta tapar toda la pantalla */
+  @keyframes curtain-in {
+    from {
+      translate: 100vw 0;
+    }
+    to {
+      translate: -20vw 0;
+    }
+  }
 }
 
 @layer base {
   :root {
+    /* barra de redes + nav: el contenido arranca debajo de las dos */
+    --bar-h: 34px;
     --nav-h: 84px;
+    --header-h: calc(var(--bar-h) + var(--nav-h));
     color-scheme: dark;
     @media (width < 861px) {
       --nav-h: 70px;
@@ -124,10 +150,10 @@
 
 /* fondos de marca */
 @utility bg-brand {
+  /* degradé de violeta (arriba) a negro (abajo), con un brillo suave arriba a la derecha */
   background:
-    radial-gradient(60vmax 60vmax at 85% 8%, rgb(122 40 226 / 0.34), transparent 60%),
-    radial-gradient(55vmax 55vmax at 8% 100%, rgb(76 29 149 / 0.38), transparent 60%),
-    var(--color-night);
+    radial-gradient(60vmax 60vmax at 85% 0%, rgb(142 68 255 / 0.28), transparent 60%),
+    linear-gradient(170deg, #4a1a8c 0%, #2a0f57 30%, #110628 62%, var(--color-night) 100%);
 }
 @utility bg-hex {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='97' viewBox='0 0 56 97'%3E%3Cpath d='M28 1 54 16v30L28 61 2 46V16z M28 61v36' fill='none' stroke='%238E44FF' stroke-width='1'/%3E%3C/svg%3E");

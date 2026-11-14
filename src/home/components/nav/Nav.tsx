@@ -4,6 +4,7 @@ import { useScrolled } from '../../lib/hooks'
 import { CONTACT_PATH, isActive } from '../../lib/route'
 import type { Page } from '../../types'
 import { NavDropdown } from './NavDropdown'
+import { TopBar } from './TopBar'
 import { navCta, navLink, navLinkActive } from './navStyles'
 
 interface Props {
@@ -15,7 +16,7 @@ interface Props {
   onContact: () => void
 }
 
-/** Barra superior: links a los lados del logo, y la hamburguesa en celular */
+/** Barra superior: redes arriba, links a los lados del logo, y la hamburguesa en celular */
 export function Nav({ sections, page, ready, menuOpen, onToggleMenu, onContact }: Props) {
   const scrolled = useScrolled()
 
@@ -49,9 +50,10 @@ export function Nav({ sections, page, ready, menuOpen, onToggleMenu, onContact }
         ready ? 'translate-y-0 opacity-100' : '-translate-y-3 opacity-0',
       )}
     >
+      <TopBar />
       <nav
         aria-label="Principal"
-        className="mx-auto grid h-(--nav-h) max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-10 px-16 max-lg:gap-6 max-lg:px-10 max-md:grid-cols-[44px_1fr_44px] max-md:px-4"
+        className="mx-auto grid h-(--nav-h) max-w-page grid-cols-[1fr_auto_1fr] items-center gap-10 px-16 max-lg:gap-6 max-lg:px-10 max-md:grid-cols-[44px_1fr_44px] max-md:px-4"
       >
         <div className={cx(side, 'justify-end')}>{sections.slice(0, 3).map(renderLink)}</div>
 

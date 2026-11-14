@@ -7,7 +7,7 @@ const EMBERS = Array.from({ length: 34 }, () => ({
   animationDelay: -Math.random() * 12 + 's',
 }))
 
-/** Fondo de marca: hexágonos, silueta, neones, brasas, esquinas y texto lateral */
+/** Fondo de marca: hexágonos, silueta, neones, brasas, y texto lateral */
 export function Background({ year }: { year: number }) {
   return (
     <>
@@ -34,12 +34,9 @@ export function Background({ year }: { year: number }) {
             />
           ))}
         </div>
+        {/* velo oscuro encima de todo el fondo: lo apaga un poco para que resalte el contenido */}
+        <div className="absolute inset-0 bg-night/35" />
       </div>
-
-      <Corner className="top-4.5 left-4.5 border-t-2 border-l-2" />
-      <Corner className="top-4.5 right-4.5 border-t-2 border-r-2" />
-      <Corner className="bottom-4.5 left-4.5 border-b-2 border-l-2" />
-      <Corner className="right-4.5 bottom-4.5 border-r-2 border-b-2" />
 
       <div
         aria-hidden="true"
@@ -55,11 +52,3 @@ function Neon({ className }: { className: string }) {
   return <div className={'absolute left-[-10%] h-0.75 w-[120%] transform-[rotate(-7deg)] bg-[#f2e8ff] opacity-80 shadow-neon ' + className} />
 }
 
-function Corner({ className }: { className: string }) {
-  return (
-    <i
-      aria-hidden="true"
-      className={'pointer-events-none fixed z-3 size-8.5 border-violet-hi/65 max-md:size-5.5 ' + className}
-    />
-  )
-}

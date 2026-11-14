@@ -18,7 +18,7 @@ export function MobileMenu({ sections, page, onContact }: Props) {
   return (
     <div
       id="menu"
-      className="fixed inset-0 z-19 hidden flex-col justify-center gap-1.5 bg-night/97 px-8 pt-[calc(var(--nav-h)+24px)] pb-20 max-md:flex"
+      className="fixed inset-0 z-19 hidden flex-col justify-center gap-1.5 bg-night/97 px-8 pt-[calc(var(--header-h)+24px)] pb-20 max-md:flex"
     >
       {sections.map((s, i) => {
         if (s.children) return <MenuGroup key={s.path} section={s} page={page} index={i} />

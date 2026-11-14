@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState, type SubmitEvent, type ReactNode } from 'react'
+import { useState, type ReactNode, type SubmitEvent } from 'react'
 import { CONTACT_SUBJECTS } from '../data/contact'
 import { cx } from '../lib/cx'
-import { useScrollLock } from '../lib/hooks'
 import { Kicker } from './Kicker'
+import { Modal } from './Modal'
 
 interface Props {
   open: boolean
@@ -14,20 +14,16 @@ const EMPTY: Status = { text: '', kind: '' }
 
 /** Formulario de contacto en un modal: nombre, mail, motivo y mensaje */
 export function ContactModal({ open, onClose }: Props) {
-  const dialog = useRef<HTMLDialogElement>(null)
   const [status, setStatus] = useState<Status>(EMPTY)
   const [sending, setSending] = useState(false)
   // después del primer intento de envío se marcan en rojo los campos que faltan
   const [checked, setChecked] = useState(false)
 
-  useScrollLock(open)
-  useEffect(() => {
-    const d = dialog.current!
-    if (open && !d.open) {
-      setStatus(EMPTY)
-      d.showModal()
-    } else if (!open && d.open) d.close()
-  }, [open])
+  // al cerrar se limpia el aviso, así la próxima vez arranca sin mensajes viejos
+  const close = () => {
+    setStatus(EMPTY)
+    onClose()
+  }
 
   async function submit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -66,27 +62,8 @@ export function ContactModal({ open, onClose }: Props) {
   )
 
   return (
-    <dialog
-      ref={dialog}
-      aria-labelledby="contact-title"
-      onClose={onClose}
-      // click afuera de la tarjeta cierra
-      onClick={(e) => e.target === e.currentTarget && onClose()}
-      className="m-auto max-h-[calc(100dvh-32px)] w-[min(520px,calc(100%-32px))] overflow-visible bg-transparent p-0 text-fg backdrop:bg-night/72 backdrop:backdrop-blur-[6px] open:animate-pop-in open:backdrop:animate-fade-in"
-    >
-      <form
-        noValidate
-        onSubmit={submit}
-        className="relative flex max-h-[calc(100dvh-32px)] flex-col gap-3.5 overflow-y-auto rounded-[18px] border border-violet-hi/35 bg-card px-8 pt-8.5 pb-7.5 shadow-card max-sm:px-5 max-sm:pt-7 max-sm:pb-5.5"
-      >
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Cerrar"
-          className="absolute top-3.5 right-3.5 size-9.5 cursor-pointer rounded-full bg-white/6 text-2xl leading-none text-fg transition-colors duration-150 hover:bg-violet-hi/30"
-        >
-          ×
-        </button>
+    <Modal open={open} onClose={close} labelledBy="contact-title">
+      <form noValidate onSubmit={submit} aria-label="Formulario de contacto" className="flex flex-col gap-3.5">
         <Kicker>Hablemos</Kicker>
         <p className="-mt-1 mb-1.5 text-[15px] text-muted">Dejanos tus datos y te respondemos por mail.</p>
 
@@ -125,7 +102,7 @@ export function ContactModal({ open, onClose }: Props) {
           {sending ? 'Enviando…' : 'Enviar'}
         </button>
       </form>
-    </dialog>
+    </Modal>
   )
 }
 
