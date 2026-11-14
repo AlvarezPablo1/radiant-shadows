@@ -13,6 +13,7 @@
 }
 * {
   box-sizing: border-box;
+  scrollbar-width:none;
 }
 html,
 body {
@@ -394,7 +395,7 @@ h1 span {
 .hero-art,
 .foot {
   opacity: 0;
-  transform: translateY(18px);
+  transform: translateY(15px);
   transition:
     opacity 0.7s cubic-bezier(0.2, 0.8, 0.2, 1),
     transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);

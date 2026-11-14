@@ -23,9 +23,12 @@ const HOME: Page = {
 const SECTIONS: Page[] = [
   { path: '/quienes-somos', label: 'Quiénes somos', kicker: 'Radiant Shadows', title: 'QUIÉNES SOMOS', script: 'próximamente', text: 'Nuestra historia, nuestra forma de competir y la gente que mantiene vivo el fuego.' },
   { path: '/equipos', label: 'Nuestros equipos', kicker: 'Radiant Shadows', title: 'NUESTROS EQUIPOS', script: 'próximamente', text: 'Conocé a los dragones de MAIN y GC: jugadores, staff y su camino en cada competencia.' },
-  { path: '/merch', label: 'Merch', kicker: 'Tienda oficial', title: 'MERCH', script: 'próximamente', text: 'La indumentaria oficial de los dragones está en camino. Camisetas, buzos y más.' },
   { path: '/logros', label: 'Logros', kicker: 'Radiant Shadows', title: 'LOGROS', script: 'próximamente', text: 'Cada copa, cada podio y cada partido que nos trajo hasta acá, todo en un solo lugar.' },
+  { path: '/shop', label: 'Tienda', kicker: 'Tienda oficial', title: 'TIENDA', script: 'próximamente', text: 'La indumentaria oficial de los dragones está en camino. Camisetas, buzos y más.' },
+  { path: '/redes', label: 'Redes', kicker: 'Hablemos', title: 'RED SOCIAL', script: 'próximamente', text: 'Seguinos en nuestras redes sociales para estar al día con las últimas novedades.' },
+  { path: '/calendario', label: 'Calendario', kicker: 'Hablemos', title: 'CALENDARIO', script: 'próximamente', text: 'Muy pronto vas a poder ver los eventos y torneos en los que participaremos.' },
   { path: '/contacto', label: 'Contactanos', kicker: 'Hablemos', title: 'CONTACTANOS', script: 'próximamente', text: 'Muy pronto vas a poder escribirnos desde acá para sponsors, prensa o tryouts.' },
+
 ]
 
 const path = location.pathname.replace(/\/+$/, '') || '/'

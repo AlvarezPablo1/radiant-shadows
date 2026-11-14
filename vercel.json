@@ -2,6 +2,6 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     { "source": "/mediakit", "destination": "/mediakit/index.html" },
-    { "source": "/(quienes-somos|equipos|merch|logros|contacto)", "destination": "/index.html" }
+    { "source": "/(quienes-somos|equipos|logros|shop|redes|calendario|contacto)", "destination": "/index.html" }
   ]
 }
