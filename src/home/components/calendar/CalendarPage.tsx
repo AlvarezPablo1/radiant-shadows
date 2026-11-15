@@ -1,15 +1,15 @@
 import { useMemo, useRef, useState } from 'react'
 import { EVENT_TYPES, type CalendarEvent } from '../../../shared/content/events'
 import { useContent } from '../../lib/useContent'
-import { upcomingEvents, upcomingMatches } from '../../lib/events'
-import { addMonths, fromKey, monthLabel, todayKey } from '../../lib/calendar'
+import { upcomingEvents, upcomingMatches } from '../../../shared/calendar/events'
+import { addMonths, fromKey, monthLabel, todayKey } from '../../../shared/calendar/dates'
 import { cx } from '../../../shared/lib/cx'
 import { enter } from '../../lib/enter'
 import type { Page } from '../../types'
 import { PageHeader } from '../ui/PageHeader'
-import { DayEvents } from './DayEvents'
-import { MonthGrid } from './MonthGrid'
-import { UpcomingMatches } from './UpcomingMatches'
+import { DayEvents } from '../../../shared/calendar/DayEvents'
+import { MonthGrid } from '../../../shared/calendar/MonthGrid'
+import { UpcomingMatches } from '../../../shared/calendar/UpcomingEvents'
 
 /** Calendario mensual con los eventos de data/events.ts (al tocar un día se ve su detalle) y debajo los próximos partidos */
 export function CalendarPage({ page, ready }: { page: Page; ready: boolean }) {

@@ -1,17 +1,19 @@
-import { EVENT_TYPES, type CalendarEvent } from '../../../shared/content/events'
-import { WEEKDAYS, monthWeeks, todayKey } from '../../lib/calendar'
-import { cx } from '../../../shared/lib/cx'
+import { DEFAULT_TYPES, styleOf, type CalendarItem, type TypeStyles } from './types'
+import { WEEKDAYS, monthWeeks, todayKey } from './dates'
+import { cx } from '../lib/cx'
 
 interface Props {
   month: Date
   /** eventos agrupados por día ("AAAA-MM-DD") */
-  byDay: Map<string, CalendarEvent[]>
+  byDay: Map<string, CalendarItem[]>
   selected: string
   onSelect: (key: string) => void
+  /** colores de cada tipo (por defecto, los del calendario de la web) */
+  types?: TypeStyles
 }
 
 /** Grilla del mes: un casillero por día con sus eventos; el día elegido muestra el detalle al costado */
-export function MonthGrid({ month, byDay, selected, onSelect }: Props) {
+export function MonthGrid({ month, byDay, selected, onSelect, types = DEFAULT_TYPES }: Props) {
   const today = todayKey()
   return (
     <div role="grid" aria-label="Calendario" className="flex flex-col gap-1.5 max-md:gap-1">
@@ -57,7 +59,7 @@ export function MonthGrid({ month, byDay, selected, onSelect }: Props) {
                   {events.slice(0, 2).map((e) => (
                     <span
                       key={e.title + e.time}
-                      style={{ borderColor: EVENT_TYPES[e.type].color }}
+                      style={{ borderColor: styleOf(types, e.type).color }}
                       className="truncate rounded-md border-l-[3px] bg-white/6 px-1.5 py-0.5 text-[11px] leading-tight text-fg"
                     >
                       {e.time && <span className="text-muted">{e.time} </span>}
@@ -68,7 +70,7 @@ export function MonthGrid({ month, byDay, selected, onSelect }: Props) {
                 </span>
                 <span className="hidden gap-1 max-md:flex">
                   {events.map((e) => (
-                    <i key={e.title + e.time} style={{ background: EVENT_TYPES[e.type].color }} className="size-1.5 rounded-full" />
+                    <i key={e.title + e.time} style={{ background: styleOf(types, e.type).color }} className="size-1.5 rounded-full" />
                   ))}
                 </span>
               </button>

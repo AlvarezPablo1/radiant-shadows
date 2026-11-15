@@ -1,8 +1,8 @@
-import { MATCH_TYPES, type CalendarEvent } from '../../shared/content/events'
-import { todayKey } from './calendar'
+import { MATCH_TYPES, type CalendarEvent } from '../content/events'
+import { todayKey } from './dates'
 
 /** por fecha y después por hora */
-export const sortByDate = (events: CalendarEvent[]) =>
+export const sortByDate = <T extends { date: string; time?: string }>(events: T[]) =>
   [...events].sort((a, b) => a.date.localeCompare(b.date) || (a.time ?? '').localeCompare(b.time ?? ''))
 
 /** eventos de hoy en adelante */

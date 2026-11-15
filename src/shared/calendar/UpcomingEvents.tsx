@@ -1,12 +1,15 @@
-import { EVENT_TYPES, type CalendarEvent } from '../../../shared/content/events'
-import { fromKey, todayKey } from '../../lib/calendar'
-import { useInView } from '../../../shared/lib/hooks'
-import { cx } from '../../../shared/lib/cx'
+import { DEFAULT_TYPES, styleOf, type CalendarItem, type TypeStyles } from './types'
+import { fromKey, todayKey } from './dates'
+import { useInView } from '../lib/hooks'
+import { cx } from '../lib/cx'
 
 interface Props {
-  matches: CalendarEvent[]
+  matches: CalendarItem[]
   /** al tocar un partido: mostrar ese día en el calendario */
   onPick: (dateKey: string) => void
+  types?: TypeStyles
+  title?: string
+  empty?: string
 }
 
 const monthFmt = new Intl.DateTimeFormat('es-AR', { month: 'short' })
@@ -19,8 +22,8 @@ function whenLabel(key: string) {
   return relative.format(days, 'day')
 }
 
-/** Sección debajo del calendario con los próximos partidos en tarjetas */
-export function UpcomingMatches({ matches, onPick }: Props) {
+/** Sección debajo del calendario con los próximos partidos (o eventos) en tarjetas */
+export function UpcomingMatches({ matches, onPick, types = DEFAULT_TYPES, title = 'PRÓXIMOS PARTIDOS', empty = 'Todavía no hay partidos programados. ¡Atentos a las redes!' }: Props) {
   const [ref, visible] = useInView<HTMLElement>(0.1)
   return (
     <section
@@ -33,16 +36,16 @@ export function UpcomingMatches({ matches, onPick }: Props) {
       )}
     >
       <h2 id="matches-title" className="text-center font-brand-title text-[clamp(22px,2.5vw,35px)] text-white">
-        PRÓXIMOS PARTIDOS
+        {title}
       </h2>
 
       {matches.length === 0 ? (
-        <p className="mt-6 text-center text-muted">Todavía no hay partidos programados. ¡Atentos a las redes!</p>
+        <p className="mt-6 text-center text-muted">{empty}</p>
       ) : (
         <ul className="mt-10 grid grid-cols-3 gap-5 max-lg:grid-cols-2 max-md:grid-cols-1">
           {matches.map((m) => (
             <li key={m.date + m.time + m.title}>
-              <MatchCard match={m} onPick={onPick} />
+              <MatchCard match={m} onPick={onPick} types={types} />
             </li>
           ))}
         </ul>
@@ -51,9 +54,9 @@ export function UpcomingMatches({ matches, onPick }: Props) {
   )
 }
 
-function MatchCard({ match, onPick }: { match: CalendarEvent; onPick: (dateKey: string) => void }) {
+function MatchCard({ match, onPick, types }: { match: CalendarItem; onPick: (dateKey: string) => void; types: TypeStyles }) {
   const date = fromKey(match.date)
-  const color = EVENT_TYPES[match.type].color
+  const color = styleOf(types, match.type).color
   return (
     <button
       type="button"
@@ -74,7 +77,7 @@ function MatchCard({ match, onPick }: { match: CalendarEvent; onPick: (dateKey: 
       <span className="flex min-w-0 flex-1 flex-col justify-center gap-1.5 px-5 py-5">
         <span className="flex flex-wrap items-center gap-2 text-xs">
           <span style={{ color }} className="font-display text-[15px] tracking-[0.16em]">
-            {EVENT_TYPES[match.type].label.toUpperCase()}
+            {styleOf(types, match.type).label.toUpperCase()}
           </span>
           {match.team && <span className="rounded-full bg-violet/30 px-2 pt-0.5 font-display text-[13px] tracking-[0.12em] text-lilac">{match.team.toUpperCase()}</span>}
         </span>

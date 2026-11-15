@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { DEFAULT_CONTENT, type Content } from '../../shared/content/content'
 import { loadContent } from '../../shared/content/load'
-import { todayKey } from './calendar'
+import { todayKey } from '../../shared/calendar/dates'
 import { ContentContext } from './useContent'
 
 /** las noticias con fecha de cierre ya pasada dejan de mostrarse en todo el sitio */

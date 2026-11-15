@@ -1,15 +1,19 @@
-import { EVENT_TYPES, type CalendarEvent } from '../../../shared/content/events'
-import { dayLabel, shortDayLabel } from '../../lib/calendar'
+import { DEFAULT_TYPES, styleOf, type CalendarItem, type TypeStyles } from './types'
+import { dayLabel, shortDayLabel } from './dates'
 
 interface Props {
   selected: string
-  events: CalendarEvent[]
+  events: CalendarItem[]
   /** próximos eventos, para cuando el día elegido no tiene nada */
-  upcoming: CalendarEvent[]
+  upcoming: CalendarItem[]
+  types?: TypeStyles
+  /** agenda del admin: tocar un evento lo edita, y botón para agregar otro en ese día */
+  onEdit?: (e: CalendarItem) => void
+  onAdd?: () => void
 }
 
 /** Panel al costado del calendario: eventos del día elegido o, si no hay, los próximos */
-export function DayEvents({ selected, events, upcoming }: Props) {
+export function DayEvents({ selected, events, upcoming, types = DEFAULT_TYPES, onEdit, onAdd }: Props) {
   const empty = events.length === 0
   return (
     <aside aria-live="polite" className="flex flex-col gap-4">
@@ -26,7 +30,7 @@ export function DayEvents({ selected, events, upcoming }: Props) {
               <p className="mt-2 font-display text-sm tracking-[0.3em] text-lilac">PRÓXIMOS</p>
               <ul className="flex flex-col gap-3">
                 {upcoming.map((e) => (
-                  <EventCard key={e.date + e.title} event={e} showDate />
+                  <EventCard key={e.date + e.title} event={e} showDate types={types} />
                 ))}
               </ul>
             </>
@@ -35,18 +39,32 @@ export function DayEvents({ selected, events, upcoming }: Props) {
       ) : (
         <ul className="flex flex-col gap-3">
           {events.map((e) => (
-            <EventCard key={e.title + e.time} event={e} />
+            <EventCard key={e.title + e.time} event={e} types={types} onEdit={onEdit} />
           ))}
         </ul>
+      )}
+      {onAdd && (
+        <button
+          type="button"
+          onClick={onAdd}
+          className="cursor-pointer rounded-2xl border border-dashed border-violet-hi/45 py-3 font-display text-[18px] tracking-[0.12em] text-lilac transition-colors hover:border-violet-hi hover:bg-violet/15 hover:text-white"
+        >
+          + AGREGAR EN ESTE DÍA
+        </button>
       )}
     </aside>
   )
 }
 
-function EventCard({ event, showDate }: { event: CalendarEvent; showDate?: boolean }) {
-  const type = EVENT_TYPES[event.type]
+function EventCard({ event, showDate, types, onEdit }: { event: CalendarItem; showDate?: boolean; types: TypeStyles; onEdit?: (e: CalendarItem) => void }) {
+  const type = styleOf(types, event.type)
   return (
-    <li style={{ borderColor: type.color }} className="rounded-2xl border-l-4 bg-night/55 p-4 backdrop-blur-sm">
+    <li
+      style={{ borderColor: type.color }}
+      onClick={onEdit && (() => onEdit(event))}
+      title={onEdit ? 'Tocá para editar' : undefined}
+      className={'rounded-2xl border-l-4 bg-night/55 p-4 backdrop-blur-sm' + (onEdit ? ' cursor-pointer transition-colors hover:bg-violet/20' : '')}
+    >
       <div className="flex items-center justify-between gap-3 text-xs">
         <span style={{ color: type.color }} className="font-display text-[15px] tracking-[0.16em]">
           {type.label.toUpperCase()}

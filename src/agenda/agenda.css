@@ -1,0 +1,5 @@
+/* agenda de contenido: mira sus archivos, el calendario compartido y los campos del admin */
+@import 'tailwindcss' source('.');
+@source '../shared';
+@source '../admin/components';
+@import '../home/theme.css';

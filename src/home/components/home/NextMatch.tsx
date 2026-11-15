@@ -1,6 +1,6 @@
 import { EVENT_TYPES } from '../../../shared/content/events'
-import { dayLabel } from '../../lib/calendar'
-import { eventStart, upcomingMatches } from '../../lib/events'
+import { dayLabel } from '../../../shared/calendar/dates'
+import { eventStart, upcomingMatches } from '../../../shared/calendar/events'
 import { useContent } from '../../lib/useContent'
 import { useNow } from '../../../shared/lib/hooks'
 import { Reveal } from '../ui/Reveal'

@@ -50,12 +50,15 @@ export function SectionNav({ content, active, onPick, large }: Props) {
   )
 }
 
-/** Mediakit, ver el sitio y cerrar sesión */
+/** Mediakit, agenda, ver el sitio y cerrar sesión */
 export function PanelLinks({ className }: { className?: string }) {
   return (
     <div className={cx('flex flex-col gap-2', className)}>
       <a href="/mediakit" target="_blank" rel="noopener noreferrer" className="rounded-xl bg-cta px-4 pt-2.5 pb-2 text-center font-display text-[19px] tracking-[0.1em] text-white shadow-cta hover:brightness-112">
         ABRIR MEDIAKIT ↗
+      </a>
+      <a href="/agenda" target="_blank" rel="noopener noreferrer" className="rounded-xl border border-violet-hi/50 px-4 pt-2.5 pb-2 text-center font-display text-[19px] tracking-[0.1em] text-white hover:bg-violet/25">
+        ABRIR AGENDA ↗
       </a>
       <a href="/" target="_blank" rel="noopener noreferrer" className="rounded-xl px-4 py-2 text-center text-sm text-mist hover:text-white">
         Ver el sitio ↗
