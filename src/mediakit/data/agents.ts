@@ -37,7 +37,7 @@ export function findAgent(v = '') {
   const k = v.toLowerCase().replace(/[^a-z0-9]/g, '')
   return k ? AGENTS.find((a) => a.id === k) : undefined
 }
-/** la versión difuminada (desenfoque gaussiano ya aplicado: se ve suave y parejo en cualquier tamaño y navegador) */
+/** el retrato del agente a partir de lo cargado (acepta el nombre escrito a mano, sin importar mayúsculas ni signos) */
 export const agentImage = (v?: string) => {
   const a = findAgent(v)
   return a ? `/brand/agents/${a.id}.webp` : undefined

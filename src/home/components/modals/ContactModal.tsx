@@ -91,7 +91,7 @@ export function ContactModal({ open, onClose }: Props) {
           <textarea name="message" rows={4} maxLength={2000} placeholder="Contanos un poco más" className={cx(input, 'h-24 resize-none')} />
         </Field>
         {/* trampa para bots: las personas no lo ven */}
-        <input name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="absolute left-[-9999px] size-px opacity-0" />
+        <input name="_rs_contact_check" tabIndex={-1} autoComplete="off" aria-hidden="true" className="absolute left-[-9999px] size-px opacity-0" />
 
         <p role="status" className={cx('min-h-[1.3em] text-sm', status.kind === 'ok' ? 'text-success' : status.kind === 'error' ? 'text-danger' : 'text-muted')}>
           {status.text}
