@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { FieldDef } from '../schemas'
 import { Select } from '../../shared/ui/Select'
 import { ImageField } from './ImageField'
@@ -10,10 +11,16 @@ interface Props {
   onChange: (value: unknown) => void
 }
 
+function localDateKey() {
+  const now = new Date()
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+}
+
 /** Un campo del formulario según su tipo (texto, número, fecha, desplegable, imagen…) */
 export function Field({ field, value, onChange }: Props) {
   const id = `f-${field.key.replace('.', '-')}`
   const text = value == null ? '' : String(value)
+  const [today, setToday] = useState(localDateKey)
 
   if (field.type === 'checkbox') {
     return (
@@ -45,6 +52,8 @@ export function Field({ field, value, onChange }: Props) {
       <input
         id={id}
         type={field.type}
+        min={field.type === 'date' ? today : undefined}
+        onFocus={field.type === 'date' ? () => setToday(localDateKey()) : undefined}
         step={field.step}
         value={text}
         required={field.required}

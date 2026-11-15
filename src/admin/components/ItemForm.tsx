@@ -30,8 +30,27 @@ function FormBody({ schema, initial, isNew, onSave, onClose }: Omit<Props, 'item
 
   function submit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault()
-    if (e.currentTarget.checkValidity()) onSave(draft)
-    else e.currentTarget.reportValidity()
+    const form = e.currentTarget
+    const restoreMins: (() => void)[] = []
+    for (const field of schema.fields) {
+      if (field.type !== 'date') continue
+      const current = getField(draft, field.key)
+      const original = getField(initial, field.key)
+      if (typeof current !== 'string' || current !== original) continue
+
+      const input = form.querySelector<HTMLInputElement>(`#f-${field.key.replace('.', '-')}`)
+      if (!input?.min || current >= input.min) continue
+      const min = input.min
+      input.min = current
+      restoreMins.push(() => {
+        input.min = min
+      })
+    }
+
+    const valid = form.checkValidity()
+    if (!valid) form.reportValidity()
+    restoreMins.forEach((restore) => restore())
+    if (valid) onSave(draft)
   }
 
   return (
