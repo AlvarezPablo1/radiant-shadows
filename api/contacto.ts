@@ -9,6 +9,7 @@ import { contactEmail } from '../server/emails/contact.js'
 const TO = process.env.CONTACT_TO ?? 'radiantshadowscontacto@gmail.com'
 // sin dominio propio Resend sólo deja enviar desde su dirección de prueba
 const FROM = process.env.CONTACT_FROM ?? 'Radiant Shadows <onboarding@resend.dev>'
+const EMAIL_ASSET_ORIGIN = 'https://radiantshadows.vercel.app'
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 interface Message {
@@ -51,7 +52,7 @@ export async function POST(request: Request) {
       to: [TO],
       reply_to: msg.email,
       subject: `[Web] ${msg.subject} — ${msg.name}`,
-      html: contactEmail(msg, new URL(request.url).origin),
+      html: contactEmail(msg, EMAIL_ASSET_ORIGIN),
     }),
   })
   if (!res.ok) {

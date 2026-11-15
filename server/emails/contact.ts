@@ -10,20 +10,23 @@ export interface ContactEmailData {
 const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`)
 
 /** Plantilla HTML del correo que recibe el equipo cuando alguien completa el formulario de contacto. */
-export function contactEmail({ name, email, subject, message }: ContactEmailData, siteOrigin: string) {
+export function contactEmail({ name, email, subject, message }: ContactEmailData, assetOrigin: string) {
   const safeName = escapeHtml(name)
   const safeEmail = escapeHtml(email)
   const safeSubject = escapeHtml(subject)
   const safeMessage = message ? escapeHtml(message).replace(/\r?\n/g, '<br>') : '<i style="color:#9e97ac">No agregó un mensaje.</i>'
-  const logoUrl = escapeHtml(new URL('/brand/logos/rs-negative.png', siteOrigin).href)
-  const watermarkUrl = escapeHtml(new URL('/brand/logos/rs-watermark.png', siteOrigin).href)
+  const logoUrl = escapeHtml(new URL('/brand/logos/rs-email-logo.png', assetOrigin).href)
+  const watermarkUrl = escapeHtml(new URL('/brand/logos/rs-watermark.png', assetOrigin).href)
   const socialLinks = SOCIALS.map(
-    ({ name, url, icon }) => `
+    ({ name, url }) => {
+      const iconUrl = escapeHtml(new URL(`/brand/social/${name.toLowerCase()}.png`, assetOrigin).href)
+      return `
       <td align="center" style="padding:0 5px;">
         <a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" aria-label="${escapeHtml(name)}" title="${escapeHtml(name)}" style="display:block;width:40px;height:40px;border:1px solid #29282f;border-radius:50%;background-color:#111114;color:#c8c8ce;text-align:center;text-decoration:none;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" style="margin-top:12px;fill:#c8c8ce;" aria-hidden="true"><path d="${icon.path}"/></svg>
+          <img src="${iconUrl}" width="16" height="16" alt="" style="display:block;width:16px;height:16px;margin:12px auto 0;">
         </a>
-      </td>`,
+      </td>`
+    },
   ).join('')
 
   return `<!doctype html>
@@ -39,12 +42,12 @@ export function contactEmail({ name, email, subject, message }: ContactEmailData
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#000010;">
       <tr>
         <td align="center" style="padding:36px 16px;">
-          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:620px;border:1px solid #7415C1;border-radius:16px;background-color:#0b0a18;overflow:hidden;">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:620px;border:1px solid #51445F;border-radius:16px;background-color:#0b0a18;overflow:hidden;">
             <tr>
-              <td style="height:5px;background-color:#7415C1;font-size:0;line-height:0;">&nbsp;</td>
+              <td style="height:5px;background-color:#51445F;font-size:0;line-height:0;">&nbsp;</td>
             </tr>
             <tr>
-              <td align="center" bgcolor="#7415C1" style="padding:20px 32px 18px;background-color:#7415C1;">
+              <td align="center" bgcolor="#51445F" style="padding:20px 32px 18px;background-color:#51445F;">
                 <nav aria-label="Radiant Shadows">
                   <img src="${logoUrl}" width="58" height="58" alt="Radiant Shadows" style="display:block;width:58px;height:58px;margin:0 auto;">
                 </nav>
@@ -61,7 +64,7 @@ export function contactEmail({ name, email, subject, message }: ContactEmailData
               </td>
             </tr>
             <tr>
-              <td style="padding:0 32px 26px;background-color:#0b0a18;background-image:url('${watermarkUrl}');background-position:center center;background-repeat:no-repeat;background-size:280px auto;">
+              <td style="padding:0 32px 26px;background-color:#0b0a18;background-image:url('${watermarkUrl}');background-position:center center;background-repeat:no-repeat;background-size:460px auto;">
                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border:1px solid #392052;border-radius:12px;background-color:transparent;">
                   <tr>
                     <td style="padding:17px 18px 15px;">
@@ -83,7 +86,7 @@ export function contactEmail({ name, email, subject, message }: ContactEmailData
                   </tr>
                 </table>
                 <p style="margin:24px 0 9px;color:#9e97ac;font-size:11px;font-weight:bold;letter-spacing:1.2px;text-transform:uppercase;">Mensaje</p>
-                <div style="padding:17px 18px;border-left:3px solid #7415C1;border-radius:0 10px 10px 0;background-color:transparent;color:#eaeaea;font-size:14px;line-height:1.75;overflow-wrap:anywhere;">${safeMessage}</div>
+                <div style="padding:17px 18px;border-left:3px solid #51445F;border-radius:0 10px 10px 0;background-color:transparent;color:#eaeaea;font-size:14px;line-height:1.75;overflow-wrap:anywhere;">${safeMessage}</div>
               </td>
             </tr>
             <tr>
