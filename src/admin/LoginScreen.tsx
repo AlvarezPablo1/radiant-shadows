@@ -48,10 +48,6 @@ export function LoginScreen() {
             ENTRAR
           </button>
         </form>
-
-        <a href="/" className="mt-6 text-sm text-muted hover:text-white">
-          ← Volver al sitio
-        </a>
       </section>
     </main>
   )

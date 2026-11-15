@@ -7,7 +7,7 @@ import { readAll } from '../server/content.js'
 export async function GET(request: Request) {
   const fresh = new URL(request.url).searchParams.has('fresh')
   try {
-    const content = await readAll(fresh)
+    const content = await readAll()
     return Response.json(content, {
       headers: { 'Cache-Control': fresh ? 'no-store' : 'public, s-maxage=30, stale-while-revalidate=300' },
     })

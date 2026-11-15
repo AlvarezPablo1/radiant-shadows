@@ -35,7 +35,7 @@ function FormBody({ schema, initial, isNew, onSave, onClose }: Omit<Props, 'item
   }
 
   return (
-    <form onSubmit={submit} noValidate className="flex flex-col gap-4">
+    <form onSubmit={submit} noValidate className="flex min-w-0 flex-col gap-4">
       <div>
         <Kicker>{schema.label}</Kicker>
         <h2 id="item-title" className="mt-1 font-display text-[36px] leading-none tracking-[0.03em] text-white">

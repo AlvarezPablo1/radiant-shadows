@@ -20,14 +20,28 @@ async function errorText(r: Response) {
   return data?.error ?? `Error ${r.status}`
 }
 
-/** Guarda una sección completa */
+/**
+ * Guarda una sección completa y no termina hasta comprobar que lo guardado ya es lo que se lee
+ * (así el aviso de "guardado" aparece cuando el cambio está de verdad en el sitio).
+ */
 export async function saveCollection(key: CollectionKey, items: unknown[]) {
+  const body = JSON.stringify(items)
   const r = await fetch(`/api/admin/content?collection=${key}`, {
     method: 'PUT',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(items),
+    body,
   })
   if (!r.ok) throw new Error(await errorText(r))
+  // se vuelve a leer hasta que coincida (unos segundos como mucho)
+  for (let i = 0; i < 12; i++) {
+    const check = await fetch('/api/content?fresh=1', { cache: 'no-store' })
+    if (check.ok) {
+      const saved = ((await check.json()) as Partial<Content>)[key]
+      if (JSON.stringify(saved) === body) return
+    }
+    await new Promise((res) => setTimeout(res, 700))
+  }
+  throw new Error('Se guardó, pero todavía no se ve actualizado. Recargá en unos segundos para confirmar.')
 }
 
 /** Sube una imagen (achicada y en WebP) y devuelve su URL pública */

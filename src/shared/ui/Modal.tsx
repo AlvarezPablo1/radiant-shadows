@@ -38,7 +38,7 @@ export function Modal({ open, onClose, labelledBy, children, className, wide }: 
     >
       <div
         className={cx(
-          'relative flex max-h-[calc(100dvh-32px)] flex-col overflow-y-auto rounded-[18px] border border-violet-hi/35 bg-card px-8 pt-8.5 pb-7.5 shadow-card max-sm:px-5 max-sm:pt-7 max-sm:pb-5.5',
+          'relative flex max-h-[calc(100dvh-32px)] flex-col overflow-x-hidden overflow-y-auto overscroll-contain rounded-[18px] border border-violet-hi/35 bg-card px-8 pt-8.5 pb-7.5 shadow-card max-sm:px-5 max-sm:pt-7 max-sm:pb-5.5',
           className,
         )}
       >

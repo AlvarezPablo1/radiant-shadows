@@ -25,7 +25,7 @@ export function HomeHero({ page, ready, actions, team }: { page: Page; ready: bo
       </div>
       <h1
         className={cx(
-          'relative mt-5 w-full font-brand leading-[1.1] font-semibold tracking-[0.18em] whitespace-nowrap [font-stretch:125%] text-[clamp(26px,5.6vw,108px)] max-lg:whitespace-normal max-lg:tracking-[0.24em] max-lg:text-[clamp(30px,9vw,80px)]',
+          'relative mt-5 w-full font-brand leading-[1.1] font-semibold tracking-[0.18em] whitespace-nowrap font-stretch-125% text-[clamp(26px,5.6vw,108px)] max-lg:whitespace-normal max-lg:tracking-[0.24em] max-lg:text-[clamp(30px,9vw,80px)]',
           enter(ready, 'delay-80'),
         )}
       >
@@ -50,7 +50,13 @@ export function HomeHero({ page, ready, actions, team }: { page: Page; ready: bo
         </span>
       </h1>
       <div className={cx('relative', enter(ready, 'delay-160'))}>
-        <span className="mt-4 inline-block -rotate-5 font-script text-[clamp(20px,2.4vw,32px)] text-ember">{page.script}</span>
+        {/* "El fuego sigue" se enciende como si el fuego del video la prendiera (amarillo y naranja), al mismo tiempo que el título */}
+        <span
+          key={`f${pulse}`}
+          className={cx('mt-4 inline-block -rotate-5 font-script text-[clamp(20px,2.4vw,32px)] text-ember', pulse > 0 && 'animate-fire-glow')}
+        >
+          {page.script}
+        </span>
       </div>
       <p className={cx('relative mt-6 max-w-150 text-[17px] leading-[1.6] text-body max-md:text-[15px]', enter(ready, 'delay-240'))}>{page.text}</p>
       <div className={cx('relative flex justify-center', enter(ready, 'delay-320'))}>{actions}</div>

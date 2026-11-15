@@ -55,7 +55,7 @@ export function Field({ field, value, onChange }: Props) {
     )
 
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className="flex min-w-0 flex-col gap-1.5">
       <label htmlFor={id} className="text-[13px] font-semibold tracking-[0.04em] text-mist">
         {field.label}
         {field.required && <span className="text-lilac"> *</span>}

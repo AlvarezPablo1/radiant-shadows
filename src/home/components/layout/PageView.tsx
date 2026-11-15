@@ -46,6 +46,17 @@ export function PageView({ page, isHome, ready, onContact, team }: Props) {
       return <PeoplePage page={page} people={content.staff} ready={ready} />
     case '/equipo/creadores':
       return <PeoplePage page={page} people={content.creators} ready={ready} />
+    case '/shop':
+      // la tienda: el dragón y la dragona con la camiseta del equipo
+      return (
+        <Hero
+          page={page}
+          isHome={isHome}
+          ready={ready}
+          team={team}
+          art={<img src="/brand/mascots/tienda.webp" alt="" className="relative w-[min(140%,900px)] max-w-none animate-float drop-shadow-[0_0_40px_rgb(122_40_226/0.55)] max-md:w-[min(100vw,480px)]" />}
+        />
+      )
     default:
       return <Hero page={page} isHome={isHome} ready={ready} team={team} />
   }

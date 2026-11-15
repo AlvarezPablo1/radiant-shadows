@@ -21,13 +21,14 @@ export function Dashboard({ initial }: { initial: Content }) {
     scrollTo({ top: 0 })
   }
 
+  // marca del panel (no es un link: no lleva a la web)
   const logo = (
-    <a href="/" className="flex items-center gap-3">
+    <div className="flex items-center gap-3">
       <img src="/brand/logos/rs-positive.webp" alt="" className="size-11 drop-shadow-[0_0_14px_rgb(142_68_255/0.5)]" />
       <span className="font-display text-[24px] leading-none tracking-[0.05em] text-white">
         RS <span className="text-lilac">ADMIN</span>
       </span>
-    </a>
+    </div>
   )
 
   return (
