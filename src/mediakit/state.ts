@@ -1,4 +1,4 @@
-import { MASCOTS } from './brand'
+import { MASCOTS, mascotFor } from './brand'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { makeRecipe } from './lib/background'
 import { useRosters } from './useRosters'
@@ -20,7 +20,7 @@ export function newDoc(type: string, roster: RosterId = 'main', prev?: PostDoc):
     roster,
     visual: t.defaultVisual,
     variant: 0,
-    mascot: t.defaultMascot,
+    mascot: mascotFor(roster, t.defaultMascot),
     // se conservan datos compartidos útiles (torneo / rival) al cambiar de tipo
     fields: prev ? pickKeys(prev.fields, ['tournament', 'rival', 'rivalLogo', 'date', 'time']) : {},
     people: [],
@@ -48,8 +48,8 @@ export function useAppState() {
     // compatibilidad con borradores viejos (siluetas de mascotas eliminadas)
     if (d.bg.silhouette !== 'none' && d.bg.silhouette !== 'rs' && d.bg.silhouette !== 'gc') d.bg = { ...d.bg, silhouette: 'rs' }
     if ((d.bg.imageFilter as string) === 'bn') d.bg.imageFilter = 'oscuro'
-    // las mascotas viejas (Kael / Nyra) se reemplazaron por los stickers de la dragona
-    if (!MASCOTS.some((m) => m.id === d.mascot)) d = { ...d, mascot: postType(d.type).defaultMascot }
+    // las mascotas viejas (Kael / Nyra) se reemplazaron por los stickers del dragón y la dragona
+    if (!MASCOTS.some((m) => m.id === d.mascot)) d = { ...d, mascot: mascotFor(d.roster, postType(d.type).defaultMascot) }
     // la vista Lateral se eliminó: los borradores que la usaban pasan a Centrado
     if (d.type !== 'mvp' && d.variant === 1) d = { ...d, variant: 0, layers: {} }
     // los fondos ya no traen brillos por defecto (se pueden volver a subir en Fondo → Ajustes finos)

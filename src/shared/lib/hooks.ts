@@ -33,30 +33,6 @@ export function useEscape(active: boolean, onEscape: () => void) {
   }, [active, onEscape])
 }
 
-/** true durante un instante cada tanto (entre `minMs` y `maxMs`, al azar); nunca con "reducir movimiento" */
-export function useWink(minMs = 5000, maxMs = 9000, durationMs = 180) {
-  const [winking, setWinking] = useState(false)
-  useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    let timer: ReturnType<typeof setTimeout>
-    const schedule = () => {
-      timer = setTimeout(
-        () => {
-          setWinking(true)
-          timer = setTimeout(() => {
-            setWinking(false)
-            schedule()
-          }, durationMs)
-        },
-        minMs + Math.random() * (maxMs - minMs),
-      )
-    }
-    schedule()
-    return () => clearTimeout(timer)
-  }, [minMs, maxMs, durationMs])
-  return winking
-}
-
 /** true cuando el elemento entra en pantalla (una sola vez); con "reducir movimiento" ya arranca visible */
 export function useInView<T extends Element>(threshold = 0.2) {
   const ref = useRef<T>(null)

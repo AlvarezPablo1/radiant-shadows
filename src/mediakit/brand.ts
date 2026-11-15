@@ -35,21 +35,55 @@ export const LOGOS = {
   gc: { positive: '/brand/logos/gc-positive.png', negative: '/brand/logos/gc-negative.png' },
 }
 
-export type MascotAsset = { id: string; label: string; src: string }
-/** Mascota: la dragona en stickers, uno por emoción (cada uno ya trae su palabra, si tiene) */
-const sticker = (id: string, label: string): MascotAsset => ({ id: `dragona-${id}`, label, src: `/brand/mascots/dragona/${id}.png` })
-export const MASCOTS: MascotAsset[] = [
-  sticker('gg', 'GG'),
-  sticker('nt', 'NT'),
-  sticker('celebrando', 'Celebrando'),
-  sticker('felicidades', 'Felicidades'),
-  sticker('feliz', 'Feliz'),
-  sticker('saludando', 'Saludando'),
-  sticker('uwu', 'UwU'),
-  sticker('sonrojada', 'Sonrojada'),
-  sticker('avergonzada', 'Avergonzada'),
-  sticker('triste', 'Triste'),
-  sticker('llorando', 'Llorando'),
-  sticker('enojada', 'Enojada'),
-]
+export type Mascot = 'dragon' | 'dragona'
+export type MascotAsset = { id: string; label: string; src: string; who: Mascot; shirt: boolean }
+/** Expresiones de las mascotas (mismo nombre para el dragón y la dragona; "/a" se adapta a cada uno) */
+const LABELS: Record<string, string> = {
+  victoria: 'Victoria (alas abiertas)',
+  sentada: 'Sentada',
+  rugiendo: 'Rugiendo',
+  burlon: 'Burlón/a',
+  picaro: 'Pícaro/a',
+  confiado: 'Confiado/a',
+  orgulloso: 'Orgulloso/a',
+  senalando: 'Señalando',
+  desafiante: 'Desafiante',
+  serio: 'Serio/a',
+  enojado: 'Enojado/a',
+  sorprendido: 'Sorprendido/a',
+  pensando: 'Pensando',
+  indiferente: 'Indiferente',
+  silencio: 'Silencio',
+}
+const ALL = ['victoria', 'rugiendo', 'burlon', 'picaro', 'confiado', 'orgulloso', 'senalando', 'desafiante', 'serio', 'enojado', 'sorprendido', 'pensando', 'indiferente', 'silencio']
+/** qué expresiones hay de cada personaje, sin y con la camiseta del equipo */
+const SETS: Record<Mascot, Record<'sin' | 'con', string[]>> = {
+  dragon: { sin: ALL, con: ALL },
+  dragona: { sin: ALL, con: ['sentada', 'rugiendo', 'burlon', 'picaro', 'confiado', 'orgulloso', 'desafiante', 'serio', 'enojado', 'sorprendido', 'indiferente'] },
+}
+const sticker = (who: Mascot, shirt: boolean, id: string): MascotAsset => ({
+  id: `${who}${shirt ? '-camiseta' : ''}-${id}`,
+  label: `${who === 'dragon' ? 'Dragón' : 'Dragona'} · ${LABELS[id].replace('o/a', who === 'dragon' ? 'o' : 'a')}${shirt ? ' · con camiseta' : ''}`,
+  src: `/brand/mascots/${who}${shirt ? '-camiseta' : ''}/${id}.webp`,
+  who,
+  shirt,
+})
+export const MASCOTS: MascotAsset[] = (['dragon', 'dragona'] as Mascot[]).flatMap((who) => [
+  ...SETS[who].sin.map((id) => sticker(who, false, id)),
+  ...SETS[who].con.map((id) => sticker(who, true, id)),
+])
+/** el personaje de cada equipo: el dragón en MAIN, la dragona en GC */
+export const mascotOf = (roster: string): Mascot => (roster === 'gc' ? 'dragona' : 'dragon')
+const expressionOf = (id: string) => id.replace(/^dragona?-(camiseta-)?/, '')
+export const hasShirt = (id: string) => /^dragona?-camiseta-/.test(id)
+/** la mascota de un equipo con una expresión; si esa expresión no existe con/sin camiseta, la más parecida que haya */
+export const mascotFor = (roster: string, expression: string, shirt = false) => {
+  const who = mascotOf(roster)
+  const pick = (sh: boolean, ex: string) => MASCOTS.find((m) => m.who === who && m.shirt === sh && expressionOf(m.id) === ex)?.id
+  return pick(shirt, expression) ?? pick(shirt, expression === 'victoria' ? 'sentada' : 'confiado') ?? pick(!shirt, expression) ?? MASCOTS[0].id
+}
+/** al cambiar de equipo, la misma expresión (y camiseta) con el personaje del otro equipo */
+export const swapMascot = (id: string, roster: string) => mascotFor(roster, expressionOf(id), hasShirt(id))
+/** la misma expresión, con o sin camiseta */
+export const withShirt = (id: string, roster: string, shirt: boolean) => mascotFor(roster, expressionOf(id), shirt)
 export const mascot = (id: string) => MASCOTS.find((m) => m.id === id)?.src ?? MASCOTS[0].src

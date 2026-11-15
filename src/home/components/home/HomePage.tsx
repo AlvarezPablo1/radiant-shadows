@@ -1,7 +1,6 @@
 import type { Team } from '../../data/teams'
 import type { Page } from '../../types'
-import { FlyingDragon } from '../hero/FlyingDragon'
-import { Hero } from '../hero/Hero'
+import { HomeHero } from './HomeHero'
 import { AboutTeaser } from './AboutTeaser'
 import { AchievementsHighlight } from './AchievementsHighlight'
 import { ActionButton } from '../../../shared/ui/ActionButton'
@@ -11,18 +10,17 @@ import { NextMatch } from './NextMatch'
 import { RosterPreview } from './RosterPreview'
 import { TryoutsBanner } from './TryoutsBanner'
 
-/** Home: héroe con botones y, al bajar, tryouts (mientras estén abiertos), próximo partido, roster, logros, quiénes somos, redes y contacto */
-export function HomePage({ page, ready, onContact, team }: { page: Page; ready: boolean; onContact: () => void; team: Team }) {
+/** Home: héroe con botones y, al bajar, próximo partido (si hay), tryouts (mientras estén abiertos), roster, logros, quiénes somos, redes y contacto */
+export function HomePage({ page, ready, onContact, team }: { page: Page; ready: boolean; onContact: () => void; team?: Team }) {
   return (
     <>
-      <Hero
+      <HomeHero
         page={page}
-        isHome
+        // el video del equipo del próximo partido: el dragón (MAIN) o la dragona (GC)
+        team={team}
         ready={ready}
-        // la mascota del equipo del próximo partido: Kael volando cada tanto (principal) o la dragona de GC guiñando
-        art={<FlyingDragon team={team} />}
         actions={
-          <div className="mt-8 flex flex-wrap gap-3 max-md:justify-center">
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
             <ActionButton href="/equipo/masculino">CONOCÉ AL EQUIPO</ActionButton>
             <ActionButton href="/calendario" variant="ghost">
               VER CALENDARIO
@@ -31,8 +29,9 @@ export function HomePage({ page, ready, onContact, team }: { page: Page; ready: 
         }
       />
       <div className="relative z-2 mx-auto flex w-full max-w-page flex-col gap-28 pb-28 max-md:gap-20 max-md:pb-20">
-        <TryoutsBanner onContact={onContact} />
+        {/* si hay un partido en el calendario, va primero, justo debajo del héroe */}
         <NextMatch />
+        <TryoutsBanner onContact={onContact} />
         <RosterPreview />
         <AchievementsHighlight />
         <AboutTeaser />

@@ -461,7 +461,7 @@ input[type='checkbox'] {
 }
 .mascot-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 5px;
 }
 .mascot {
@@ -2173,4 +2173,9 @@ h4 {
   bottom: 8px;
   height: 4px;
   background: var(--violet-hi, #8e44ff);
+}
+
+/* selector "sin / con camiseta" arriba de las mascotas */
+.seg + .mascot-grid {
+  margin-top: 8px;
 }

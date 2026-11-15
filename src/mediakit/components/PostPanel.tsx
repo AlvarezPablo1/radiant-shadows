@@ -1,11 +1,12 @@
 import { useState, type ReactNode } from 'react'
-import { MASCOTS } from '../brand'
+import { swapMascot } from '../brand'
 import { CATEGORIES, categoryOf, postType, type SubOption } from '../data/postTypes'
 import { BG_PRESETS, makeRecipe } from '../lib/background'
 import type { AppState } from '../state'
 import { newDoc } from '../state'
 import type { PostDoc, Visual } from '../types'
 import { Icon } from './icons'
+import { MascotPicker } from './post/MascotPicker'
 import { PeoplePicker } from './post/PeoplePicker'
 import { PostFields } from './post/PostFields'
 import { Advanced, Field, Seg, useUI } from './ui'
@@ -140,7 +141,7 @@ export function PostPanel({ s }: { s: AppState }) {
             { value: 'main', label: 'MAIN' },
             { value: 'gc', label: 'GC' },
           ]}
-          onChange={(v) => s.relayout((d) => ({ ...d, roster: v, people: [] }))}
+          onChange={(v) => s.relayout((d) => ({ ...d, roster: v, people: [], mascot: swapMascot(d.mascot, v) }))}
         />
       </div>
       <Step n={1} title="Tipo" aside={<span className={'badge' + (t.feed(doc) ? '' : ' muted')}>{formatsLabel}</span>}>
@@ -213,15 +214,7 @@ export function PostPanel({ s }: { s: AppState }) {
             />
           </Field>
         )}
-        {visual === 'mascots' && (
-          <div className="mascot-grid">
-            {MASCOTS.map((m) => (
-              <button key={m.id} className={'mascot' + (doc.mascot === m.id ? ' on' : '')} title={m.label} onClick={() => s.setDoc((d) => ({ ...d, mascot: m.id }))}>
-                <img src={m.src} alt={m.label} />
-              </button>
-            ))}
-          </div>
-        )}
+        {visual === 'mascots' && <MascotPicker s={s} />}
       </Step>
     </div>
   )

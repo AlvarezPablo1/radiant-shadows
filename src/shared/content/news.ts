@@ -9,6 +9,7 @@ export interface NewsItem {
   /** fecha para mostrar, p. ej. "Noviembre 2026" (opcional) */
   date?: string
   /** último día en que sigue vigente (AAAA-MM-DD): después deja de mostrarse en la home */
+  /** fecha de cierre (AAAA-MM-DD, opcional): pasado ese día la noticia deja de mostrarse en el sitio */
   until?: string
   /** foto recortada; si falta se usa el fondo del color de la categoría */
   image?: string

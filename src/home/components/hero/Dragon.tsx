@@ -1,15 +1,17 @@
 import { TEAM_BRAND, type Team } from '../../data/teams'
 import { cx } from '../../../shared/lib/cx'
-import { useWink } from '../../../shared/lib/hooks'
 
-/** La mascota del equipo flotando; cada tanto guiña el ojo (la versión guiñando va encima y aparece un instante) */
+/** La mascota del equipo flotando (dragón y dragona con las alas abiertas: grandes, pueden salirse un poco de su columna) */
 export function Dragon({ team = 'main' }: { team?: Team }) {
-  const winking = useWink()
-  const { mascot, wink } = TEAM_BRAND[team]
   return (
-    <div className="relative w-[min(100%,560px)] animate-float drop-shadow-[0_0_40px_rgb(122_40_226/0.55)] max-md:w-[min(62vw,280px)]">
-      <img src={mascot} alt="" className="w-full" />
-      <img src={wink} alt="" className={cx('absolute inset-0 w-full', winking ? 'opacity-100' : 'opacity-0')} />
+    <div
+      className={cx(
+        'relative animate-float drop-shadow-[0_0_40px_rgb(122_40_226/0.55)]',
+        team === 'main' ? 'w-[min(125%,700px)] max-w-none max-md:w-[min(78vw,340px)]' : 'w-[min(150%,860px)] max-w-none max-md:w-[min(92vw,420px)]',
+      )}
+    >
+      {/* el dragón viene con un violeta muy brillante: se apaga un poco para que quede parejo con la dragona */}
+      <img src={TEAM_BRAND[team].mascot} alt="" className={cx('w-full', team === 'main' && 'brightness-[0.82] saturate-[0.72]')} />
     </div>
   )
 }

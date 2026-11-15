@@ -22,6 +22,7 @@ export interface PostType {
   /** quién aparece: una persona elegida, el roster entero o según el modo visual */
   people: 'one' | 'many' | 'none'
   defaultVisual: Visual
+  /** emoción de la mascota por defecto (el personaje sale del equipo: dragón en MAIN, dragona en GC) */
   defaultMascot: string
   bgPreset: (d: PostDoc) => string
   /** ¿se puede publicar en Feed IG? */
@@ -53,7 +54,7 @@ export const POST_TYPES: PostType[] = [
     group: 'Competitivo',
     people: 'many',
     defaultVisual: 'players',
-    defaultMascot: 'dragona-celebrando',
+    defaultMascot: 'victoria',
     fields: [
       { key: 'tournament', label: 'Torneo', kind: 'text', placeholder: 'Ej: Liga Dragones Split 2' },
       { key: 'phase', label: 'Fase / instancia', kind: 'text', placeholder: 'Ej: Fecha 3 · Bo3' },
@@ -73,7 +74,7 @@ export const POST_TYPES: PostType[] = [
     group: 'Competitivo',
     people: 'many',
     defaultVisual: 'players',
-    defaultMascot: 'dragona-gg',
+    defaultMascot: 'victoria',
     fields: [
       {
         key: 'outcome',
@@ -102,7 +103,7 @@ export const POST_TYPES: PostType[] = [
     group: 'Competitivo',
     people: 'many',
     defaultVisual: 'players',
-    defaultMascot: 'dragona-feliz',
+    defaultMascot: 'confiado',
     fields: [
       {
         key: 'place',
@@ -130,7 +131,7 @@ export const POST_TYPES: PostType[] = [
     group: 'Roster',
     people: 'one',
     defaultVisual: 'players',
-    defaultMascot: 'dragona-saludando',
+    defaultMascot: 'senalando',
     fields: [
       { key: 'joinDate', label: 'Fecha de incorporación', kind: 'date' },
       { key: 'phrase', label: 'Frase (opcional)', kind: 'text', placeholder: 'Ej: Un dragón más en la familia' },
@@ -146,7 +147,7 @@ export const POST_TYPES: PostType[] = [
     group: 'Roster',
     people: 'one',
     defaultVisual: 'players',
-    defaultMascot: 'dragona-triste',
+    defaultMascot: 'silencio',
     fields: [{ key: 'phrase', label: 'Frase (opcional)', kind: 'text', placeholder: 'Ej: Gracias por cada ronda' }],
     bgPreset: () => 'derrota',
     feed: () => true,
@@ -159,7 +160,7 @@ export const POST_TYPES: PostType[] = [
     group: 'Roster',
     people: 'one',
     defaultVisual: 'players',
-    defaultMascot: 'dragona-felicidades',
+    defaultMascot: 'picaro',
     fields: [{ key: 'phrase', label: 'Frase (opcional)', kind: 'text', placeholder: 'Que este año arda más que nunca' }],
     bgPreset: () => 'celebracion',
     feed: () => true,
@@ -171,7 +172,7 @@ export const POST_TYPES: PostType[] = [
     group: 'Roster',
     people: 'none',
     defaultVisual: 'mascots',
-    defaultMascot: 'dragona-saludando',
+    defaultMascot: 'senalando',
     fields: [
       { key: 'title', label: 'Titular', kind: 'text', placeholder: 'TRYOUTS' },
       { key: 'roles', label: 'Qué buscamos (uno por línea)', kind: 'textarea', placeholder: 'Duelista\nControlador\nCoach' },
@@ -189,7 +190,7 @@ export const POST_TYPES: PostType[] = [
     group: 'Roster',
     people: 'many',
     defaultVisual: 'players',
-    defaultMascot: 'dragona-celebrando',
+    defaultMascot: 'victoria',
     fields: [{ key: 'season', label: 'Temporada / torneo', kind: 'text', placeholder: `Temporada ${new Date().getFullYear()}` }],
     bgPreset: () => 'competitivo',
     feed: () => true,
@@ -201,7 +202,7 @@ export const POST_TYPES: PostType[] = [
     group: 'Comunidad',
     people: 'none',
     defaultVisual: 'none',
-    defaultMascot: 'dragona-saludando',
+    defaultMascot: 'senalando',
     fields: [
       { key: 'title', label: 'Titular', kind: 'text', placeholder: 'COMUNICADO OFICIAL' },
       { key: 'body', label: 'Texto', kind: 'textarea', placeholder: 'Escribí el comunicado…' },
@@ -218,7 +219,7 @@ export const POST_TYPES: PostType[] = [
     group: 'Comunidad',
     people: 'none',
     defaultVisual: 'mascots',
-    defaultMascot: 'dragona-uwu',
+    defaultMascot: 'pensando',
     fields: [
       { key: 'kicker', label: 'Etiqueta', kind: 'text', placeholder: 'Tip del día' },
       { key: 'title', label: 'Titular', kind: 'text', placeholder: 'CROSSHAIR PLACEMENT' },
@@ -234,7 +235,7 @@ export const POST_TYPES: PostType[] = [
     group: 'Comunidad',
     people: 'none',
     defaultVisual: 'none',
-    defaultMascot: 'dragona-saludando',
+    defaultMascot: 'senalando',
     fields: [
       { key: 'title', label: 'Titular', kind: 'text', placeholder: 'STREAM ON' },
       { key: 'channel', label: 'Canal', kind: 'text', placeholder: 'twitch.tv/radiantshadows' },
@@ -250,7 +251,7 @@ export const POST_TYPES: PostType[] = [
     group: 'Roster',
     people: 'one',
     defaultVisual: 'players',
-    defaultMascot: 'dragona-gg',
+    defaultMascot: 'victoria',
     fields: [
       { key: 'mvpScope', label: 'Encabezado', kind: 'select', options: [
         { value: 'partido', label: 'MVP del partido' },
@@ -276,7 +277,7 @@ export const POST_TYPES: PostType[] = [
     group: 'Competitivo',
     people: 'many',
     defaultVisual: 'players',
-    defaultMascot: 'dragona-celebrando',
+    defaultMascot: 'victoria',
     fields: [
       { key: 'tournament', label: 'Torneo', kind: 'text', placeholder: 'Ej: Liga Dragones Split 2' },
       { key: 'tournamentLogo', label: 'Logo del torneo (opcional)', kind: 'image' },
@@ -560,8 +561,8 @@ export function resolveImageBind(bind: string, d: PostDoc, r: Roster): string | 
   // el logo blanco es sólo para las derrotas; en todo lo demás va el de color (MAIN o GC)
   if (bind === 'logo:team') return LOGOS[r.id][outcome(d) === 'loss' ? 'negative' : 'positive']
   if (bind === 'logo:rival') return d.fields.rivalLogo || undefined
-  // en las derrotas, el "GG" pasa a "NT"
-  if (bind === 'mascot') return mascot(d.type === 'resultado' && d.mascot === 'dragona-gg' && outcome(d) === 'loss' ? 'dragona-nt' : d.mascot)
+  // en las derrotas, la de victoria pasa a la enojada
+  if (bind === 'mascot') return mascot(d.type === 'resultado' && d.mascot.endsWith('-victoria') && outcome(d) === 'loss' ? d.mascot.replace(/-victoria$/, '-enojado') : d.mascot)
   if (bind === 'logo:tournament') return d.fields.tournamentLogo || undefined
   if (bind === 'art:keycaps') return keycapsArt()
   if (bind.startsWith('art:key:')) {

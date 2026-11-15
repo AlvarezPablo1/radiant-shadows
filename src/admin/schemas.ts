@@ -36,6 +36,10 @@ export interface CollectionSchema {
 const opts = (values: string[]) => values.map((v) => ({ value: v, label: v }))
 const str = (v: unknown) => (typeof v === 'string' ? v : v == null ? '' : String(v))
 const join = (...parts: unknown[]) => parts.map(str).filter(Boolean).join(' · ')
+/** fecha de hoy AAAA-MM-DD (hora local) */
+const today = () => new Date().toLocaleDateString('sv')
+/** en la lista del admin: avisa si la noticia ya cerró (no se ve en el sitio) o hasta cuándo sigue */
+const closedLabel = (until: unknown) => (typeof until !== 'string' || !until ? '' : until < today() ? 'Cerrada: ya no se ve en el sitio' : `Hasta el ${until.split('-').reverse().join('/')}`)
 
 const TEAMS = opts(['Masculino', 'Game Changers'])
 const PLAYER_ROLES = opts(['Duelista', 'Iniciador', 'Controlador', 'Centinela', 'Flex'])
@@ -86,7 +90,7 @@ export const SCHEMAS: CollectionSchema[] = [
     key: 'news',
     label: 'Noticias',
     singular: 'una noticia',
-    description: 'La primera de la lista sale destacada. Las de tryouts aparecen también en la home mientras estén vigentes.',
+    description: 'La primera de la lista sale destacada. Las que tienen fecha de cierre se quitan solas del sitio pasado ese día. Las de tryouts aparecen también en la home.',
     fields: [
       { key: 'category', label: 'Categoría', type: 'select', required: true, options: Object.entries(NEWS_CATEGORIES).map(([value, c]) => ({ value, label: c.label })) },
       { key: 'title', label: 'Título', type: 'text', required: true },
@@ -95,12 +99,12 @@ export const SCHEMAS: CollectionSchema[] = [
       { key: 'image', label: 'Foto de la persona', type: 'image', cutout: true, help: 'Opcional. Si la noticia es de alguien, su foto: se arma la placa con su nombre grande. Sin foto se usa la imagen por defecto' },
       { key: 'person', label: 'Nombre en la placa', type: 'text', placeholder: 'Skull', help: 'Opcional. Si se deja vacío, se usa el nombre del jugador de la foto' },
       { key: 'showRoster', label: 'Usar la foto grupal del roster masculino actual', type: 'checkbox' },
-      { key: 'until', label: 'Vigente hasta', type: 'date', help: 'Opcional. Después de esa fecha deja de mostrarse en la home' },
+      { key: 'until', label: 'Fecha de cierre', type: 'date', help: 'Opcional. Pasado ese día la noticia se quita sola del sitio' },
       { key: 'action.href', label: 'Botón: a dónde lleva', type: 'link', help: 'Elegí una sección del sitio, el formulario de contacto o un link externo (se abre en otra pestaña)' },
       { key: 'action.label', label: 'Botón: texto', type: 'text', placeholder: 'Ver más' },
     ],
     title: (i) => str(i.title),
-    subtitle: (i) => join(NEWS_CATEGORIES[i.category as keyof typeof NEWS_CATEGORIES]?.label, i.date),
+    subtitle: (i) => join(NEWS_CATEGORIES[i.category as keyof typeof NEWS_CATEGORIES]?.label, i.date, closedLabel(i.until)),
     image: (i) => str(i.image) || undefined,
     blank: () => ({ id: Date.now().toString(36), category: 'competencia' }),
   },

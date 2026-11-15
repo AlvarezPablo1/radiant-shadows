@@ -21,7 +21,7 @@ interface Props {
 /** Bloque principal: título de la sección, texto y el dragón */
 export function Hero({ page, isHome, ready, actions, art, team }: Props) {
   return (
-    <main className="relative z-2 mx-auto grid min-h-svh max-w-page items-center overflow-x-clip gap-8 px-16 pt-[calc(var(--header-h)+40px)] pb-30 max-md:min-h-0 max-md:grid-cols-1 max-md:content-start max-md:gap-2 max-md:px-4 max-md:pt-[calc(var(--header-h)+16px)] max-md:pb-8 max-md:text-center grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+    <main className="relative z-2 mx-auto grid min-h-svh max-w-page items-center gap-8 px-16 pt-[calc(var(--header-h)+40px)] pb-30 max-md:min-h-0 max-md:grid-cols-1 max-md:content-start max-md:gap-2 max-md:px-4 max-md:pt-[calc(var(--header-h)+16px)] max-md:pb-8 max-md:text-center grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
       <div className="relative z-1">
         <div className={enter(ready, 'delay-0')}>
           <Kicker>{page.kicker}</Kicker>
