@@ -9,27 +9,31 @@ export const DEFAULT_OVERLAP = 0.4
 function stageSlots(n: number, r: { x: number; y: number; w: number; h: number; overlap?: number; dense?: boolean }) {
   // escalonados en profundidad: el del centro adelante y los de los costados apenas más chicos
   // y un poco más arriba (más "atrás"), en vez de una pirámide marcada apoyada abajo.
-  // El tamaño se calcula para la separación máxima; la "separación" sólo acerca o aleja
-  // a los jugadores entre sí (el grupo queda centrado en su zona).
-  const mid = (n - 1) / 2
+  // El del centro (el capitán, si hay) queda siempre en el medio exacto de la zona; con un número
+  // par de jugadores sobra uno a la izquierda. La "separación" sólo acerca o aleja a los demás.
+  const c = Math.floor(n / 2)
   const step = n >= 5 ? 0.06 : 0.07
-  const scales = Array.from({ length: n }, (_, i) => 1 - Math.abs(i - mid) * step)
+  const scales = Array.from({ length: n }, (_, i) => 1 - Math.abs(i - c) * step)
   const sum = scales.reduce((a, b) => a + b, 0)
-  const spanFor = (ov: number, base: number) => base * (sum * (1 - ov) + scales[n - 1] * ov)
   // en X (filas anchas y bajas) se superponen más: cada jugador sale bastante más grande
   const extra = r.dense ? 0.14 : 0
   const ref = 0.4 + extra
   const base = r.w / (sum * (1 - ref) + scales[n - 1] * ref)
   const overlap = Math.min(0.7, Math.max(0, (r.overlap ?? DEFAULT_OVERLAP) + extra))
-  let x = r.x + (r.w - spanFor(overlap, base)) / 2
+  const lefts: number[] = []
+  let x = 0
+  for (const k of scales) {
+    lefts.push(x)
+    x += base * k * (1 - overlap)
+  }
+  const shift = r.x + r.w / 2 - (lefts[c] + (base * scales[c]) / 2)
+  const far = Math.max(1, c, n - 1 - c)
   return scales.map((k, i) => {
     const bw = base * k,
       bh = r.h * k
     // cuanto más atrás, más arriba apoya los pies (perspectiva)
     const back = (1 - k) * r.h * 0.9
-    const slot = { x, y: r.y + (r.h - bh) - back, width: bw, height: bh, dist: Math.abs(i - mid) / Math.max(1, mid) }
-    x += bw * (1 - overlap)
-    return slot
+    return { x: lefts[i] + shift, y: r.y + (r.h - bh) - back, width: bw, height: bh, dist: Math.abs(i - c) / far }
   })
 }
 

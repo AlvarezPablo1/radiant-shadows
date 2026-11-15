@@ -2139,3 +2139,38 @@ h4 {
   font-size: 11px;
   color: var(--muted);
 }
+
+/* íconos de los diseños Contorno y Transmisión */
+.di-contour {
+  background: transparent;
+}
+.di-contour::before {
+  left: 3px;
+  right: 3px;
+  top: 6px;
+  height: 9px;
+  background: transparent;
+  border: 1.5px solid currentColor;
+  opacity: 0.6;
+}
+.di-contour::after {
+  left: 8px;
+  right: 8px;
+  bottom: 4px;
+  height: 14px;
+  opacity: 0.85;
+}
+.di-broadcast::before {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 9px;
+  opacity: 0.5;
+}
+.di-broadcast::after {
+  left: 3px;
+  width: 11px;
+  bottom: 8px;
+  height: 4px;
+  background: var(--violet-hi, #8e44ff);
+}

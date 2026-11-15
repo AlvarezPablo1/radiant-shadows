@@ -33,19 +33,21 @@ const CATEGORY_GROUPS = [
   { label: 'Equipo y comunidad', ids: ['jugadores', 'comunidad'] },
 ]
 
-const BASE_DESIGNS = [
+const DESIGNS = [
   { value: 0, label: 'Centrado', icon: <i className="di di-center" /> },
-  { value: 2, label: 'Impacto', icon: <i className="di di-impact" /> },
   { value: 3, label: 'Neón', icon: <i className="di di-neon" /> },
-]
-const TYPO_DESIGN = { value: 5, label: 'Tipográfico', icon: <i className="di di-typo" /> }
-const NEW_DESIGNS = [
+  { value: 5, label: 'Tipográfico', icon: <i className="di di-typo" /> },
   { value: 6, label: 'Póster', icon: <i className="di di-poster" /> },
   { value: 7, label: 'Marco', icon: <i className="di di-frame" /> },
+  { value: 8, label: 'Contorno', icon: <i className="di di-contour" /> },
+  { value: 9, label: 'Transmisión', icon: <i className="di di-broadcast" /> },
+  { value: 10, label: 'Diagonal', icon: <i className="di di-impact" /> },
 ]
 const MVP_DESIGNS = [
   { value: 0, label: 'Clásico', icon: <i className="di di-side" /> },
   { value: 1, label: 'Tarjeta', icon: <i className="di di-card" /> },
+  { value: 2, label: 'Afiche', icon: <i className="di di-poster" /> },
+  { value: 3, label: 'Datos', icon: <i className="di di-panels" /> },
 ]
 
 export function PostPanel({ s }: { s: AppState }) {
@@ -53,7 +55,9 @@ export function PostPanel({ s }: { s: AppState }) {
   const ui = useUI()
   const t = postType(doc.type)
   const cat = categoryOf(doc)
-  const designs = doc.type === 'mvp' ? MVP_DESIGNS : [...BASE_DESIGNS, TYPO_DESIGN, ...NEW_DESIGNS]
+  const designs = doc.type === 'mvp' ? MVP_DESIGNS : DESIGNS
+  // los diseños que ya no existen (Lateral, Impacto, Paneles) se muestran como Centrado
+  const shownVariant = designs.some((x) => x.value === doc.variant) ? doc.variant : 0
 
   const warnFeed = (next: PostDoc) => {
     const nt = postType(next.type)
@@ -180,7 +184,7 @@ export function PostPanel({ s }: { s: AppState }) {
         <Field label="Diseño">
           <div className="designs">
             {designs.map((d) => (
-              <button key={d.value} className={'design' + (doc.variant === d.value ? ' on' : '')} onClick={() => setDesign(d.value)}>
+              <button key={d.value} className={'design' + (shownVariant === d.value ? ' on' : '')} onClick={() => setDesign(d.value)}>
                 {d.icon}
                 <span>{d.label}</span>
               </button>
@@ -190,7 +194,7 @@ export function PostPanel({ s }: { s: AppState }) {
         <Field label="Imagen">
           <Seg value={visual} options={visualOptions} onChange={(v) => s.relayout((d) => ({ ...d, visual: v }))} />
         </Field>
-        {visual === 'none' && doc.type !== 'comunicado' && (
+        {visual === 'none' && doc.type !== 'comunicado' && doc.type !== 'stream' && (
           <Field label="Arte principal">
             <Seg
               value={doc.fields.noPhotoArt === 'teclas' ? 'teclas' : 'isotipo'}

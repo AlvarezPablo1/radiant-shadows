@@ -5,7 +5,7 @@ import type { Person, Roster, RosterId } from '../types'
 export const STAFF_ROLES = ['COACH', 'ASSISTANT', 'PERFCOACH', 'TEAM MANAGER']
 
 /** Lo único que se ajusta en el mediakit (se guarda en este navegador): quién es titular y una foto distinta */
-export type LocalTweaks = Record<string, { active?: boolean; photo?: string }>
+export type LocalTweaks = Record<string, { active?: boolean; photo?: string; captain?: boolean }>
 
 const TEAMS: Record<RosterId, { team: 'Masculino' | 'Game Changers'; label: string }> = {
   main: { team: 'Masculino', label: 'Radiant Shadows' },
@@ -40,7 +40,7 @@ function staffRole(role = '') {
 function person(rid: RosterId, m: Member, role: string, active: boolean, tweaks: LocalTweaks): Person {
   const id = `${rid}-${slug(m.name)}`
   const t = tweaks[id] ?? {}
-  return { id, name: m.name, realName: m.realName, role, ig: handleOf(m.instagram), x: handleOf(m.x), photo: t.photo ?? m.photo, active: t.active ?? active }
+  return { id, name: m.name, realName: m.realName, role, ig: handleOf(m.instagram), x: handleOf(m.x), photo: t.photo ?? m.photo, active: t.active ?? active, captain: !!t.captain }
 }
 
 /** Mientras un equipo no tenga jugadores cargados en /admin, las placas se arman con lugares genéricos */

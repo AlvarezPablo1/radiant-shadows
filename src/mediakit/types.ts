@@ -141,6 +141,8 @@ export interface Person {
   x: string
   photo?: string
   active: boolean
+  /** capitán: en las placas con varios jugadores va siempre en el centro */
+  captain?: boolean
 }
 
 export interface Roster {

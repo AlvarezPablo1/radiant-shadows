@@ -53,7 +53,7 @@ export const POST_TYPES: PostType[] = [
     group: 'Competitivo',
     people: 'many',
     defaultVisual: 'players',
-    defaultMascot: 'kael-34',
+    defaultMascot: 'dragona-celebrando',
     fields: [
       { key: 'tournament', label: 'Torneo', kind: 'text', placeholder: 'Ej: Liga Dragones Split 2' },
       { key: 'phase', label: 'Fase / instancia', kind: 'text', placeholder: 'Ej: Fecha 3 · Bo3' },
@@ -73,7 +73,7 @@ export const POST_TYPES: PostType[] = [
     group: 'Competitivo',
     people: 'many',
     defaultVisual: 'players',
-    defaultMascot: 'nyra-victoria',
+    defaultMascot: 'dragona-gg',
     fields: [
       {
         key: 'outcome',
@@ -102,7 +102,7 @@ export const POST_TYPES: PostType[] = [
     group: 'Competitivo',
     people: 'many',
     defaultVisual: 'players',
-    defaultMascot: 'duo-victoria',
+    defaultMascot: 'dragona-feliz',
     fields: [
       {
         key: 'place',
@@ -130,7 +130,7 @@ export const POST_TYPES: PostType[] = [
     group: 'Roster',
     people: 'one',
     defaultVisual: 'players',
-    defaultMascot: 'kael-frente',
+    defaultMascot: 'dragona-saludando',
     fields: [
       { key: 'joinDate', label: 'Fecha de incorporación', kind: 'date' },
       { key: 'phrase', label: 'Frase (opcional)', kind: 'text', placeholder: 'Ej: Un dragón más en la familia' },
@@ -146,7 +146,7 @@ export const POST_TYPES: PostType[] = [
     group: 'Roster',
     people: 'one',
     defaultVisual: 'players',
-    defaultMascot: 'kael-espalda',
+    defaultMascot: 'dragona-triste',
     fields: [{ key: 'phrase', label: 'Frase (opcional)', kind: 'text', placeholder: 'Ej: Gracias por cada ronda' }],
     bgPreset: () => 'derrota',
     feed: () => true,
@@ -159,7 +159,7 @@ export const POST_TYPES: PostType[] = [
     group: 'Roster',
     people: 'one',
     defaultVisual: 'players',
-    defaultMascot: 'nyra-victoria',
+    defaultMascot: 'dragona-felicidades',
     fields: [{ key: 'phrase', label: 'Frase (opcional)', kind: 'text', placeholder: 'Que este año arda más que nunca' }],
     bgPreset: () => 'celebracion',
     feed: () => true,
@@ -171,7 +171,7 @@ export const POST_TYPES: PostType[] = [
     group: 'Roster',
     people: 'none',
     defaultVisual: 'mascots',
-    defaultMascot: 'kael-34',
+    defaultMascot: 'dragona-saludando',
     fields: [
       { key: 'title', label: 'Titular', kind: 'text', placeholder: 'TRYOUTS' },
       { key: 'roles', label: 'Qué buscamos (uno por línea)', kind: 'textarea', placeholder: 'Duelista\nControlador\nCoach' },
@@ -189,7 +189,7 @@ export const POST_TYPES: PostType[] = [
     group: 'Roster',
     people: 'many',
     defaultVisual: 'players',
-    defaultMascot: 'duo-frente',
+    defaultMascot: 'dragona-celebrando',
     fields: [{ key: 'season', label: 'Temporada / torneo', kind: 'text', placeholder: `Temporada ${new Date().getFullYear()}` }],
     bgPreset: () => 'competitivo',
     feed: () => true,
@@ -201,14 +201,15 @@ export const POST_TYPES: PostType[] = [
     group: 'Comunidad',
     people: 'none',
     defaultVisual: 'none',
-    defaultMascot: 'kael-frente',
+    defaultMascot: 'dragona-saludando',
     fields: [
       { key: 'title', label: 'Titular', kind: 'text', placeholder: 'COMUNICADO OFICIAL' },
       { key: 'body', label: 'Texto', kind: 'textarea', placeholder: 'Escribí el comunicado…' },
-      { key: 'org', label: 'Es un cambio organizacional', kind: 'toggle', hint: 'Sólo los cambios organizacionales van al Feed de IG' },
     ],
     bgPreset: () => 'institucional',
-    feed: (d) => d.fields.org === '1',
+    // los comunicados van al Feed y a X, no a historias
+    feed: () => true,
+    story: () => false,
     checklist: ['Revisar nombres', 'Copy revisado', 'Revisar ortografía', 'Revisar etiquetas'],
   },
   {
@@ -217,7 +218,7 @@ export const POST_TYPES: PostType[] = [
     group: 'Comunidad',
     people: 'none',
     defaultVisual: 'mascots',
-    defaultMascot: 'nyra-estudiando',
+    defaultMascot: 'dragona-uwu',
     fields: [
       { key: 'kicker', label: 'Etiqueta', kind: 'text', placeholder: 'Tip del día' },
       { key: 'title', label: 'Titular', kind: 'text', placeholder: 'CROSSHAIR PLACEMENT' },
@@ -233,7 +234,7 @@ export const POST_TYPES: PostType[] = [
     group: 'Comunidad',
     people: 'none',
     defaultVisual: 'none',
-    defaultMascot: 'nyra-gamer',
+    defaultMascot: 'dragona-saludando',
     fields: [
       { key: 'title', label: 'Titular', kind: 'text', placeholder: 'STREAM ON' },
       { key: 'channel', label: 'Canal', kind: 'text', placeholder: 'twitch.tv/radiantshadows' },
@@ -249,7 +250,7 @@ export const POST_TYPES: PostType[] = [
     group: 'Roster',
     people: 'one',
     defaultVisual: 'players',
-    defaultMascot: 'kael-frente',
+    defaultMascot: 'dragona-gg',
     fields: [
       { key: 'mvpScope', label: 'Encabezado', kind: 'select', options: [
         { value: 'partido', label: 'MVP del partido' },
@@ -275,7 +276,7 @@ export const POST_TYPES: PostType[] = [
     group: 'Competitivo',
     people: 'many',
     defaultVisual: 'players',
-    defaultMascot: 'kael-34',
+    defaultMascot: 'dragona-celebrando',
     fields: [
       { key: 'tournament', label: 'Torneo', kind: 'text', placeholder: 'Ej: Liga Dragones Split 2' },
       { key: 'tournamentLogo', label: 'Logo del torneo (opcional)', kind: 'image' },
@@ -381,8 +382,16 @@ export function selectedPeople(d: PostDoc, r: Roster): Person[] {
   }
   // los elegidos a mano (si alguno ya no está en el roster, se ignora; si no queda ninguno, van los titulares)
   const chosen = d.people.map((id) => all.find((x) => x.id === id)).filter(Boolean) as Person[]
-  if (chosen.length) return chosen
-  return r.players.filter((x) => x.active)
+  return captainInCenter(chosen.length ? chosen : r.players.filter((x) => x.active))
+}
+
+/** el capitán va siempre en el lugar del centro de la fila (con un número par, el de la derecha del medio) */
+function captainInCenter(list: Person[]): Person[] {
+  const i = list.findIndex((p) => p.captain)
+  if (i < 0) return list
+  const rest = list.filter((_, j) => j !== i)
+  const c = Math.floor(list.length / 2)
+  return [...rest.slice(0, c), list[i], ...rest.slice(c)]
 }
 
 const PLACE = ['', 'CAMPEONES', 'SUBCAMPEONES', '3° PUESTO', '4° PUESTO', 'TOP 8', 'PARTICIPACIÓN']
@@ -551,7 +560,8 @@ export function resolveImageBind(bind: string, d: PostDoc, r: Roster): string | 
   // el logo blanco es sólo para las derrotas; en todo lo demás va el de color (MAIN o GC)
   if (bind === 'logo:team') return LOGOS[r.id][outcome(d) === 'loss' ? 'negative' : 'positive']
   if (bind === 'logo:rival') return d.fields.rivalLogo || undefined
-  if (bind === 'mascot') return mascot(d.mascot)
+  // en las derrotas, el "GG" pasa a "NT"
+  if (bind === 'mascot') return mascot(d.type === 'resultado' && d.mascot === 'dragona-gg' && outcome(d) === 'loss' ? 'dragona-nt' : d.mascot)
   if (bind === 'logo:tournament') return d.fields.tournamentLogo || undefined
   if (bind === 'art:keycaps') return keycapsArt()
   if (bind.startsWith('art:key:')) {

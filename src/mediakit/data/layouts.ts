@@ -2,28 +2,38 @@ import type { FormatId, Layer, PostDoc, Roster } from '../types'
 import { FORMATS } from '../types'
 import { computeValues } from './postTypes'
 import type { Ctx } from './layout/core'
+import { contour } from './layout/contour'
+import { diagonal } from './layout/diagonal'
+import { frame } from './layout/frame'
 import { landscape } from './layout/landscape'
+import { brandMarks } from './layout/marks'
 import { mvp } from './layout/mvp'
+import { mvpExtra } from './layout/mvpExtra'
 import { neon } from './layout/neon'
 import { portrait } from './layout/portrait'
-import { typo } from './layout/typo'
-import { frame } from './layout/frame'
 import { poster } from './layout/poster'
+import { broadcast } from './layout/broadcast'
+import { typo } from './layout/typo'
 
 export { I, S, T, TEXT_SCALE, newId } from './layout/core'
 export { DEFAULT_OVERLAP, reflowRow } from './layout/rows'
+
+/** diseños por número (los de MVP aparte). Los que ya no existen (1 Lateral, 2 Impacto, 4 Paneles) pasan a Centrado */
+const DESIGNS: Record<number, (c: Ctx) => Layer[]> = {
+  0: (c) => (c.fmt === 'x' ? landscape(c) : portrait(c)),
+  3: neon,
+  5: typo,
+  6: poster,
+  7: frame,
+  8: contour,
+  9: broadcast,
+  10: diagonal,
+}
 
 export function buildLayout(d: PostDoc, r: Roster, fmt: FormatId): Layer[] {
   const { w: W, h: H } = FORMATS[fmt]
   const u = Math.min(W, H) / 100
   const c: Ctx = { W, H, fmt, d, r, v: computeValues(d, r), u, safeTop: fmt === 'story' ? 210 : 0, safeBottom: fmt === 'story' ? 250 : 0 }
-  if (d.type === 'mvp') return mvp(c, d.variant === 1 ? 1 : 0)
-  // el diseño "Paneles" (4) ya no existe: los guardados con ese diseño pasan a Centrado
-  if (d.variant === 6) return poster(c)
-  if (d.variant === 7) return frame(c)
-  const variant = d.variant % 6 === 4 ? 0 : d.variant % 6
-  if (variant === 3) return neon(c)
-  if (variant === 5) return typo(c)
-  return fmt === 'x' ? landscape(c, variant % 3) : portrait(c, variant % 3)
+  const layers = d.type === 'mvp' ? (d.variant >= 2 ? mvpExtra(c, d.variant) : mvp(c, d.variant === 1 ? 1 : 0)) : (DESIGNS[d.variant] ?? DESIGNS[0])(c)
+  return brandMarks(c, layers)
 }
-

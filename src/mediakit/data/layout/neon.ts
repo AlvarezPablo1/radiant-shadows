@@ -66,7 +66,7 @@ export function neon(c: Ctx): Layer[] {
   }
 
   // titular: dos líneas en vertical, una sola en X (como las placas actuales)
-  const size = land ? u * 22 : u * 27
+  const size = land ? u * 19 : u * 23
   const tw = land ? W * 0.56 : W * 0.78
   const titleLayers: TextLayer[] = []
   let titleTop: number
@@ -107,7 +107,8 @@ export function neon(c: Ctx): Layer[] {
           ? I('Teclas RSWP', 'art:keycaps', '', (W - sz) / 2, areaTop + (areaH - sz) * 0.2, sz, sz, {})
           : I('Isotipo', 'logo:team', '', (W - sz) / 2, areaTop + (areaH - sz) * 0.25, sz, sz, { glow: 0.9 }),
       )
-    } else heroLayers.push(...hero(c, -u * 6, areaTop - u * 6, W + u * 12, areaH + u * 14))
+    } else if (k === 'mascot') heroLayers.push(...hero(c, W * 0.08, areaTop - u * 4, W * 0.84, titleTop - areaTop))
+    else heroLayers.push(...hero(c, -u * 6, areaTop - u * 6, W + u * 12, areaH + u * 14))
   }
   out.unshift(...heroLayers)
   out.push(...titleLayers)

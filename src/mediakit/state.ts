@@ -1,3 +1,4 @@
+import { MASCOTS } from './brand'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { makeRecipe } from './lib/background'
 import { useRosters } from './useRosters'
@@ -47,6 +48,8 @@ export function useAppState() {
     // compatibilidad con borradores viejos (siluetas de mascotas eliminadas)
     if (d.bg.silhouette !== 'none' && d.bg.silhouette !== 'rs' && d.bg.silhouette !== 'gc') d.bg = { ...d.bg, silhouette: 'rs' }
     if ((d.bg.imageFilter as string) === 'bn') d.bg.imageFilter = 'oscuro'
+    // las mascotas viejas (Kael / Nyra) se reemplazaron por los stickers de la dragona
+    if (!MASCOTS.some((m) => m.id === d.mascot)) d = { ...d, mascot: postType(d.type).defaultMascot }
     // la vista Lateral se eliminó: los borradores que la usaban pasan a Centrado
     if (d.type !== 'mvp' && d.variant === 1) d = { ...d, variant: 0, layers: {} }
     // los fondos ya no traen brillos por defecto (se pueden volver a subir en Fondo → Ajustes finos)
@@ -57,7 +60,7 @@ export function useAppState() {
       )
     return d
   })
-  const { rosters, ready: rostersReady, tweaks, tweakPerson } = useRosters()
+  const { rosters, ready: rostersReady, tweaks, tweakPerson, setCaptain } = useRosters()
   const [format, setFormat] = useState<FormatId>('story')
   const [selection, setSelection] = useState<string[]>([])
   const selected = selection.length ? selection[selection.length - 1] : null
@@ -73,7 +76,7 @@ export function useAppState() {
   // si cambian los titulares, las piezas que muestran "a todos" se rearman con los nuevos
   const activeKey = roster.players
     .filter((p) => p.active)
-    .map((p) => p.id + (p.photo ?? ''))
+    .map((p) => p.id + (p.photo ?? '') + (p.captain ? '*' : ''))
     .join(',')
   // se compara recién cuando llegó el roster de /admin: esa primera carga no borra el borrador
   const lastActive = useRef<string | null>(null)
@@ -257,6 +260,7 @@ export function useAppState() {
     roster,
     tweaks,
     tweakPerson,
+    setCaptain,
     format,
     setFormat,
     selected,

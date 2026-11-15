@@ -8,7 +8,7 @@ export const newId = () => 'L' + (++seq).toString(36) + Math.random().toString(3
 const base = (name: string, x: number, y: number, bind?: string) => ({ id: newId(), key: name, name, x, y, rotation: 0, opacity: 1, visible: true, locked: false, bind })
 
 /** los jugadores son lo principal: todos los textos de las plantillas salen un poco más chicos */
-export const TEXT_SCALE = 0.86
+export const TEXT_SCALE = 0.78
 
 export function T(name: string, bind: string | undefined, text: string, x: number, y: number, width: number, font: string, fontSize: number, o: Partial<TextLayer> = {}, scale = TEXT_SCALE): TextLayer {
   return { ...base(name, x, y, bind), type: 'text', text, font, fontSize: fontSize * scale, italic: false, fill: C.white, align: 'center', width, letterSpacing: 0, lineHeight: 1.05, uppercase: false, glow: 0, ...o }

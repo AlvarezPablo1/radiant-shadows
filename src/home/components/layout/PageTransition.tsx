@@ -1,18 +1,25 @@
 /**
  * Transición entre secciones: la silueta del dragón cruza la pantalla de derecha a izquierda
  * y una cortina oscura la sigue hasta taparlo todo (después la página nueva se destapa sola).
+ *
+ * El dragón es una imagen ya pintada (degradé violeta + brillo) y la cortina un degradé de fondo:
+ * sin máscaras ni filtros en movimiento, así Safari no dibuja el recuadro del brillo y Chrome
+ * sólo tiene que desplazar capas (va igual de suave en los dos).
  */
 export function PageTransition({ active }: { active: boolean }) {
   if (!active) return null
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-95 overflow-hidden">
       {/* cortina con el borde de adelante difuminado */}
-      <div className="absolute inset-y-0 left-0 w-[120vw] animate-curtain-in bg-[#0d0524] [mask-image:linear-gradient(to_right,transparent,#000_15vw)]" />
+      <div className="absolute inset-y-0 left-0 w-[120vw] animate-curtain-in bg-[linear-gradient(to_right,transparent,#0d0524_15vw)] will-change-transform" />
 
-      {/* el dragón: silueta usada como máscara, pintada con un degradé violeta y con brillo */}
-      <div className="absolute top-1/2 left-full h-[92vh] animate-dragon-fly drop-shadow-[0_0_30px_rgb(142_68_255/0.7)]">
-        <div className="aspect-[766/814] h-full bg-[linear-gradient(to_right,#2a0d57,#7a28e2_55%,#3b1470)] mask-[url(/brand/mascots/dragon-silueta.png)] mask-contain mask-center mask-no-repeat" />
-      </div>
+      {/* el dragón (la imagen trae margen para el brillo: por eso es un poco más alta que la silueta) */}
+      <img
+        src="/brand/mascots/dragon-transicion.webp"
+        alt=""
+        decoding="sync"
+        className="absolute top-1/2 left-full aspect-[906/954] h-[108vh] max-w-none animate-dragon-fly will-change-transform"
+      />
     </div>
   )
 }

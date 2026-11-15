@@ -49,5 +49,16 @@ export function useRosters() {
     [],
   )
   /** `ready`: ya llegó lo de /admin (antes se usa el contenido del código) */
-  return { rosters, ready, tweaks, tweakPerson }
+  /** marca (o desmarca) al capitán de un equipo: hay uno solo por equipo */
+  const setCaptain = useCallback(
+    (team: string, id: string, on: boolean) =>
+      setTweaks((t) => {
+        const next: LocalTweaks = {}
+        for (const [k, v] of Object.entries(t)) next[k] = k.startsWith(team + '-') ? { ...v, captain: undefined } : v
+        next[id] = { ...next[id], captain: on || undefined }
+        return next
+      }),
+    [],
+  )
+  return { rosters, ready, tweaks, tweakPerson, setCaptain }
 }

@@ -19,7 +19,8 @@ export function hero(c: Ctx, x: number, y: number, w: number, h: number, flip = 
   // por defecto las fotos van sin filtro (se elige uno desde Edición si se quiere)
   const photoFilter = 'none' as const
   if (k === 'person') return [I('Foto', 'person:0', '', x, y, w, h, { fadeBottom: 0.22, glow: 0.75, filter: photoFilter, flipX: flip })]
-  if (k === 'mascot') return [I('Mascota', 'mascot', '', x, y, w, h, { fadeBottom: 0.12, glow: 0.25, flipX: flip })]
+  // la mascota es un sticker con su palabra abajo: sin fundido, para que se lea entera
+  if (k === 'mascot') return [I('Mascota', 'mascot', '', x, y, w, h, { glow: 0.25, flipX: flip })]
   if (k === 'logo') {
     const s = Math.min(w, h) * 0.78
     if (c.d.fields.noPhotoArt === 'teclas') return [I('Teclas RSWP', 'art:keycaps', '', x + (w - s) / 2, y + (h - s) / 2, s, s, {})]
@@ -29,7 +30,8 @@ export function hero(c: Ctx, x: number, y: number, w: number, h: number, flip = 
   // varias personas: fila con superposición, el del medio más grande y adelante
   const people = selectedPeople(c.d, c.r).slice(0, 6)
   // los jugadores se ven más grandes: la fila crece hacia arriba (las cabezas pueden pisar un poco el texto de fondo)
-  const grow = h * 0.14
+  // (sin salirse de la placa: nunca se cortan las cabezas arriba)
+  const grow = Math.min(h * 0.14, Math.max(0, y - c.u * 2))
   const row = { kind: 'stage' as const, x, y: y - grow, w, h: h + grow, overlap: overlapOf(c), dense: c.fmt === 'x' }
   const ls = people.map((_, i) => I(`Jugador ${i + 1}`, `person:${i}`, '', 0, 0, 1, 1, { fadeBottom: 0.25, glow: 0.25, filter: photoFilter, row: { ...row, slot: i, role: 'photo' } }))
   return reflowRow(ls)
@@ -66,7 +68,7 @@ export function mainTexts(c: Ctx, x: number, w: number, align: Align, scale = 1)
   const { u, d } = c
   const s = (n: number) => n * u * scale
   const kick = T('Frase', 'kicker', '', x, 0, w, 'manuscrita', s(6.4), { align, fill: C.ember, lineHeight: 1.5, autoFit: true })
-  const title = T('Titular', 'title', '', x, 0, w, 'condensada', s(d.type === 'cumple' ? 21 : 20), { align, autoFit: true, glow: 0.35, lineHeight: 1 })
+  const title = T('Titular', 'title', '', x, 0, w, 'condensada', s(d.type === 'cumple' ? 18 : 17), { align, autoFit: true, glow: 0.35, lineHeight: 1 })
   const sub = T('Contexto', 'sub', '', x, 0, w, 'condensada', s(3.6), { align, fill: C.violetLight, letterSpacing: s(0.35), lineHeight: 1.2 })
   const info = T('Detalle', 'info', '', x, 0, w, 'manuscrita', s(3.6), { align, fill: C.white, opacity: 0.9, lineHeight: 1.25 })
   const body = T('Texto', 'body', '', x, 0, w, 'fuerza', s(3.4), { align, weight: '500', lineHeight: 1.35, fill: C.white })

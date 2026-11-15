@@ -17,9 +17,15 @@ const notify = () => listeners.forEach((l) => l())
 
 const isRole = (f: string): f is FontRole => f in FONT_ROLES
 
+const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '')
 export function fontFamily(font: string): string {
   if (font === 'Permanent Marker') font = 'manuscrita'
-  if (!isRole(font)) return `"${font}"`
+  if (!isRole(font)) {
+    // fuente agregada: se busca por nombre (sin importar mayúsculas ni espacios); si en este navegador
+    // todavía no se subió, se usa la de títulos para que la placa no quede con una letra cualquiera
+    const found = custom.has(font) ? font : [...custom].find((f) => norm(f) === norm(font))
+    return found ? `"${found}"` : fontFamily('condensada')
+  }
   const r = FONT_ROLES[font]
   return loaded.has(r.official) ? `"${r.official}"` : `"${r.fallback}"`
 }

@@ -35,20 +35,21 @@ export const LOGOS = {
   gc: { positive: '/brand/logos/gc-positive.png', negative: '/brand/logos/gc-negative.png' },
 }
 
-export type MascotAsset = { id: string; label: string; src: string; who: 'kael' | 'nyra' | 'duo' }
+export type MascotAsset = { id: string; label: string; src: string }
+/** Mascota: la dragona en stickers, uno por emoción (cada uno ya trae su palabra, si tiene) */
+const sticker = (id: string, label: string): MascotAsset => ({ id: `dragona-${id}`, label, src: `/brand/mascots/dragona/${id}.png` })
 export const MASCOTS: MascotAsset[] = [
-  { id: 'kael-frente', label: 'Kael · frente', src: '/brand/mascots/kael-frente.png', who: 'kael' },
-  { id: 'kael-34', label: 'Kael · 3/4', src: '/brand/mascots/kael-34.png', who: 'kael' },
-  { id: 'kael-lateral', label: 'Kael · perfil', src: '/brand/mascots/kael-lateral.png', who: 'kael' },
-  { id: 'kael-espalda', label: 'Kael · espalda', src: '/brand/mascots/kael-espalda.png', who: 'kael' },
-  { id: 'kael-dragon', label: 'Kael · dragón', src: '/brand/mascots/kael-dragon.png', who: 'kael' },
-  { id: 'kael-alas', label: 'Alas', src: '/brand/mascots/kael-alas.png', who: 'kael' },
-  { id: 'nyra-frente', label: 'Nyra · frente', src: '/brand/mascots/nyra-frente.png', who: 'nyra' },
-  { id: 'nyra-victoria', label: 'Nyra · victoria', src: '/brand/mascots/nyra-victoria.png', who: 'nyra' },
-  { id: 'nyra-apoyo', label: 'Nyra · ¡Vamos Radiant!', src: '/brand/mascots/nyra-apoyo.png', who: 'nyra' },
-  { id: 'nyra-gamer', label: 'Nyra · gamer', src: '/brand/mascots/nyra-gamer.png', who: 'nyra' },
-  { id: 'nyra-estudiando', label: 'Nyra · estudiando', src: '/brand/mascots/nyra-estudiando.png', who: 'nyra' },
-  { id: 'duo-frente', label: 'Kael y Nyra', src: '/brand/mascots/duo-frente.png', who: 'duo' },
-  { id: 'duo-victoria', label: 'Kael y Nyra · victoria', src: '/brand/mascots/duo-victoria.png', who: 'duo' },
+  sticker('gg', 'GG'),
+  sticker('nt', 'NT'),
+  sticker('celebrando', 'Celebrando'),
+  sticker('felicidades', 'Felicidades'),
+  sticker('feliz', 'Feliz'),
+  sticker('saludando', 'Saludando'),
+  sticker('uwu', 'UwU'),
+  sticker('sonrojada', 'Sonrojada'),
+  sticker('avergonzada', 'Avergonzada'),
+  sticker('triste', 'Triste'),
+  sticker('llorando', 'Llorando'),
+  sticker('enojada', 'Enojada'),
 ]
 export const mascot = (id: string) => MASCOTS.find((m) => m.id === id)?.src ?? MASCOTS[0].src

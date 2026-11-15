@@ -56,7 +56,7 @@ export function typo(c: Ctx): Layer[] {
   const rowY = bottom - m - u * 4
   // la hora ya va grande: abajo sólo el día
   panelFooter(c, out, rowY, c.v.bigData && d.type === 'matchday' ? 'panelDay' : 'panelDate')
-  const bigSize = land ? u * 19 : u * 22
+  const bigSize = land ? u * 16 : u * 19
   const bigY = rowY - u * 5 - bigSize * 0.9
   if (c.v.bigData) {
     // marcador en ámbar; en las derrotas, en lila

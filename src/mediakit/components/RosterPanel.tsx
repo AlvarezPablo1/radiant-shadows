@@ -41,15 +41,25 @@ export function RosterPanel({ s }: { s: AppState }) {
         </div>
         <div className="roster-fields">
           <div className="roster-name">
-            <strong>{p.name || p.role}</strong>
+            <strong>
+              {p.name || p.role}
+              {p.captain && ' · C'}
+            </strong>
             <span>{[p.role, p.realName, p.ig, p.x].filter(Boolean).join(' · ')}</span>
           </div>
           {!staff && (
-            <label className="switch">
-              <input type="checkbox" checked={p.active} onChange={(e) => s.tweakPerson(p.id, { active: e.target.checked })} />
-              <span className="track" />
-              <span>Titular (aparece por defecto)</span>
-            </label>
+            <>
+              <label className="switch">
+                <input type="checkbox" checked={p.active} onChange={(e) => s.tweakPerson(p.id, { active: e.target.checked })} />
+                <span className="track" />
+                <span>Titular (aparece por defecto)</span>
+              </label>
+              <label className="switch">
+                <input type="checkbox" checked={!!p.captain} onChange={(e) => s.setCaptain(rid, p.id, e.target.checked)} />
+                <span className="track" />
+                <span>Capitán (siempre en el centro)</span>
+              </label>
+            </>
           )}
         </div>
       </div>
