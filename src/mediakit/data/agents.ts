@@ -40,5 +40,5 @@ export function findAgent(v = '') {
 /** la versión difuminada (desenfoque gaussiano ya aplicado: se ve suave y parejo en cualquier tamaño y navegador) */
 export const agentImage = (v?: string) => {
   const a = findAgent(v)
-  return a ? `/brand/agents/blur/${a.id}.webp` : undefined
+  return a ? `/brand/agents/${a.id}.webp` : undefined
 }
