@@ -39,6 +39,13 @@ export const measure = typeof document !== 'undefined' ? document.createElement(
 /** Alto real de un bloque de texto: mide con la fuente y simula el corte de líneas por palabras (como Konva). */
 export function textHeight(t: TextLayer, value: string) {
   const text = t.uppercase ? value.toUpperCase() : value
+  if (t.autoFit && measure) {
+    // "ajustar al ancho": el tamaño real es el que entra en la caja (igual que al dibujarlo)
+    measure.font = `${t.italic ? 'italic ' : ''}${t.weight ?? fontWeight(t.font)} ${t.fontSize}px ${fontFamily(t.font)}`
+    const widest = Math.max(1, ...text.split('\n').map((line) => measure.measureText(line).width + line.length * t.letterSpacing))
+    const size = widest > t.width ? Math.max(8, t.fontSize * (t.width / widest) * 0.98) : t.fontSize
+    return text.split('\n').length * size * t.lineHeight
+  }
   if (t.autoFit || !measure) {
     const lines = t.autoFit ? text.split('\n').length : text.split('\n').reduce((n, line) => n + Math.max(1, Math.ceil(line.length / Math.max(4, t.width / (t.fontSize * 0.62 + t.letterSpacing)))), 0)
     return lines * t.fontSize * t.lineHeight

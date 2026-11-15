@@ -42,7 +42,7 @@ const LUT_VIOLETA = gradientMap([
 const LUT_FUEGO = gradientMap([
   [0, '#000010'],
   [0.35, '#3A1270'],
-  [0.62, '#7A28E2'],
+  [0.62, '#7415C1'],
   [0.85, '#E58A6A'],
   [1, '#FFE3B0'],
 ])
@@ -108,14 +108,48 @@ export function applyFilter(data: Uint8ClampedArray, f: FilterId) {
 }
 
 /** Devuelve un canvas con la imagen filtrada y (opcional) fundido inferior a transparente. */
-export function processImage(img: HTMLImageElement, f: FilterId, fadeBottom: number, maxSide = 1800): HTMLCanvasElement | HTMLImageElement {
-  if (f === 'none' && !fadeBottom) return img
+/**
+ * `blur` (0 a 1): difuminado. Se hace achicando y volviendo a agrandar la imagen (funciona igual en todos los
+ * navegadores, también en Safari, que no aplica filtros de desenfoque sobre canvas).
+ */
+export function processImage(img: HTMLImageElement, f: FilterId, fadeBottom: number, blur = 0, maxSide = 1800): HTMLCanvasElement | HTMLImageElement {
+  if (f === 'none' && !fadeBottom && !blur) return img
   const k = Math.min(1, maxSide / Math.max(img.naturalWidth, img.naturalHeight))
   const c = document.createElement('canvas')
   c.width = Math.round(img.naturalWidth * k)
   c.height = Math.round(img.naturalHeight * k)
   const ctx = c.getContext('2d', { willReadFrequently: true })!
-  ctx.drawImage(img, 0, 0, c.width, c.height)
+  if (blur > 0) {
+    let src: CanvasImageSource = img
+    let w = c.width,
+      h = c.height
+    // varios pasos chicos: el difuminado queda parejo, sin pixelado
+    for (const step of [0.5, 0.5, 0.5].slice(0, 1 + Math.round(blur * 2))) {
+      w = Math.max(8, Math.round(w * step))
+      h = Math.max(8, Math.round(h * step))
+      const t = document.createElement('canvas')
+      t.width = w
+      t.height = h
+      const tc = t.getContext('2d')!
+      tc.imageSmoothingQuality = 'high'
+      tc.drawImage(src, 0, 0, w, h)
+      src = t
+    }
+    // y se vuelve a agrandar también de a pasos, así queda suave (sin escalones)
+    while (w * 2 < c.width) {
+      w *= 2
+      h *= 2
+      const t = document.createElement('canvas')
+      t.width = w
+      t.height = h
+      const tc = t.getContext('2d')!
+      tc.imageSmoothingQuality = 'high'
+      tc.drawImage(src, 0, 0, w, h)
+      src = t
+    }
+    ctx.imageSmoothingQuality = 'high'
+    ctx.drawImage(src, 0, 0, c.width, c.height)
+  } else ctx.drawImage(img, 0, 0, c.width, c.height)
   if (f !== 'none') {
     const d = ctx.getImageData(0, 0, c.width, c.height)
     applyFilter(d.data, f)

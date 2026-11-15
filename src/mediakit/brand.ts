@@ -1,6 +1,6 @@
 // Identidad visual oficial (Manual de marca cap. 07 / 08 / 09)
 export const C = {
-  violet: '#7A28E2', // Violeta Radiant: acento / energía / fuego
+  violet: '#7415C1', // Violeta Radiant: acento / energía / fuego
   black: '#000010', // Negro profundo: territorio
   dark: '#151C24', // Gris oscuro: superficies
   shadow: '#2E2636', // Púrpura sombra: apoyo / transiciones

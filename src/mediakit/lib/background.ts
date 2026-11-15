@@ -20,6 +20,15 @@ export const BG_PRESETS: Record<string, { label: string; recipe: Omit<BgRecipe, 
   nocturno: { label: 'Nocturno', recipe: { tone: 'shadow', smoke: 0.45, fire: 0.35, hex: 0, scales: 0.25, particles: 0.2, sparkles: 0, shadows: 0.5, lines: false, silhouette: 'none', silhouetteOpacity: 0.06 } },
 }
 
+/**
+ * Textura de fondo de cada equipo: escamas en MAIN y hexágonos en GC (con la misma intensidad que traiga el estilo,
+ * o una suave si el estilo no tenía textura).
+ */
+export function forTeam<R extends { hex: number; scales: number }>(r: R, roster: string): R {
+  const amount = Math.max(r.hex, r.scales) || 0.3
+  return roster === 'gc' ? { ...r, hex: amount, scales: 0 } : { ...r, hex: 0, scales: amount }
+}
+
 export function makeRecipe(preset: string, seed = Math.floor(Math.random() * 1e6)): BgRecipe {
   return { preset, seed, neon: 0, corners: false, ...BG_PRESETS[preset].recipe, imageDim: 0.45, imageFilter: 'none' }
 }
@@ -35,10 +44,10 @@ function rng(seed: number) {
 }
 
 const TONES = {
-  deep: { base: '#000010', glow: 'rgba(76,29,149,', glow2: 'rgba(122,40,226,' },
-  violet: { base: '#05001a', glow: 'rgba(122,40,226,', glow2: 'rgba(142,68,255,' },
+  deep: { base: '#000010', glow: 'rgba(76,29,149,', glow2: 'rgba(116,21,193,' },
+  violet: { base: '#05001a', glow: 'rgba(116,21,193,', glow2: 'rgba(142,68,255,' },
   shadow: { base: '#07060c', glow: 'rgba(46,38,54,', glow2: 'rgba(76,29,149,' },
-  ember: { base: '#06000f', glow: 'rgba(122,40,226,', glow2: 'rgba(255,179,71,' },
+  ember: { base: '#06000f', glow: 'rgba(116,21,193,', glow2: 'rgba(255,179,71,' },
 }
 
 export async function renderBackground(r: BgRecipe, w: number, h: number): Promise<HTMLCanvasElement> {
@@ -162,10 +171,10 @@ export async function renderBackground(r: BgRecipe, w: number, h: number): Promi
         [S * 0.009, 0.55 * r.fire, S * 0.02],
         [S * 0.003, 0.6 * r.fire, S * 0.005],
       ]) {
-        ctx.strokeStyle = i === 1 ? `rgba(142,68,255,${a * 0.7})` : `rgba(122,40,226,${a})`
+        ctx.strokeStyle = i === 1 ? `rgba(142,68,255,${a * 0.7})` : `rgba(116,21,193,${a})`
         if (lw < S * 0.005) ctx.strokeStyle = `rgba(214,190,255,${a * 0.6})`
         ctx.lineWidth = lw
-        ctx.shadowColor = '#7A28E2'
+        ctx.shadowColor = '#7415C1'
         ctx.shadowBlur = blur
         ctx.beginPath()
         ctx.moveTo(p0.x, p0.y)
@@ -231,7 +240,7 @@ export async function renderBackground(r: BgRecipe, w: number, h: number): Promi
     const L = Math.min(w, h) * 0.2
     ctx.save()
     ctx.lineWidth = Math.max(2, S * 0.0018)
-    ctx.strokeStyle = 'rgba(122,40,226,0.9)'
+    ctx.strokeStyle = 'rgba(116,21,193,0.9)'
     ctx.beginPath()
     ctx.moveTo(m, m * 1.25)
     ctx.lineTo(m + L, m * 1.25)
@@ -262,7 +271,7 @@ export async function renderBackground(r: BgRecipe, w: number, h: number): Promi
     ctx.lineCap = 'round'
     for (const y of ys) {
       for (const [lw, col, blur] of [
-        [S * 0.03, `rgba(122,40,226,${0.35 * k})`, S * 0.04],
+        [S * 0.03, `rgba(116,21,193,${0.35 * k})`, S * 0.04],
         [S * 0.008, `rgba(170,110,255,${0.9 * k})`, S * 0.02],
         [S * 0.0025, `rgba(245,235,255,${k})`, S * 0.004],
       ] as [number, string, number][]) {

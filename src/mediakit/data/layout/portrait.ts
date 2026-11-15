@@ -48,9 +48,11 @@ export function textOnTop(c: Ctx, out: Layer[]): Layer[] {
   const m = u * 7
   const placed = stack(c, mainTexts(c, m, W - 2 * m, 'center', fmt === 'feed' ? 0.92 : 1), { top: c.safeTop + m * 0.6 })
   const textBottom = Math.max(...placed.map((l) => (l.type === 'text' ? l.y + textHeight(l, c.v[l.bind ?? ''] ?? l.text) : l.y)))
-  const size = u * 15
-  const vs = versus(W / 2, textBottom + u * 2, size, d.type === 'resultado' ? 'score' : 'vs')
-  const heroTop = textBottom + size + u * 2
+  // logos y resultado un poco más abajo, separados de los textos; los jugadores arrancan debajo
+  const size = u * 16
+  const vsY = textBottom + u * 7
+  const vs = versus(W / 2, vsY, size, d.type === 'resultado' ? 'score' : 'vs')
+  const heroTop = vsY + size + u * 1
   const heroLayers = hero(c, -u * 6, heroTop, W + u * 12, H - heroTop + u * 2)
   const fade = S('Fundido', 'rect', 0, H - u * 30, W, u * 30, { fill: 'rgba(0,0,16,0)', stroke: 'transparent', strokeWidth: 0, gradient: true })
   const foot = footer(c, 'center')

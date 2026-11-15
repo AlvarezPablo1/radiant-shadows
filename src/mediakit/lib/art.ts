@@ -14,7 +14,7 @@ export function keycapsArt(): string {
 
   // resplandor violeta central
   const g = ctx.createRadialGradient(S * 0.5, S * 0.56, 0, S * 0.5, S * 0.56, S * 0.42)
-  g.addColorStop(0, 'rgba(122,40,226,0.55)')
+  g.addColorStop(0, 'rgba(116,21,193,0.55)')
   g.addColorStop(0.5, 'rgba(76,29,149,0.2)')
   g.addColorStop(1, 'rgba(76,29,149,0)')
   ctx.fillStyle = g
@@ -43,7 +43,7 @@ export function keyArt(letter: string, rotDeg = 0): string {
   c.height = S
   const ctx = c.getContext('2d')!
   const g = ctx.createRadialGradient(S / 2, S * 0.56, 0, S / 2, S * 0.56, S * 0.48)
-  g.addColorStop(0, 'rgba(122,40,226,0.45)')
+  g.addColorStop(0, 'rgba(116,21,193,0.45)')
   g.addColorStop(1, 'rgba(76,29,149,0)')
   ctx.fillStyle = g
   ctx.fillRect(0, 0, S, S)
@@ -86,7 +86,7 @@ function drawKey(ctx: CanvasRenderingContext2D, letter: string, cx: number, cy: 
   rr(ctx, x, y + depth, size, size, r)
   ctx.fillStyle = '#140b22'
   ctx.fill()
-  ctx.strokeStyle = 'rgba(122,40,226,0.35)'
+  ctx.strokeStyle = 'rgba(116,21,193,0.35)'
   ctx.lineWidth = 2
   ctx.stroke()
 

@@ -1,3 +1,4 @@
+import { AGENTS, agentImage, findAgent } from './agents'
 import { LOGOS, mascot } from '../brand'
 import type { PostDoc, Roster, Person, Visual } from '../types'
 import { allPeople, handle } from './roster'
@@ -10,6 +11,8 @@ export interface FieldDef {
   placeholder?: string
   options?: { value: string; label: string }[]
   hint?: string
+  /** texto fijo delante del campo (p. ej. "twitch.tv/"): sólo se escribe lo que sigue */
+  prefix?: string
 }
 
 export type HeroKind = 'person' | 'people' | 'auto'
@@ -38,6 +41,8 @@ export const todayISO = () => {
   const d = new Date()
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
+/** "twitch.tv/canal" a partir de lo escrito (el canal solo, o la dirección completa si la pegaron) */
+export const twitchUrl = (v = '') => 'twitch.tv/' + v.trim().replace(/^(https?:\/\/)?(www\.)?twitch\.tv\//i, '').replace(/^@/, '')
 const DAYS = ['DOM', 'LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB']
 const dayName = (s?: string) => (s ? DAYS[new Date(s + 'T12:00').getDay()] : '')
 const at = (p?: Person) => (p ? handle(p.ig) : '')
@@ -47,22 +52,26 @@ const fmtDate = (s?: string) => {
   return y && m && d ? `${d}/${m}` : s
 }
 
+/** palabras para el titular del día de partido (en vez de "Matchday"); la primera es la que va por defecto */
+export const MATCH_WORDS = ['DÍA DE BATALLA', 'A JUGAR', 'HOY JUGAMOS', 'EN BATALLA', 'SALEN LOS DRAGONES', 'LLEGÓ EL DÍA']
+
 export const POST_TYPES: PostType[] = [
   {
     id: 'matchday',
-    label: 'Matchday',
+    label: 'Día de partido',
     group: 'Competitivo',
     people: 'many',
     defaultVisual: 'players',
     defaultMascot: 'victoria',
     fields: [
+      { key: 'word', label: 'Titular', kind: 'select', options: MATCH_WORDS.map((w) => ({ value: w, label: w })) },
       { key: 'tournament', label: 'Torneo', kind: 'text', placeholder: 'Ej: Liga Dragones Split 2' },
       { key: 'phase', label: 'Fase / instancia', kind: 'text', placeholder: 'Ej: Fecha 3 · Bo3' },
       { key: 'rival', label: 'Rival', kind: 'text', placeholder: 'Nombre del equipo rival' },
       { key: 'rivalLogo', label: 'Logo rival (opcional)', kind: 'image' },
       { key: 'date', label: 'Fecha', kind: 'date' },
       { key: 'time', label: 'Hora', kind: 'time' },
-      { key: 'where', label: 'Dónde verlo (opcional)', kind: 'text', placeholder: 'twitch.tv/…' },
+      { key: 'where', label: 'Canal de Twitch (opcional)', kind: 'text', prefix: 'twitch.tv/', placeholder: 'radiant_shadowss' },
     ],
     bgPreset: () => 'competitivo',
     feed: () => false,
@@ -238,7 +247,7 @@ export const POST_TYPES: PostType[] = [
     defaultMascot: 'senalando',
     fields: [
       { key: 'title', label: 'Titular', kind: 'text', placeholder: 'STREAM ON' },
-      { key: 'channel', label: 'Canal', kind: 'text', placeholder: 'twitch.tv/radiantshadows' },
+      { key: 'channel', label: 'Canal de Twitch', kind: 'text', prefix: 'twitch.tv/', placeholder: 'radiant_shadowss' },
       { key: 'time', label: 'Hora', kind: 'time' },
     ],
     bgPreset: () => 'humo',
@@ -263,7 +272,7 @@ export const POST_TYPES: PostType[] = [
       { key: 'assists', label: 'Assists', kind: 'number', placeholder: '6' },
       { key: 'acs', label: 'ACS', kind: 'number', placeholder: '312' },
       { key: 'hs', label: 'HS %', kind: 'number', placeholder: '31' },
-      { key: 'agent', label: 'Agente', kind: 'text', placeholder: 'Jett' },
+      { key: 'agent', label: 'Agente', kind: 'select', hint: 'Su retrato aparece difuminado detrás del jugador', options: [{ value: '', label: '— Elegí el agente —' }, ...AGENTS.map((a) => ({ value: a.name, label: `${a.name} · ${a.role}` }))] },
       { key: 'rival', label: 'Rival (para el copy)', kind: 'text' },
       { key: 'tournament', label: 'Torneo (para el copy)', kind: 'text' },
     ],
@@ -307,7 +316,7 @@ export interface Category {
 }
 
 export const CATEGORIES: Category[] = [
-  { id: 'matchday', label: 'Match Day', options: [{ label: 'Match Day', type: 'matchday' }] },
+  { id: 'matchday', label: 'Día de partido', options: [{ label: 'Día de partido', type: 'matchday' }] },
   { id: 'victoria', label: 'Victoria', options: [{ label: 'Victoria', type: 'resultado', fields: { outcome: 'win' }, match: (d) => outcome(d) === 'win' }] },
   { id: 'derrota', label: 'Derrota', options: [{ label: 'Derrota', type: 'resultado', fields: { outcome: 'loss' }, match: (d) => outcome(d) === 'loss' }] },
   { id: 'empate', label: 'Empate', options: [{ label: 'Empate', type: 'resultado', fields: { outcome: 'draw' }, match: (d) => outcome(d) === 'draw' }] },
@@ -418,11 +427,11 @@ export function computeValues(d: PostDoc, r: Roster): Record<string, string> {
   switch (d.type) {
     case 'matchday':
       Object.assign(v, {
-        kicker: 'Hoy se juega',
-        title: 'MATCHDAY',
+        kicker: /HOY|DÍA/.test(f.word || MATCH_WORDS[0]) ? 'Se viene' : 'Hoy se juega',
+        title: f.word || MATCH_WORDS[0],
         info: [fmtDate(f.date), f.time && f.time + ' HS'].filter(Boolean).join('  •  ') || 'FECHA  •  HORA',
         sub: [f.tournament || 'TORNEO', f.phase].filter(Boolean).join('  •  '),
-        foot: f.where ? 'EN VIVO EN ' + f.where.toUpperCase() : '',
+        foot: f.where ? 'EN VIVO EN ' + twitchUrl(f.where).toUpperCase() : '',
       })
       break
     case 'resultado': {
@@ -480,7 +489,7 @@ export function computeValues(d: PostDoc, r: Roster): Record<string, string> {
       Object.assign(v, { kicker: f.kicker || 'Tip del día', title: (f.title || 'TITULAR').toUpperCase(), body: f.body || 'Texto breve y claro.' })
       break
     case 'stream':
-      Object.assign(v, { kicker: 'En vivo', title: (f.title || 'STREAM ON').toUpperCase(), sub: f.channel || 'twitch.tv/…', info: f.time ? f.time + ' HS' : '' })
+      Object.assign(v, { kicker: 'En vivo', title: (f.title || 'STREAM ON').toUpperCase(), sub: twitchUrl(f.channel || 'radiant_shadowss'), info: f.time ? f.time + ' HS' : '' })
       break
     case 'mvp': {
       const scope = f.mvpScope || 'partido'
@@ -499,7 +508,7 @@ export function computeValues(d: PostDoc, r: Roster): Record<string, string> {
         hsLabel: 'HS%',
         hs: (f.hs || '0') + '%',
         agentLabel: 'AGENTE',
-        agent: (f.agent || 'AGENTE').toUpperCase(),
+        agent: (findAgent(f.agent)?.name || f.agent || 'AGENTE').toUpperCase(),
       })
       break
     }
@@ -517,21 +526,20 @@ export function computeValues(d: PostDoc, r: Roster): Record<string, string> {
   const words = title.split(/\s+/).filter(Boolean)
   let n1 = '',
     n2 = ''
-  if (d.type === 'matchday' && title === 'MATCHDAY') [n1, n2] = ['MATCH', 'DAY']
-  else if (d.type === 'resultado') [n1, n2] = [title, v.score.replace(/\s+/g, ' ')]
+  if (d.type === 'resultado') [n1, n2] = [title, v.score.replace(/\s+/g, ' ')]
   else if (words.length >= 2) [n1, n2] = [words[0], words.slice(1).join(' ')]
   else [n1, n2] = [(v.kicker || '').toUpperCase(), title]
   Object.assign(v, {
     neon1: n1,
     neon2: n2,
-    neonTitle: d.type === 'matchday' && title === 'MATCHDAY' ? 'MATCH DAY' : d.type === 'resultado' ? title : [n1, n2].filter(Boolean).join(' '),
-    panelHeader: d.type === 'matchday' ? 'MATCH DAY' : title,
-    panelTitle: d.type === 'matchday' && title === 'MATCHDAY' ? 'MATCH DAY' : title,
+    neonTitle: d.type === 'matchday' || d.type === 'resultado' ? title : [n1, n2].filter(Boolean).join(' '),
+    panelHeader: title,
+    panelTitle: title,
     panelDate: [dayName(f.date), fmtDate(f.date).replace('/', '.'), f.time && f.time + ' ART'].filter(Boolean).join(' · '),
     panelDay: [dayName(f.date), fmtDate(f.date).replace('/', '.')].filter(Boolean).join(' '),
     panelRight: (d.type === 'matchday' ? [f.phase, f.tournament].filter(Boolean).join(' · ') || 'TORNEO' : v.sub || v.team).toUpperCase(),
     script: d.type === 'matchday' ? 'hoy' : d.type === 'resultado' && outcome(d) === 'win' ? 'ganamos' : '',
-    patternRow: Array(3).fill(d.type === 'matchday' && title === 'MATCHDAY' ? 'MATCH DAY' : title).join(' · ') + ' ·',
+    patternRow: Array(3).fill(title).join(' · ') + ' ·',
     bigData: d.type === 'matchday' ? f.time || '--:--' : d.type === 'resultado' ? `${f.scoreUs || '0'}-${f.scoreThem || '0'}` : '',
     bigUnit: d.type === 'matchday' ? 'ART' : '',
     script2: d.type === 'matchday' ? 'a jugar' : d.type === 'resultado' && outcome(d) === 'win' ? 'ganamos' : d.type === 'torneo' && Number(f.place || 1) === 1 ? 'campeones' : '',
@@ -562,6 +570,7 @@ export function resolveImageBind(bind: string, d: PostDoc, r: Roster): string | 
   if (bind === 'logo:team') return LOGOS[r.id][outcome(d) === 'loss' ? 'negative' : 'positive']
   if (bind === 'logo:rival') return d.fields.rivalLogo || undefined
   // en las derrotas, la de victoria pasa a la enojada
+  if (bind === 'agent') return agentImage(d.fields.agent)
   if (bind === 'mascot') return mascot(d.type === 'resultado' && d.mascot.endsWith('-victoria') && outcome(d) === 'loss' ? d.mascot.replace(/-victoria$/, '-enojado') : d.mascot)
   if (bind === 'logo:tournament') return d.fields.tournamentLogo || undefined
   if (bind === 'art:keycaps') return keycapsArt()

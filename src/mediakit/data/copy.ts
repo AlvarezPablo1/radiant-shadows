@@ -1,5 +1,5 @@
 import type { PostDoc, Roster, Person } from '../types'
-import { computeValues, outcome, selectedPeople } from './postTypes'
+import { computeValues, outcome, selectedPeople, twitchUrl } from './postTypes'
 import { handle } from './roster'
 
 /**
@@ -41,7 +41,7 @@ export function generateCopy(d: PostDoc, r: Roster, net: Network, variant: numbe
     case 'matchday':
       body = pick(
         [
-          `Hoy jugamos ${tournament(d)}.\n\nEnfrentamos a ${rival}${date ? ` · ${date}` : ''}.${f.where ? `\nLo ves en ${f.where}` : ''}\n\n${block()}`,
+          `Hoy jugamos ${tournament(d)}.\n\nEnfrentamos a ${rival}${date ? ` · ${date}` : ''}.${f.where ? `\nLo ves en ${twitchUrl(f.where)}` : ''}\n\n${block()}`,
           `Día de partido 🐉\n\n${tournament(d)}${f.phase ? ` · ${f.phase}` : ''}\nVS ${rival}${date ? `\n${date}` : ''}\n\n${block('Salen a la cancha:')}`,
           `Se viene ${rival}. ${tournament(d)}${date ? `, ${date}` : ''}.\nA dejar todo.\n\n${block()}`,
         ],
@@ -170,7 +170,7 @@ export function generateCopy(d: PostDoc, r: Roster, net: Network, variant: numbe
       )
       break
     case 'stream':
-      body = pick([`Estamos en vivo 🔴\n${f.channel || '[CANAL]'}${f.time ? `\nDesde las ${f.time} hs` : ''}`, `Stream ON. Pasá a saludar.\n${f.channel || '[CANAL]'}`], variant)
+      body = pick([`Estamos en vivo 🔴\n${f.channel ? twitchUrl(f.channel) : '[CANAL]'}${f.time ? `\nDesde las ${f.time} hs` : ''}`, `Stream ON. Pasá a saludar.\n${f.channel ? twitchUrl(f.channel) : '[CANAL]'}`], variant)
       break
   }
   return `${body.trim()}\n\n${tags}`.trim()

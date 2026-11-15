@@ -166,7 +166,7 @@ export function ShapeProps({ l, up, part }: { l: ShapeLayer; up: (p: Partial<Sha
               { value: 'dark', label: 'Oscuro' },
               { value: 'violet', label: 'Violeta' },
             ]}
-            onChange={(v) => up({ fill: v === 'none' ? 'transparent' : v === 'dark' ? 'rgba(0,0,16,0.6)' : 'rgba(122,40,226,0.85)' })}
+            onChange={(v) => up({ fill: v === 'none' ? 'transparent' : v === 'dark' ? 'rgba(0,0,16,0.6)' : 'rgba(116,21,193,0.85)' })}
           />
         </Field>
       )}

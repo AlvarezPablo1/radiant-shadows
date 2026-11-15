@@ -371,7 +371,7 @@ function TextNode({ l, value, fontsV, ...p }: NodeProps<TextLayer> & { value: st
 
 function ImageNode({ l, src, ...p }: NodeProps<ImageLayer> & { src?: string }) {
   const img = useImage(src)
-  const processed = useMemo(() => (img ? processImage(img, l.filter, l.fadeBottom) : undefined), [img, l.filter, l.fadeBottom])
+  const processed = useMemo(() => (img ? processImage(img, l.filter, l.fadeBottom, l.blur ?? 0) : undefined), [img, l.filter, l.fadeBottom, l.blur])
   const ref = useRef<Konva.Group>(null)
   if (!src) return null
   // ajuste "contain" anclado abajo-centro, o "cover" con recorte

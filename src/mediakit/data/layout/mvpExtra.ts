@@ -1,7 +1,6 @@
 import { C } from '../../brand'
 import type { Layer } from '../../types'
 import { I, S, T, type Ctx } from './core'
-import { hero, heroKind } from './parts'
 
 const STATS: [string, string][] = [
   ['kdaLabel', 'kda'],
@@ -11,7 +10,8 @@ const STATS: [string, string][] = [
 ]
 
 /**
- * MVP — Afiche (2): "MVP" gigante calado detrás del jugador, nickname enorme y estadísticas en una fila.
+ * MVP — Afiche (2, por defecto): "MVP" calado arriba, el jugador al centro con su nick en la camiseta y el agente
+ *       difuminado detrás, y las estadísticas en una fila.
  *       Datos (3): el jugador a un lado y las estadísticas en tarjetas grandes, con los números protagonistas.
  * En los dos, el "del partido" va inclinado justo debajo del jugador.
  */
@@ -23,52 +23,65 @@ export function mvpExtra(c: Ctx, variant: number): Layer[] {
   const bottom = H - c.safeBottom - m * 0.8
   const cond = 'condensada'
   const out: Layer[] = []
-  const photo = (x: number, y: number, w: number, h: number) => (heroKind(c) === 'person' ? I('Foto', 'person:0', '', x, y, w, h, { fadeBottom: 0.18, glow: 0.6 }) : hero(c, x, y, w, h)[0])
   out.push(T('Año', 'mvpTop', '', W / 2, top, W / 2 - m, cond, u * 5.4, { align: 'right', fill: C.lilac }))
 
   if (variant === 2) {
-    // AFICHE
-    const rowY = bottom - u * 10
-    const cw = (W - 2 * m) / 4
+    // AFICHE (el diseño por defecto): "MVP" calado arriba al centro, el jugador grande al medio con su nick en la
+    // camiseta, el agente difuminado detrás y las estadísticas en una fila abajo
+    const mvpSize = land ? u * 46 : u * 40
+    const mvpTop = top + (land ? -u * 2 : u * 2)
+    const mvpW = land ? W * 0.36 : W * 0.66
+    out.push(T('MVP calado', 'title', '', (W - mvpW) / 2, mvpTop, mvpW, cond, mvpSize, { fill: 'transparent', stroke: C.violetLight, strokeWidth: 3, autoFit: true, lineHeight: 0.85, glow: 0.5 }, 1))
+    // el jugador: grande, centrado, desde debajo de las letras hasta abajo (se corta en el borde)
+    const pTop = mvpTop + mvpSize * (land ? 0.42 : 0.58)
+    const pW = land ? W * 0.5 : W * 0.95
+    const pH = H - pTop + (land ? u * 2 : -c.safeBottom * 0.2)
+    // el agente, difuminado detrás del jugador (aparece cuando se elige uno)
+    // ocupando toda la placa (rellena la caja, mostrando la parte de arriba del agente) y detrás de todo
+    out.unshift(I('Agente', 'agent', '', -u * 2, -u * 2, W + u * 4, H + u * 4, { opacity: 0.7, fadeBottom: 0.3, fit: 'cover', cropY: 0.15 }))
+    out.push(I('Foto', 'person:0', '', (W - pW) / 2, pTop, pW, pH, { fadeBottom: 0.15, glow: 0.7 }))
+    // "del partido" al costado de las letras
+    out.push(T('Acento', 'mvpScript', '', W / 2 + mvpW * (land ? 0.2 : 0.14), mvpTop + mvpSize * 0.55, land ? W * 0.3 : W * 0.42, 'manuscrita', u * (land ? 6.5 : 6), { fill: C.ember, rotation: -8, autoFit: true, lineHeight: 1.3 }))
+    // el nick sobre la camiseta
+    const nickSize = land ? u * 8 : u * 9
+    out.push(T('Nickname', 'sub', '', W / 2 - (land ? W * 0.13 : W * 0.25), pTop + pH * (land ? 0.52 : 0.47), land ? W * 0.17 : W * 0.3, cond, nickSize, { fill: C.ember, autoFit: true, lineHeight: 0.9, glow: 0.3 }))
+    // estadísticas en una fila (en X, a todo el ancho; en vertical, sobre la foto)
+    const rowY = land ? bottom - u * 12 : H - c.safeBottom - u * 30
+    const rx = land ? m : m + u * 2
+    const rw = W - 2 * rx
+    const cw = rw / 4
+    out.push(S('Divisor', 'line', rx, rowY - u * 2.5, rw, 0, { stroke: 'rgba(199,155,255,0.35)', strokeWidth: 2 }))
     STATS.forEach(([l, v], i) => {
-      out.push(T(`Stat ${i}`, l, '', m + i * cw, rowY, cw, cond, u * 2.8, { fill: C.lilac, letterSpacing: u * 0.25 }))
-      out.push(T(`Valor ${i}`, v, '', m + i * cw, rowY + u * 3.5, cw, cond, u * 6, { autoFit: true }))
+      out.push(T(`Stat ${i}`, l, '', rx + i * cw, rowY, cw, cond, u * 2.6, { fill: i === 3 ? C.violetLight : C.lilac, letterSpacing: u * 0.3 }))
+      out.push(T(`Valor ${i}`, v, '', rx + i * cw, rowY + u * 3.2, cw, cond, land ? u * 6.5 : u * 5.6, { autoFit: true, glow: 0.2 }))
     })
-    out.push(S('Divisor', 'line', m, rowY - u * 3, W - 2 * m, 0, { stroke: 'rgba(199,155,255,0.3)', strokeWidth: 2 }))
-    const nameY = rowY - u * 9
-    const nickSize = land ? u * 12 : u * 15
-    const nickY = nameY - nickSize * 0.95
-    out.push(T('Nombre real', 'info', '', m, nameY, W - 2 * m, 'manuscrita', u * 4, { fill: C.lilac }))
-    out.push(T('Nickname', 'sub', '', m, nickY, W - 2 * m, cond, nickSize, { fill: C.ember, autoFit: true, lineHeight: 0.9, glow: 0.4 }))
-    const photoBottom = nickY - u * 9
-    out.unshift(photo(land ? W * 0.3 : W * 0.1, top + u * 6, land ? W * 0.4 : W * 0.8, photoBottom - (top + u * 6)))
-    out.unshift(T('MVP calado', 'title', '', m * 0.5, top + u * 4, W - m, cond, land ? u * 50 : u * 58, { fill: 'transparent', stroke: C.violetLight, strokeWidth: 3, autoFit: true, lineHeight: 0.85, glow: 0.3 }))
-    out.push(T('Acento', 'mvpScript', '', W * 0.3, photoBottom + u * 0.5, W * 0.4, 'manuscrita', u * 7, { fill: C.ember, rotation: -6, autoFit: true, lineHeight: 1.3 }))
     return out
   }
 
-  // DATOS
-  const px = land ? W * 0.52 : W * 0.3
-  const pw = land ? W * 0.46 : W * 0.7
-  const photoBottom = land ? H * 0.8 : top + (bottom - top) * 0.45
-  out.unshift(photo(px, top + u * 4, pw, photoBottom - (top + u * 4)))
-  out.push(T('Acento', 'mvpScript', '', px + pw * 0.15, photoBottom + u * 0.5, pw * 0.7, 'manuscrita', u * 7, { fill: C.ember, rotation: -6, autoFit: true, lineHeight: 1.3 }))
-  const tx = m
-  const tw = land ? W * 0.46 - m : W - 2 * m
-  const ty = land ? top + u * 10 : photoBottom + u * 9
-  out.push(T('Titular', 'title', '', tx, ty, tw, cond, land ? u * 16 : u * 14, { align: 'left', lineHeight: 0.9, glow: 0.3 }))
-  out.push(T('Nickname', 'sub', '', tx, ty + u * (land ? 14 : 12.5), tw, cond, land ? u * 9 : u * 9, { align: 'left', fill: C.ember, autoFit: true, lineHeight: 0.9 }))
-  out.push(T('Nombre real', 'info', '', tx, ty + u * (land ? 22.5 : 21), tw, 'manuscrita', u * 3.6, { align: 'left', fill: C.lilac }))
-  const gy = ty + u * (land ? 29 : 27)
-  const gap = u * 2.5
-  const bw = (tw - gap) / 2
-  const bh = Math.min(u * 15, (bottom - gy - gap) / 2)
+  // DATOS: el jugador enorme a la derecha (cortado en el borde), "MVP" en itálica con "del partido" a la izquierda,
+  // el nick arriba del hombro y las estadísticas en una grilla de 2×2 sobre la foto. El agente difuminado, detrás de todo
+  out.unshift(I('Agente', 'agent', '', -u * 2, -u * 2, W + u * 4, H + u * 4, { opacity: 0.7, fadeBottom: 0.3, fit: 'cover', cropY: 0.15 }))
+  const pTop = land ? u * 2 : c.safeTop - u * 6
+  const pW = land ? W * 0.62 : W * 1.25
+  const pX = land ? W * 0.44 : W * 0.32
+  out.push(I('Foto', 'person:0', '', pX, pTop, pW, H - pTop + u * 2, { fadeBottom: 0.12, glow: 0.7, fit: 'contain' }))
+  out.push(T('Nickname', 'sub', '', land ? W * 0.44 : W * 0.48, land ? H * 0.4 : H * 0.42, land ? W * 0.18 : W * 0.32, cond, land ? u * 11 : u * 10, { align: 'left', fill: C.lilac, autoFit: true, lineHeight: 0.9, glow: 0.4 }))
+  const mx = land ? m : m + u * 2
+  const my = land ? H * 0.3 : H * 0.505
+  out.push(T('Titular', 'title', '', mx, my, land ? W * 0.3 : W * 0.4, cond, land ? u * 16 : u * 11, { align: 'left', italic: true, lineHeight: 0.9, glow: 0.3 }))
+  out.push(T('Acento', 'mvpScript', '', mx - u, my + (land ? u * 11 : u * 7.5), land ? W * 0.34 : W * 0.5, 'manuscrita', land ? u * 6.5 : u * 6, { align: 'left', fill: C.ember, rotation: -6, autoFit: true, lineHeight: 1.3 }))
+  const gx = mx
+  const gw = land ? W * 0.4 : W * 0.8
+  const gy = land ? H * 0.55 : H * 0.6
+  const gap = u * 1.8
+  const bw = (gw - gap) / 2
+  const bh = land ? u * 13 : u * 11
   STATS.forEach(([l, v], i) => {
-    const bx = tx + (i % 2) * (bw + gap)
+    const bx = gx + (i % 2) * (bw + gap)
     const by = gy + Math.floor(i / 2) * (bh + gap)
-    out.push(S(`Caja ${i}`, 'rect', bx, by, bw, bh, { fill: 'rgba(76,29,149,0.38)', stroke: 'rgba(142,68,255,0.45)', strokeWidth: 2 }))
-    out.push(T(`Stat ${i}`, l, '', bx + u * 2.5, by + u * 2, bw - u * 5, cond, u * 2.8, { align: 'left', fill: C.lilac, letterSpacing: u * 0.25 }))
-    out.push(T(`Valor ${i}`, v, '', bx + u * 2.5, by + bh * 0.38, bw - u * 5, cond, bh * 0.55, { align: 'left', autoFit: true }))
+    out.push(S(`Caja ${i}`, 'rect', bx, by, bw, bh, { fill: 'rgba(76,29,149,0.45)', stroke: 'rgba(142,68,255,0.55)', strokeWidth: 2 }))
+    out.push(T(`Stat ${i}`, l, '', bx + u * 2, by + u * 1.8, bw - u * 4, cond, u * 2.4, { align: 'left', fill: C.lilac, letterSpacing: u * 0.25 }))
+    out.push(T(`Valor ${i}`, v, '', bx + u * 2, by + bh * 0.4, bw - u * 4, cond, bh * 0.45, { align: 'left', autoFit: true }))
   })
   return out
 }

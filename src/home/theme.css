@@ -40,8 +40,6 @@
   --animate-rise: rise linear infinite;
   --animate-ping-soft: ping-soft 1.8s ease-out infinite;
   --animate-float: float 6s ease-in-out infinite;
-  --animate-neon-pulse: neon-pulse 2.2s ease-in-out;
-  --animate-fire-glow: fire-glow 2.2s ease-in-out;
   --animate-menu-in: menu-in 0.35s both;
   --animate-pop-in: pop-in 0.28s var(--ease-out-soft);
   --animate-fade-in: fade-in 0.28s ease;
@@ -52,34 +50,6 @@
     50% {
       transform: rotate(-7deg) translateY(12px);
       opacity: 0.55;
-    }
-  }
-  /* resplandor del neón: el título (sin brillo) se enciende suave y se vuelve a apagar (usa --neon-strong y --neon-hot de cada texto) */
-  @keyframes neon-pulse {
-    0%,
-    100% {
-      text-shadow: none;
-    }
-    45% {
-      text-shadow: var(--neon-strong);
-      color: var(--neon-hot);
-    }
-  }
-  /* la frase se enciende como una brasa, con el mismo ritmo que el neón del título (mismo pico y misma duración) */
-  @keyframes fire-glow {
-    0%,
-    100% {
-      color: var(--color-ember);
-      text-shadow: none;
-    }
-    45% {
-      color: #ffd27a;
-      text-shadow:
-        0 0 4px #ffd08a,
-        0 0 14px #ffa23a,
-        0 0 30px #ff7a10,
-        0 0 60px #ff5200,
-        0 0 100px rgb(255 70 0 / 0.65);
     }
   }
   @keyframes rise {

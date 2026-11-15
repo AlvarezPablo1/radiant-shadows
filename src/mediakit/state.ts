@@ -1,6 +1,6 @@
 import { MASCOTS, mascotFor } from './brand'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { makeRecipe } from './lib/background'
+import { forTeam, makeRecipe } from './lib/background'
 import { useRosters } from './useRosters'
 import { postType } from './data/postTypes'
 import { buildLayout } from './data/layouts'
@@ -19,7 +19,8 @@ export function newDoc(type: string, roster: RosterId = 'main', prev?: PostDoc):
     type,
     roster,
     visual: t.defaultVisual,
-    variant: 0,
+    // diseño por defecto: Diagonal (jugadores arriba y los textos en el panel violeta de abajo); MVP arranca en Afiche
+    variant: type === 'mvp' ? 2 : 10,
     mascot: mascotFor(roster, t.defaultMascot),
     // se conservan datos compartidos útiles (torneo / rival) al cambiar de tipo
     fields: prev ? pickKeys(prev.fields, ['tournament', 'rival', 'rivalLogo', 'date', 'time']) : {},
@@ -27,7 +28,7 @@ export function newDoc(type: string, roster: RosterId = 'main', prev?: PostDoc):
     bg: makeRecipe('competitivo'),
     layers: {},
   }
-  d.bg = makeRecipe(t.bgPreset(d))
+  d.bg = forTeam(makeRecipe(t.bgPreset(d)), roster)
   return d
 }
 

@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { swapMascot } from '../brand'
 import { CATEGORIES, categoryOf, postType, type SubOption } from '../data/postTypes'
-import { BG_PRESETS, makeRecipe } from '../lib/background'
+import { BG_PRESETS, forTeam, makeRecipe } from '../lib/background'
 import type { AppState } from '../state'
 import { newDoc } from '../state'
 import type { PostDoc, Visual } from '../types'
@@ -45,10 +45,10 @@ const DESIGNS = [
   { value: 10, label: 'Diagonal', icon: <i className="di di-impact" /> },
 ]
 const MVP_DESIGNS = [
-  { value: 0, label: 'Clásico', icon: <i className="di di-side" /> },
-  { value: 1, label: 'Tarjeta', icon: <i className="di di-card" /> },
   { value: 2, label: 'Afiche', icon: <i className="di di-poster" /> },
   { value: 3, label: 'Datos', icon: <i className="di di-panels" /> },
+  { value: 0, label: 'Clásico', icon: <i className="di di-side" /> },
+  { value: 1, label: 'Tarjeta', icon: <i className="di di-card" /> },
 ]
 
 export function PostPanel({ s }: { s: AppState }) {
@@ -79,7 +79,7 @@ export function PostPanel({ s }: { s: AppState }) {
         const nd = { ...d, fields: { ...d.fields, ...o.fields } }
         if (d.variant !== 3) {
           const preset = postType(o.type).bgPreset(nd)
-          nd.bg = { ...d.bg, neon: 0, corners: false, ...BG_PRESETS[preset].recipe, preset }
+          nd.bg = forTeam({ ...d.bg, neon: 0, corners: false, ...BG_PRESETS[preset].recipe, preset }, d.roster)
         }
         return nd
       })
@@ -89,11 +89,10 @@ export function PostPanel({ s }: { s: AppState }) {
     if (sameType) return
     const nd = newDoc(o.type, doc.roster, doc)
     nd.fields = { ...nd.fields, ...o.fields }
-    nd.bg = makeRecipe(postType(o.type).bgPreset(nd))
-    if (doc.variant === 3 && o.type !== 'mvp') {
-      nd.variant = 3
-      nd.bg = makeRecipe('neon')
-    }
+    nd.bg = forTeam(makeRecipe(postType(o.type).bgPreset(nd)), nd.roster)
+    // se mantiene el diseño elegido al cambiar de tipo (salvo hacia o desde MVP, que tiene los suyos)
+    if (doc.type !== 'mvp' && o.type !== 'mvp') nd.variant = doc.variant
+    if (nd.variant === 3 && o.type !== 'mvp') nd.bg = makeRecipe('neon')
     s.setDoc(() => nd)
     s.setSelected(null)
     warnFeed(nd)
@@ -106,7 +105,7 @@ export function PostPanel({ s }: { s: AppState }) {
       // victoria/derrota o puesto cambian el fondo sugerido (salvo en Neón)
       if ((k === 'place' || k === 'scoreUs' || k === 'scoreThem') && d.variant !== 3) {
         const preset = t.bgPreset(nd)
-        if (preset !== d.bg.preset) nd.bg = { ...d.bg, neon: 0, corners: false, ...BG_PRESETS[preset].recipe, preset }
+        if (preset !== d.bg.preset) nd.bg = forTeam({ ...d.bg, neon: 0, corners: false, ...BG_PRESETS[preset].recipe, preset }, d.roster)
       }
       return nd
     })
@@ -116,7 +115,7 @@ export function PostPanel({ s }: { s: AppState }) {
   const setDesign = (v: number) =>
     s.relayout((d) => {
       const neonLike = (x: number) => d.type !== 'mvp' && (x === 3 || x === 4 || x === 5)
-      const bg = v === 5 ? makeRecipe('sobrio', d.bg.seed) : neonLike(v) ? makeRecipe('neon', d.bg.seed) : neonLike(d.variant) ? makeRecipe(t.bgPreset(d), d.bg.seed) : d.bg
+      const bg = v === 5 ? makeRecipe('sobrio', d.bg.seed) : neonLike(v) ? makeRecipe('neon', d.bg.seed) : neonLike(d.variant) ? forTeam(makeRecipe(t.bgPreset(d), d.bg.seed), d.roster) : d.bg
       return { ...d, variant: v, bg: { ...bg, image: d.bg.image, imageDim: d.bg.imageDim, imageFilter: d.bg.imageFilter } }
     })
 
@@ -141,7 +140,7 @@ export function PostPanel({ s }: { s: AppState }) {
             { value: 'main', label: 'MAIN' },
             { value: 'gc', label: 'GC' },
           ]}
-          onChange={(v) => s.relayout((d) => ({ ...d, roster: v, people: [], mascot: swapMascot(d.mascot, v) }))}
+          onChange={(v) => s.relayout((d) => ({ ...d, roster: v, people: [], mascot: swapMascot(d.mascot, v), bg: forTeam(d.bg, v) }))}
         />
       </div>
       <Step n={1} title="Tipo" aside={<span className={'badge' + (t.feed(doc) ? '' : ' muted')}>{formatsLabel}</span>}>

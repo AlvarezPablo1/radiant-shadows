@@ -8,12 +8,13 @@ const BETWEEN_PLAYS: [number, number] = [5000, 7000]
 const NEAR_END = 1.8
 
 /**
- * Video del dragón de fondo del héroe. Viene sobre negro: con "screen" el negro desaparece y queda sólo el dragón,
- * oscurecido para que el texto se lea bien. Detrás, el fondo del héroe también se oscurece.
+ * Video del dragón de fondo del héroe. Viene sobre negro: con "screen" el negro desaparece y queda sólo el dragón.
+ * El video ya viene oscurecido (al 30% del brillo, horneado en el archivo: así el navegador no aplica un filtro en cada
+ * cuadro y pesa mucho menos). Detrás, el fondo del héroe también se oscurece.
  * - Se mueve cada vez que el héroe entra en pantalla, y mientras se ve, de nuevo cada unos segundos. Fuera de pantalla, pausa.
  * - Sin parpadeo: mientras el video arranca se ve la imagen del primer cuadro; el video aparece (con un fundido,
  *   mientras la imagen se va) recién cuando ya está pintando cuadros.
- * - En celular usa una versión más liviana (1080p) y con "reducir movimiento" queda la imagen quieta.
+ * - En compu va en 1440p y en celular en 1080p y con "reducir movimiento" queda la imagen quieta.
  * `team`: dragón en MAIN, dragona en GC. `onNearEnd`: una vez por vuelta, un poco antes de que termine de moverse.
  */
 export function HeroVideo({ team = 'main', onNearEnd }: { team?: Team; onNearEnd?: () => void }) {
@@ -84,7 +85,7 @@ export function HeroVideo({ team = 'main', onNearEnd }: { team?: Team; onNearEnd
   }, [reducedMotion, team, mobile])
 
   // el video ocupa todo el héroe y las patas se difuminan abajo
-  const cls = 'absolute inset-0 size-full object-cover object-center mix-blend-screen brightness-[0.30] max-md:object-[50%_35%]'
+  const cls = 'absolute inset-0 size-full object-cover object-center mix-blend-screen max-md:object-[50%_35%]'
   return (
     <>
       {/* fondo oscurecido detrás del dragón (se va aclarando hacia abajo para empalmar con el resto de la página) */}

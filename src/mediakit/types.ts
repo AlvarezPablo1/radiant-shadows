@@ -89,6 +89,8 @@ export interface ImageLayer extends LayerBase {
   glow: number
   /** desvanecer la parte inferior (fundido al fondo) */
   fadeBottom: number
+  /** difuminado (0 a 1): p. ej. el agente detrás del MVP */
+  blur?: number
   /** en modo "rellenar caja": qué parte vertical se ve (0 = arriba, 0.5 = centro) */
   cropY?: number
 }

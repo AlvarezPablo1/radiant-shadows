@@ -26,7 +26,7 @@ export function broadcast(c: Ctx): Layer[] {
   out.push(S('Borde de la barra', 'line', 0, barY, W, 0, { stroke: C.violetLight, strokeWidth: 6, glow: 0.6 }))
   // etiqueta violeta con la frase
   const tagH = u * 7
-  out.push(S('Etiqueta', 'rect', m, barY - tagH * 0.6, land ? W * 0.3 : W * 0.5, tagH, { fill: 'rgba(122,40,226,0.95)', stroke: 'transparent', strokeWidth: 0 }))
+  out.push(S('Etiqueta', 'rect', m, barY - tagH * 0.6, land ? W * 0.3 : W * 0.5, tagH, { fill: 'rgba(116,21,193,0.95)', stroke: 'transparent', strokeWidth: 0 }))
   out.push(T('Frase', 'kicker', '', m + u * 2, barY - tagH * 0.6 + tagH * 0.2, (land ? W * 0.3 : W * 0.5) - u * 4, cond, tagH * 0.62, { align: 'left', uppercase: true, letterSpacing: u * 0.3, autoFit: true }))
 
   // dentro de la barra: titular y contexto a la izquierda; VS / marcador o dato a la derecha

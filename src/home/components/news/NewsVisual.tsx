@@ -28,12 +28,12 @@ export function NewsVisual({ item, color, className }: { item: NewsItem; color: 
       className={cx('relative shrink-0 overflow-hidden', className)}
     >
       {item.category === 'tryouts' ? (
-        <img src={TRYOUTS_ART} alt="" className="absolute top-1/2 left-1/2 w-2/5 max-w-44 -translate-1/2 drop-shadow-[0_0_30px_rgb(255_84_84/0.45)]" />
+        <img loading="lazy" decoding="async" src={TRYOUTS_ART} alt="" className="absolute top-1/2 left-1/2 w-2/5 max-w-44 -translate-1/2 drop-shadow-[0_0_30px_rgb(255_84_84/0.45)]" />
       ) : roster ? (
         // foto grupal del roster actual: los jugadores uno al lado del otro, pisándose un poco
         <div className="absolute inset-x-0 top-4 bottom-0 flex justify-center">
           {group.map((p, i) => (
-            <img
+            <img loading="lazy" decoding="async"
               key={p.photo}
               src={p.photo}
               alt=""
@@ -43,7 +43,7 @@ export function NewsVisual({ item, color, className }: { item: NewsItem; color: 
           ))}
         </div>
       ) : item.image ? (
-        <img src={item.image} alt="" className={cx('absolute top-4 left-1/2 h-[115%] w-auto max-w-none -translate-x-1/2 object-contain object-top', fade)} />
+        <img loading="lazy" decoding="async" src={item.image} alt="" className={cx('absolute top-4 left-1/2 h-[115%] w-auto max-w-none -translate-x-1/2 object-contain object-top', fade)} />
       ) : (
         <img src={DEFAULT_ART} alt="" loading="lazy" className="absolute inset-0 size-full object-cover" />
       )}

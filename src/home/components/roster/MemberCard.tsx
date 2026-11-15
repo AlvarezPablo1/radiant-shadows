@@ -62,7 +62,7 @@ export function MemberCard({ member, showRank, active, dimmed, blurred, onSelect
       <span className="absolute inset-x-1 inset-y-0 overflow-hidden">
         {member.photo ? (
           // todas al mismo alto, centradas en su casilla; se desvanecen hacia abajo
-          <img
+          <img loading="lazy" decoding="async"
             src={member.photo}
             alt=""
             draggable={false}

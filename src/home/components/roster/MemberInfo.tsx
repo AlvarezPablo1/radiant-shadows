@@ -15,7 +15,7 @@ export function MemberInfo({ member, showRank, open }: Props) {
   const icon = rankIcon(member.rank)
   const rank = (
     <span className="flex items-center gap-1.5">
-      {icon && <img src={icon} alt="" className="size-5" />}
+      {icon && <img loading="lazy" decoding="async" src={icon} alt="" className="size-5" />}
       {member.rank ?? '—'}
     </span>
   )

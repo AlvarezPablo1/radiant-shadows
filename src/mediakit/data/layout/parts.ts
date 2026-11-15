@@ -1,6 +1,6 @@
 import { C } from '../../brand'
 import type { Layer, TextLayer } from '../../types'
-import { postType, selectedPeople } from '../postTypes'
+import { outcome, postType, selectedPeople } from '../postTypes'
 import { I, S, T, type Align, type Ctx } from './core'
 import { DEFAULT_OVERLAP, reflowRow } from './rows'
 
@@ -68,7 +68,11 @@ export function mainTexts(c: Ctx, x: number, w: number, align: Align, scale = 1)
   const { u, d } = c
   const s = (n: number) => n * u * scale
   const kick = T('Frase', 'kicker', '', x, 0, w, 'manuscrita', s(6.4), { align, fill: C.ember, lineHeight: 1.5, autoFit: true })
-  const title = T('Titular', 'title', '', x, 0, w, 'condensada', s(d.type === 'cumple' ? 18 : 17), { align, autoFit: true, glow: 0.35, lineHeight: 1 })
+  // VICTORIA: grande (620 px, se achica sola hasta entrar en su caja) y con brillo neón al 90%
+  const title =
+    d.type === 'resultado' && outcome(d) === 'win'
+      ? T('Titular', 'title', '', x, 0, w, 'condensada', 620, { align, autoFit: true, glow: 0.9, lineHeight: 0.95 }, 1)
+      : T('Titular', 'title', '', x, 0, w, 'condensada', s(d.type === 'cumple' ? 18 : 17), { align, autoFit: true, glow: 0.35, lineHeight: 1 })
   const sub = T('Contexto', 'sub', '', x, 0, w, 'condensada', s(3.6), { align, fill: C.violetLight, letterSpacing: s(0.35), lineHeight: 1.2 })
   const info = T('Detalle', 'info', '', x, 0, w, 'manuscrita', s(3.6), { align, fill: C.white, opacity: 0.9, lineHeight: 1.25 })
   const body = T('Texto', 'body', '', x, 0, w, 'fuerza', s(3.4), { align, weight: '500', lineHeight: 1.35, fill: C.white })
@@ -91,7 +95,7 @@ export function mainTexts(c: Ctx, x: number, w: number, align: Align, scale = 1)
     case 'stream':
       return [kick, title, s(1.5), sub, s(0.8), c.v.info ? info : null]
     case 'matchday':
-      return [kick, title, s(1.5), sub, s(0.8), info, s(0.6), T('Dónde verlo', 'foot', '', x, 0, w, 'condensada', s(3), { align, fill: C.lilac, letterSpacing: s(0.2) })]
+      return [kick, title, s(1.5), sub, s(0.8), info, s(0.6), T('Dónde verlo', 'foot', '', x, 0, w, 'condensada', s(4.2), { align, fill: C.lilac, letterSpacing: s(0.2) })]
     case 'resultado':
     case 'torneo':
     default:

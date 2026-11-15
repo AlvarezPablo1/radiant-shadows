@@ -1,12 +1,11 @@
 import { postType, todayISO } from '../../data/postTypes'
 import type { AppState } from '../../state'
-import { Thumb } from '../Thumb'
-import { Field, useUI } from '../ui'
+import { Field } from '../ui'
+import { LogoField } from './LogoField'
 
 /** Los datos propios del tipo de publicación (rival, torneo, fecha…) */
 export function PostFields({ s, setField }: { s: AppState; setField: (k: string, v: string, checkFeed?: boolean) => void }) {
   const { doc } = s
-  const ui = useUI()
   const t = postType(doc.type)
   return (
     <>
@@ -29,25 +28,17 @@ export function PostFields({ s, setField }: { s: AppState; setField: (k: string,
               <span>{doc.fields[f.key] === '1' ? 'Sí' : 'No'}</span>
             </label>
           ) : f.kind === 'image' ? (
-            <div className="img-field">
-              <Thumb src={doc.fields[f.key]} />
-              <button
-                className="btn small"
-                onClick={async () => {
-                  const ref = await ui.uploadPhoto({ askPng: false })
-                  if (ref) setField(f.key, ref)
-                }}
-              >
-                {doc.fields[f.key] ? 'Cambiar' : 'Subir'}
-              </button>
-              {doc.fields[f.key] && (
-                <button className="btn small ghost" onClick={() => setField(f.key, '')}>
-                  Quitar
-                </button>
-              )}
-            </div>
+            <LogoField value={doc.fields[f.key]} onChange={(ref) => setField(f.key, ref)} />
           ) : (
-            <input type={f.kind} value={doc.fields[f.key] || (f.kind === 'date' && f.key !== 'deadline' ? todayISO() : '')} placeholder={f.placeholder} onChange={(e) => setField(f.key, e.target.value, f.kind === 'number')} />
+            f.prefix ? (
+              // dirección fija delante: sólo se escribe el canal (si pegan la dirección completa, se le saca el principio)
+              <div className="prefixed">
+                <span>{f.prefix}</span>
+                <input type="text" value={doc.fields[f.key] ?? ''} placeholder={f.placeholder} onChange={(e) => setField(f.key, e.target.value.replace(/^(https?:\/\/)?(www\.)?twitch\.tv\//i, ''))} />
+              </div>
+            ) : (
+              <input type={f.kind} value={doc.fields[f.key] || (f.kind === 'date' && f.key !== 'deadline' ? todayISO() : '')} placeholder={f.placeholder} onChange={(e) => setField(f.key, e.target.value, f.kind === 'number')} />
+            )
           )}
         </Field>
       ))}

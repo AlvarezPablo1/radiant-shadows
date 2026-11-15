@@ -44,7 +44,7 @@ function Portrait({ person, reversed }: { person: Person; reversed: boolean }) {
     <div className={cx('relative aspect-[4/5] w-60 max-lg:w-48 max-md:mx-auto max-md:mt-6 max-md:w-40', reversed && 'order-2 max-md:order-none')}>
       <span aria-hidden="true" className="absolute -inset-x-16 inset-y-0 bg-[radial-gradient(ellipse_at_50%_70%,rgb(142_68_255/0.3),transparent_60%)]" />
       {person.photo ? (
-        <img src={person.photo} alt="" className="absolute inset-x-0 bottom-0 mx-auto h-[92%] w-auto object-contain object-bottom" />
+        <img loading="lazy" decoding="async" src={person.photo} alt="" className="absolute inset-x-0 bottom-0 mx-auto h-[92%] w-auto object-contain object-bottom" />
       ) : (
         <Silhouette className="absolute bottom-0 left-1/2 h-[82%] w-auto -translate-x-1/2" />
       )}

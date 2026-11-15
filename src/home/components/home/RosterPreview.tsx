@@ -21,7 +21,7 @@ export function RosterPreview() {
                 className="group relative block h-96 overflow-hidden rounded-3xl border border-violet-hi/25 bg-[linear-gradient(to_bottom,rgb(122_40_226/0.3),rgb(0_0_16/0.6))] transition-[border-color,translate] duration-200 hover:-translate-y-1 hover:border-violet-hi/70 max-md:h-80"
               >
                 {p.photo && (
-                  <img
+                  <img loading="lazy" decoding="async"
                     src={p.photo}
                     alt=""
                     style={{ height: `${(p.photoScale ?? 1) * 100}%` }}
@@ -34,7 +34,7 @@ export function RosterPreview() {
                   </span>
                   <span className="mt-2 flex items-center gap-2 text-sm font-semibold text-mist">
                     {p.role}
-                    {icon && <img src={icon} alt="" className="size-5" />}
+                    {icon && <img loading="lazy" decoding="async" src={icon} alt="" className="size-5" />}
                     <span className="text-muted">{p.rank}</span>
                   </span>
                 </span>

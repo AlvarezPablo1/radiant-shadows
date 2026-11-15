@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { BG_PRESETS, getBackground, makeRecipe } from '../lib/background'
+import { BG_PRESETS, forTeam, getBackground, makeRecipe } from '../lib/background'
 import { FILTERS } from '../lib/filters'
 import { idbKeys } from '../lib/idb'
 import { normalizeImage, pickFile, storeBlob } from '../lib/images'
@@ -34,7 +34,7 @@ export function BackgroundPanel({ s }: { s: AppState }) {
       <Step title="Estilo de fondo">
         <div className="preset-grid">
           {Object.entries(BG_PRESETS).map(([id, p]) => (
-            <button key={id} className={'preset' + (bg.preset === id ? ' on' : '')} onClick={() => set({ ...makeRecipe(id, bg.seed), image: bg.image, imageDim: bg.imageDim, imageFilter: bg.imageFilter })}>
+            <button key={id} className={'preset' + (bg.preset === id ? ' on' : '')} onClick={() => set({ ...forTeam(makeRecipe(id, bg.seed), s.doc.roster), image: bg.image, imageDim: bg.imageDim, imageFilter: bg.imageFilter })}>
               <PresetThumb r={THUMBS[id]} />
               <span>{p.label}</span>
             </button>
