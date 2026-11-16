@@ -16,8 +16,8 @@ export function heroKind(c: Ctx): 'person' | 'people' | 'mascot' | 'logo' | 'non
 /** Imagen(es) principal(es) dentro de un rectángulo. */
 export function hero(c: Ctx, x: number, y: number, w: number, h: number, flip = false): Layer[] {
   const k = heroKind(c)
-  // por defecto las fotos van sin filtro (se elige uno desde Edición si se quiere)
-  const photoFilter = 'none' as const
+  // por defecto las fotos van sin filtro (se elige uno desde Edición si se quiere); campeones y subcampeones, en "Brasa"
+  const photoFilter = c.d.type === 'torneo' && Number(c.d.fields.place || 1) <= 2 ? ('calido' as const) : ('none' as const)
   if (k === 'person') return [I('Foto', 'person:0', '', x, y, w, h, { fadeBottom: 0.22, glow: 0.75, filter: photoFilter, flipX: flip })]
   // la mascota es un sticker con su palabra abajo: sin fundido, para que se lea entera
   if (k === 'mascot') return [I('Mascota', 'mascot', '', x, y, w, h, { glow: 0.25, flipX: flip })]
@@ -119,3 +119,13 @@ export function panelVs(c: Ctx, out: Layer[], vy: number) {
   out.push(T('Rival', 'rivalUpper', '', m + u * (d.fields.rivalLogo ? 18 : 9), vy + u * 0.8, W * 0.5, 'condensada', u * 6.4, { align: 'left', letterSpacing: u * 0.1 }))
 }
 
+
+/**
+ * El agente del MVP (aparece cuando se elige uno), detrás de todo y tenue (30%).
+ * Rellena la placa desde el centro de arriba; en historias, sólo dentro de la zona segura (así no lo tapa Instagram).
+ */
+export function agentLayer(c: Ctx): Layer {
+  const { W, H, u } = c
+  const y = c.safeTop
+  return I('Agente', 'agent', '', -u * 2, y, W + u * 4, H - y - c.safeBottom, { opacity: 0.3, fadeBottom: 0.3, fit: 'cover' })
+}

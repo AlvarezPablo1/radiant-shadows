@@ -28,6 +28,10 @@ export interface LayerBase {
   key?: string
   /** pertenece a una fila de jugadores que se reacomoda sola */
   row?: RowInfo
+  /** color del brillo (por defecto, violeta de marca) */
+  glowColor?: string
+  /** tamaño de referencia para el control "Tamaño" cuando la capa no viene de la plantilla */
+  base?: { width: number; height?: number; fontSize?: number }
 }
 
 export interface RowInfo {

@@ -38,12 +38,16 @@ export function TextProps({ s, l, up, values, part }: { s: AppState; l: TextLaye
         </Field>
         <Slider label="Espaciado" value={l.letterSpacing} min={-5} max={40} step={0.5} fmt={(v) => v.toFixed(1)} onChange={(v) => up({ letterSpacing: v })} />
         <Slider label="Interlineado" value={l.lineHeight} min={0.7} max={2} step={0.05} fmt={(v) => v.toFixed(2)} onChange={(v) => up({ lineHeight: v })} />
-        <Slider label="Brillo violeta" value={l.glow} onChange={(v) => up({ glow: v })} />
+        <Slider label="Brillo neón" value={l.glow} onChange={(v) => up({ glow: v })} />
+        {l.glow > 0 && (
+          <Field label="Color del brillo">
+            <ColorPick value={l.glowColor ?? C.violetLight} onChange={(v) => up({ glowColor: v })} />
+          </Field>
+        )}
         <div className="checks">
           <Switch label="Mayúsculas" checked={l.uppercase} onChange={(v) => up({ uppercase: v })} />
           <Switch label="Itálica" checked={l.italic} onChange={(v) => up({ italic: v })} />
           <Switch label="Ajustar al ancho" checked={!!l.autoFit} onChange={(v) => up({ autoFit: v })} />
-          <Switch label="Contorno" checked={!!l.strokeWidth} onChange={(v) => up({ strokeWidth: v ? 3 : 0, stroke: C.violet })} />
         </div>
       </>
     )
@@ -76,18 +80,6 @@ export function TextProps({ s, l, up, values, part }: { s: AppState; l: TextLaye
       <Field label="Fuente">
         <FontPicker value={l.font} onChange={(v) => up({ font: v })} />
       </Field>
-      <Field label="Tamaño de letra" hint={l.autoFit ? 'Si el texto no entra en su caja, se achica solo' : undefined}>
-        <div className="size-field">
-          <button className="tbtn icon" aria-label="Achicar letra" onClick={() => up({ fontSize: Math.max(6, Math.round(l.fontSize) - 2) })}>
-            <Icon name="minus" size={14} />
-          </button>
-          <input type="number" min={6} max={1000} value={Math.round(l.fontSize)} onChange={(e) => e.target.value && up({ fontSize: Math.max(6, Number(e.target.value)) })} aria-label="Tamaño de letra en píxeles" />
-          <span className="unit">px</span>
-          <button className="tbtn icon" aria-label="Agrandar letra" onClick={() => up({ fontSize: Math.round(l.fontSize) + 2 })}>
-            <Icon name="plus" size={14} />
-          </button>
-        </div>
-      </Field>
       <Field label="Color">
         <ColorPick value={l.fill === 'transparent' ? C.white : l.fill} onChange={(v) => up({ fill: v })} />
       </Field>
@@ -118,7 +110,12 @@ export function ImageProps({ l, up, onReplace, onCutout, part }: { l: ImageLayer
             onChange={(v) => up({ fit: v })}
           />
         </Field>
-        <Slider label="Brillo violeta (borde)" value={l.glow} onChange={(v) => up({ glow: v })} />
+        <Slider label="Brillo neón (borde)" value={l.glow} onChange={(v) => up({ glow: v })} />
+      {l.glow > 0 && (
+        <Field label="Color del brillo">
+          <ColorPick value={l.glowColor ?? C.violet} onChange={(v) => up({ glowColor: v })} />
+        </Field>
+      )}
         <Slider label="Fundido inferior" value={l.fadeBottom} max={0.8} onChange={(v) => up({ fadeBottom: v })} />
       </>
     )

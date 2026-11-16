@@ -83,6 +83,13 @@ export function PeoplePicker({ s }: { s: AppState }) {
       </div>
       <span className="field-hint">Tocá la foto para cambiarla · las flechas cambian el orden en la placa</span>
       {many && visual === 'players' && s.layers.some((l) => l.row?.kind === 'stage') && (
+        <label className="switch">
+          <input type="checkbox" checked={doc.fields.rowSnap === '1'} onChange={(e) => s.setDoc((d) => ({ ...d, fields: { ...d.fields, rowSnap: e.target.checked ? '1' : '' } }))} />
+          <span className="track" />
+          <span>Mantener la formación al mover jugadores</span>
+        </label>
+      )}
+      {many && visual === 'players' && s.layers.some((l) => l.row?.kind === 'stage') && (
         <div className="spacing">
           <Slider
             label="Separación entre jugadores"

@@ -1,5 +1,5 @@
 import { C } from '../../brand'
-import type { Layer, TextLayer } from '../../types'
+import type { Layer } from '../../types'
 import { I, S, T, textHeight, type Ctx } from './core'
 import { hero, heroKind } from './parts'
 
@@ -68,10 +68,18 @@ export function neon(c: Ctx): Layer[] {
   // titular: dos líneas en vertical, una sola en X (como las placas actuales)
   const size = land ? u * 19 : u * 23
   const tw = land ? W * 0.56 : W * 0.78
-  const titleLayers: TextLayer[] = []
+  const titleLayers: Layer[] = []
   let titleTop: number
   const withKicker = d.type !== 'matchday' && d.type !== 'resultado' && (c.v.title || '').trim().split(/\s+/).length < 2 && !!c.v.kicker
-  if (withKicker) {
+  if (d.type === 'resultado') {
+    // VICTORIA / DERROTA gigante en itálica, con el resultado debajo en lila (#c79bff) y una línea de neón detrás
+    const scoreSize = land ? u * 13 : u * 15
+    const big = land ? u * 30 : u * 40
+    const sc = T('Resultado', 'score', '', land ? m : m, titleBottom - scoreSize * 0.95, land ? W * 0.5 : W - 2 * m, cond, scoreSize, { align: land ? 'left' : 'center', fill: '#c79bff', lineHeight: 0.95, glow: 0.6, glowColor: '#8e44ff' }, 1)
+    const t1 = T('Titular', 'title', '', land ? m : m * 0.5, sc.y - big * 0.86, land ? W * 0.55 : W - m, cond, big, { align: land ? 'left' : 'center', italic: true, autoFit: true, fill: C.white, lineHeight: 0.9, glow: 0.6 }, 1)
+    titleLayers.push(S('Línea neón', 'line', -u * 4, sc.y - u * 1, W + u * 8, -u * 6, { stroke: '#d9c2ff', strokeWidth: 5, glow: 0.9, rotation: -3 }), t1, sc)
+    titleTop = t1.y
+  } else if (withKicker) {
     const t1 = T('Titular', 'title', '', m, titleBottom - size * 0.92, tw, cond, size, { align: 'left', autoFit: true, fill: C.white, lineHeight: 0.9, extrude: u * 0.5 })
     const k1 = T('Frase', 'kicker', '', m, t1.y - u * (land ? 10 : 12), tw, 'manuscrita', u * (land ? 9 : 10), { align: 'left', fill: C.ember, rotation: -4, lineHeight: 1.3, autoFit: true })
     titleLayers.push(k1, t1)

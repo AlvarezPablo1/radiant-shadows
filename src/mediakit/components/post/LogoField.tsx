@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { removeFlatBackground } from '../../lib/flatBackground'
 import { normalizeImage, pickFile, storeBlob } from '../../lib/images'
 import { Icon } from '../icons'
 import { Thumb } from '../Thumb'
@@ -46,14 +47,14 @@ export function LogoField({ value, onChange }: { value?: string; onChange: (ref:
     const ref = await storeBlob(await normalizeImage(file, 1200), 'logo')
     const removeBg = await ui.ask<boolean>({
       title: '¿Le quitamos el fondo al logo?',
-      body: 'Si el logo viene con un fondo (blanco, de color), lo quitamos para que quede limpio sobre la placa.',
+      body: 'Si el logo viene sobre un fondo liso (blanco, negro o de color), lo quitamos para que quede limpio sobre la placa.',
       options: [
         { label: 'No, dejalo así', value: false },
         { label: 'Sí, quitale el fondo', value: true, primary: true },
       ],
     })
     if (removeBg === undefined) return
-    const final = removeBg ? ((await ui.cutout(ref)) ?? ref) : ref
+    const final = removeBg ? await removeFlatBackground(ref).catch(() => ref) : ref
     remember(final)
     onChange(final)
   }

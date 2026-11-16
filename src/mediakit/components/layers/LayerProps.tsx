@@ -19,19 +19,23 @@ export function LayerProps({ s, l, values }: { s: AppState; l: Layer; values: Re
 
   const dup = () => s.addLayer({ ...l, id: newId(), key: undefined, name: l.name + ' (copia)', x: l.x + 30, y: l.y + 30 } as Layer)
 
-  // tamaño relativo a la plantilla; en la fila de jugadores es la escala propia de esa foto
-  const baseW = tpl && 'width' in tpl ? tpl.width : l.width
-  const rowScale = l.type === 'image' && l.row ? (l.row.scale ?? 1) : null
-  const scaleNow = rowScale ?? (l.type === 'text' ? l.fontSize / ((tpl as TextLayer | undefined)?.fontSize ?? l.fontSize) : l.width / (baseW || l.width))
+  // "Tamaño" (de 0 a 100%): relativo al tamaño original del elemento (el de la plantilla o, si se agregó a mano,
+  // el que tenía la primera vez que se lo achicó). En la fila de jugadores es la escala propia de esa foto.
+  // con "Mantener la formación" apagado, cada jugador se maneja como una imagen suelta
+  const inRow = !!l.row && s.doc.fields.rowSnap === '1'
+  const rowScale = l.type === 'image' && inRow ? (l.row!.scale ?? 1) : null
+  const ref = tpl && 'width' in tpl ? { width: tpl.width, height: 'height' in tpl ? tpl.height : undefined, fontSize: tpl.type === 'text' ? tpl.fontSize : undefined } : (l.base ?? { width: l.width, height: 'height' in l ? l.height : undefined, fontSize: l.type === 'text' ? l.fontSize : undefined })
+  const scaleNow = Math.min(1, rowScale ?? (l.type === 'text' ? l.fontSize / (ref.fontSize || l.fontSize) : l.width / (ref.width || l.width)))
   const setScale = (k: number) => {
+    k = Math.max(0.02, Math.min(1, k))
     if (rowScale !== null) return up({ width: (l.width * k) / rowScale } as Partial<ImageLayer>)
+    // se guarda la referencia la primera vez (así achicar varias veces no se va acumulando)
+    const base = tpl ? undefined : (l.base ?? ref)
     // escala desde la esquina superior izquierda: el elemento no se mueve de lugar
-    if (l.type === 'text') {
-      const t = (tpl as TextLayer | undefined) ?? l
-      return up({ fontSize: t.fontSize * k, width: t.width * k } as Partial<TextLayer>)
-    }
-    const width = (baseW || l.width) * k
-    up({ width, height: l.type === 'shape' && l.shape === 'line' ? 0 : width * (l.height / l.width || 1) } as Partial<ImageLayer>)
+    if (l.type === 'text') return up({ fontSize: (ref.fontSize ?? l.fontSize) * k, width: ref.width * k, ...(base && { base }) } as Partial<TextLayer>)
+    const width = ref.width * k
+    const height = l.type === 'shape' && l.shape === 'line' ? 0 : (ref.height ?? width * (l.height / l.width || 1)) * k
+    up({ width, height, ...(base && { base }) } as Partial<ImageLayer>)
   }
   /** cambia el lugar de un jugador dentro de su fila (el reacomodo hace el resto) */
   const rowMove = (dir: number) => {
@@ -70,7 +74,7 @@ export function LayerProps({ s, l, values }: { s: AppState; l: Layer; values: Re
     )
 
   const sizeSlider = (
-    <Slider label="Tamaño" value={scaleNow} min={0.2} max={3} step={0.01} fmt={(v) => Math.round(v * 100) + '%'} onChange={setScale} onReset={tpl || rowScale !== null ? resetSize : undefined} isDefault={Math.abs(scaleNow - 1) < 0.005} />
+    <Slider label="Tamaño" value={scaleNow} min={0} max={1} step={0.01} fmt={(v) => Math.round(v * 100) + '%'} onChange={setScale} onReset={tpl || rowScale !== null ? resetSize : undefined} isDefault={Math.abs(scaleNow - 1) < 0.005} />
   )
 
   return (
@@ -92,7 +96,7 @@ export function LayerProps({ s, l, values }: { s: AppState; l: Layer; values: Re
 
       <div className="prop-group">
         <span className="group-label">Posición y tamaño</span>
-        {l.row ? (
+        {inRow ? (
           <div className="row-order">
             {sizeSlider}
             <p className="info-line">
@@ -123,8 +127,8 @@ export function LayerProps({ s, l, values }: { s: AppState; l: Layer; values: Re
 
       <Advanced>
         {kind('advanced')}
-        {!l.row && <Slider label="Horizontal (X)" value={l.x} min={-W * 0.5} max={W} step={1} fmt={(v) => Math.round(v) + 'px'} onChange={(v) => up({ x: v })} onReset={tpl ? () => up({ x: tpl.x }) : undefined} isDefault={!tpl || Math.abs(l.x - tpl.x) < 0.5} />}
-        {!l.row && <Slider label="Vertical (Y)" value={l.y} min={-H * 0.5} max={H} step={1} fmt={(v) => Math.round(v) + 'px'} onChange={(v) => up({ y: v })} onReset={tpl ? () => up({ y: tpl.y }) : undefined} isDefault={!tpl || Math.abs(l.y - tpl.y) < 0.5} />}
+        {!inRow && <Slider label="Horizontal (X)" value={l.x} min={-W * 0.5} max={W} step={1} fmt={(v) => Math.round(v) + 'px'} onChange={(v) => up({ x: v })} onReset={tpl ? () => up({ x: tpl.x }) : undefined} isDefault={!tpl || Math.abs(l.x - tpl.x) < 0.5} />}
+        {!inRow && <Slider label="Vertical (Y)" value={l.y} min={-H * 0.5} max={H} step={1} fmt={(v) => Math.round(v) + 'px'} onChange={(v) => up({ y: v })} onReset={tpl ? () => up({ y: tpl.y }) : undefined} isDefault={!tpl || Math.abs(l.y - tpl.y) < 0.5} />}
         <Slider label="Rotación" value={l.rotation} min={-180} max={180} step={1} fmt={(v) => Math.round(v) + '°'} onChange={(v) => up({ rotation: v })} onReset={() => up({ rotation: tpl?.rotation ?? 0 })} isDefault={l.rotation === (tpl?.rotation ?? 0)} />
         <Slider label="Opacidad" value={l.opacity} onChange={(v) => up({ opacity: v })} onReset={() => up({ opacity: tpl?.opacity ?? 1 })} isDefault={l.opacity === (tpl?.opacity ?? 1)} />
       </Advanced>

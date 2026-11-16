@@ -1,5 +1,6 @@
 import { MASCOTS, mascotFor } from './brand'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { designsFor } from './data/designs'
 import { forTeam, makeRecipe } from './lib/background'
 import { useRosters } from './useRosters'
 import { postType } from './data/postTypes'
@@ -19,8 +20,8 @@ export function newDoc(type: string, roster: RosterId = 'main', prev?: PostDoc):
     type,
     roster,
     visual: t.defaultVisual,
-    // diseño por defecto: Diagonal (jugadores arriba y los textos en el panel violeta de abajo); MVP arranca en Afiche
-    variant: type === 'mvp' ? 2 : 10,
+    // diseño por defecto: el primero de los que tiene cada publicación (data/designs.ts)
+    variant: designsFor(type)[0],
     mascot: mascotFor(roster, t.defaultMascot),
     // se conservan datos compartidos útiles (torneo / rival) al cambiar de tipo
     fields: prev ? pickKeys(prev.fields, ['tournament', 'rival', 'rivalLogo', 'date', 'time']) : {},
@@ -29,6 +30,7 @@ export function newDoc(type: string, roster: RosterId = 'main', prev?: PostDoc):
     layers: {},
   }
   d.bg = forTeam(makeRecipe(t.bgPreset(d)), roster)
+  if (d.variant === 3 && type !== 'mvp') d.bg = makeRecipe('neon')
   return d
 }
 
@@ -174,8 +176,12 @@ export function useAppState() {
           }
           // fila de jugadores: al ocultar/mostrar (en los 3 formatos) o mover en X (en este) se reacomoda sola.
           // Si se le cambió el tamaño, se guarda su escala y queda donde lo dejaste (antes lo movía y le devolvía el tamaño)
+          // "Mantener la formación" (opcional): si está apagado, cada jugador se mueve y se agranda libremente
+          const snap = d.fields.rowSnap === '1'
           const resized = src.type === 'image' && 'width' in patch && typeof patch.width === 'number'
-          if (src.row && resized) {
+          if (!snap) {
+            /* sin reacomodo automático */
+          } else if (src.row && resized) {
             const k = ((src.row.scale ?? 1) * (patch.width as number)) / src.width
             all[format] = all[format].map((l) => (l.id === id ? ({ ...l, row: { ...l.row!, scale: k } } as Layer) : l))
           } else if (src.row && 'visible' in patch) for (const f of FORMAT_IDS) all[f] = reflowRow(all[f])

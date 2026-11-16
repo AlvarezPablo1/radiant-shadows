@@ -1,7 +1,7 @@
 import { C } from '../../brand'
 import type { ImageLayer, Layer } from '../../types'
 import { I, S, T, type Ctx } from './core'
-import { hero, heroKind } from './parts'
+import { agentLayer, hero, heroKind } from './parts'
 
 /**
  * MVP — Clásico (tabla de estadísticas + foto grande) o Tarjeta (foto enmarcada,
@@ -35,35 +35,30 @@ export function mvp(c: Ctx, variant: number): Layer[] {
   ]
 
   if (variant === 0) {
-    // CLÁSICO
-    const colW = land ? W * 0.4 : W - 2 * m
-    const rowH = land ? u * 7.4 : u * 8.5
-    const tableY = bottom - rowH * 4
-    stats.forEach(([l, v], i) => out.push(...stat(l, v, m, tableY + i * rowH, colW, rowH, i)))
-    const nickSize = land ? u * 11 : u * 14
-    const mvpSize = land ? u * 19 : u * 28
-    let badgeY: number, mvpY: number, nickY: number, nameY: number
+    // CLÁSICO: "MVP" grande en cursiva arriba a la izquierda, el jugador enorme a la derecha (cortado por el borde),
+    // el nickname junto a su hombro y la tabla de estadísticas abajo a la izquierda (pisa al jugador)
+    out.length = 0
+    const story = fmt === 'story'
+    const P = (x: number, y: number) => ({ x: land ? x : x * (W / 1080), y: land ? y : story ? y : y * (H / 1350) })
     if (land) {
-      // en X se arma de arriba hacia abajo para no chocar con la cabecera
-      badgeY = top + u * 12
-      mvpY = badgeY + u * 7
-      nickY = mvpY + mvpSize * 0.9
-      nameY = nickY + nickSize * 0.92
+      out.push(photo(1096, 0, 800, 1000, { fit: 'contain', fadeBottom: 0.1 }))
+      out.push(T('Titular', 'title', '', 365, 120, 560, cond, 230, { align: 'left', italic: true, lineHeight: 0.9 }, 1))
+      out.push(T('Acento', 'mvpScript', '', 437, 300, 360, 'manuscrita', 70, { align: 'left', fill: C.ember, rotation: -6, autoFit: true, lineHeight: 1.3 }, 1))
+      out.push(T('Nickname', 'sub', '', 1000, 386, 396, cond, 82, { align: 'right', fill: C.lilac, glow: 0.5, autoFit: true, letterSpacing: 4, lineHeight: 1 }, 1))
+      stats.forEach(([l, v], i) => out.push(...stat(l, v, 61, 583 + i * 66.5, 642, 66.5, i)))
     } else {
-      nameY = tableY - u * 9
-      nickY = nameY - nickSize * 0.95
-      mvpY = nickY - mvpSize * 0.92
-      badgeY = mvpY - u * 7
+      // vertical (medidas pensadas para la historia; en feed se escalan al alto)
+      const ph = P(222, story ? 200 : 60)
+      out.push(photo(ph.x, ph.y, 1400, H - ph.y, { fit: 'contain', fadeBottom: 0.1 }))
+      const mv = P(94, story ? 490 : 230)
+      out.push(T('Titular', 'title', '', mv.x, mv.y, 640, cond, story ? 340 : 280, { align: 'left', italic: true, lineHeight: 0.9 }, 1))
+      out.push(T('Acento', 'mvpScript', '', mv.x + 70, mv.y + (story ? 270 : 225), 480, 'manuscrita', 100, { align: 'left', fill: C.ember, rotation: -8, autoFit: true, lineHeight: 1.3 }, 1))
+      out.push(T('Nickname', 'sub', '', 420, mv.y + (story ? 385 : 320), 330, cond, story ? 125 : 105, { align: 'right', fill: C.lilac, glow: 0.5, autoFit: true, letterSpacing: 5, lineHeight: 1 }, 1))
+      const rowH = story ? 92 : 80
+      const tableY = bottom - rowH * 4 - (story ? u * 2 : 0)
+      stats.forEach(([l, v], i) => out.push(...stat(l, v, 75, tableY + i * rowH, W - 75 - u * 7, rowH, i)))
     }
-    // la foto termina antes del "del partido", que va inclinado justo debajo del jugador (no sobre los brazos)
-    // en vertical la foto mantiene su tamaño (los textos la pisan abajo a la izquierda); el "del partido" va a la derecha, debajo
-    const photoBottom = land ? H * 0.8 : top + u * 8 + (bottom - top) * 0.55
-    if (land) out.unshift(photo(W * 0.42, u * 3, W * 0.56, photoBottom - u * 3))
-    else out.unshift(photo(W * 0.18, top + u * 8, W * 0.82, photoBottom - (top + u * 8)))
-    out.push(T('Nombre real', 'info', '', m, nameY, colW, 'manuscrita', u * 4.2, { align: 'left', fill: C.lilac, }))
-    out.push(T('Nickname', 'sub', '', m, nickY, colW, cond, nickSize, { align: 'left', fill: C.ember, autoFit: true, lineHeight: 0.9 }))
-    out.push(T('Titular', 'title', '', m, mvpY, colW, cond, mvpSize, { align: 'left', lineHeight: 0.9 }))
-    out.push(T('Acento', 'mvpScript', '', land ? W * 0.5 : W * 0.5, photoBottom + u * 0.5, land ? W * 0.42 : W * 0.45, 'manuscrita', land ? u * 7 : u * 8, { align: 'center', fill: C.ember, rotation: -6, autoFit: true, lineHeight: 1.3 }))
+    out.unshift(agentLayer(c)) // el agente elegido, detrás de todo
     return out
   }
 

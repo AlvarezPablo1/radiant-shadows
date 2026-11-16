@@ -53,7 +53,7 @@ const fmtDate = (s?: string) => {
 }
 
 /** palabras para el titular del día de partido (en vez de "Matchday"); la primera es la que va por defecto */
-export const MATCH_WORDS = ['DÍA DE BATALLA', 'A JUGAR', 'HOY JUGAMOS', 'EN BATALLA', 'SALEN LOS DRAGONES', 'LLEGÓ EL DÍA']
+export const MATCH_WORDS = ['DÍA DE BATALLA', 'MATCHDAY', 'GAMEDAY', 'A JUGAR', 'HOY JUGAMOS', 'EN BATALLA', 'SALEN LOS DRAGONES', 'LLEGÓ EL DÍA']
 
 export const POST_TYPES: PostType[] = [
   {

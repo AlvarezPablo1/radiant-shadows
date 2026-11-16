@@ -36,20 +36,17 @@ export function poster(c: Ctx): Layer[] {
   const placed = stack(c, texts, { bottom: textBottom })
   const textTop = Math.min(...placed.map((l) => l.y))
 
-  // en historia sobra alto: el isotipo grande corona la placa, detrás del equipo
-  const tall = fmt === 'story' && k === 'people'
   // héroe: desde la cabecera hasta bien adentro del titular
-  const heroTop = top + u * (tall ? 30 : 6)
-  const heroBottom = textTop + u * (k === 'mascot' ? -3 : land ? 16 : 20)
-  if (k === 'people') out.unshift(...hero(c, land ? W * 0.12 : -u * 6, heroTop, land ? W * 0.76 : W + u * 12, heroBottom - heroTop))
+  const heroTop = top + u * (fmt === 'story' && k === 'people' ? 14 : 6)
+  // en X los jugadores ocupan todo el ancho y los textos quedan a la altura del pecho
+  const heroBottom = textTop + u * (k === 'mascot' ? -3 : land ? (k === 'people' ? 40 : 16) : 20)
+  if (k === 'people') out.unshift(...hero(c, land ? -u * 2 : -u * 6, land ? heroTop - u * 2 : heroTop, land ? W + u * 4 : W + u * 12, heroBottom - heroTop))
   else if (k !== 'none') out.unshift(...hero(c, W * 0.12, heroTop, W * 0.76, heroBottom - heroTop))
   else out.unshift(I('Isotipo', 'logo:team', '', W / 2 - u * 20, heroTop + u * 6, u * 40, u * 40, { glow: 0.6 }))
 
   // fundido para que el titular se lea sobre los jugadores (justo encima de ellos)
   const fadeTop = textTop - u * 14
   out.splice(k === 'people' ? out.findIndex((l) => !l.row) : 1, 0, S('Fundido', 'rect', 0, fadeTop, W, H - fadeTop, { fill: 'rgba(0,0,16,0)', stroke: 'transparent', strokeWidth: 0, gradient: true }))
-  // en historia, el isotipo grande va detrás de todo
-  if (tall) out.unshift(I('Isotipo de fondo', 'logo:team', '', W / 2 - u * 17, top + u * 8, u * 34, u * 34, { glow: 0.6, opacity: 0.9 }))
   out.push(...placed)
   return out
 }

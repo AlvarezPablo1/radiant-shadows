@@ -6,6 +6,7 @@ import type { AppState } from '../state'
 import { newDoc } from '../state'
 import type { PostDoc, Visual } from '../types'
 import { Icon } from './icons'
+import { designOf, designsFor } from '../data/designs'
 import { MascotPicker } from './post/MascotPicker'
 import { PeoplePicker } from './post/PeoplePicker'
 import { PostFields } from './post/PostFields'
@@ -37,18 +38,15 @@ const CATEGORY_GROUPS = [
 const DESIGNS = [
   { value: 0, label: 'Centrado', icon: <i className="di di-center" /> },
   { value: 3, label: 'Neón', icon: <i className="di di-neon" /> },
-  { value: 5, label: 'Tipográfico', icon: <i className="di di-typo" /> },
   { value: 6, label: 'Póster', icon: <i className="di di-poster" /> },
   { value: 7, label: 'Marco', icon: <i className="di di-frame" /> },
   { value: 8, label: 'Contorno', icon: <i className="di di-contour" /> },
   { value: 9, label: 'Transmisión', icon: <i className="di di-broadcast" /> },
-  { value: 10, label: 'Diagonal', icon: <i className="di di-impact" /> },
 ]
 const MVP_DESIGNS = [
   { value: 2, label: 'Afiche', icon: <i className="di di-poster" /> },
   { value: 3, label: 'Datos', icon: <i className="di di-panels" /> },
   { value: 0, label: 'Clásico', icon: <i className="di di-side" /> },
-  { value: 1, label: 'Tarjeta', icon: <i className="di di-card" /> },
 ]
 
 export function PostPanel({ s }: { s: AppState }) {
@@ -56,9 +54,10 @@ export function PostPanel({ s }: { s: AppState }) {
   const ui = useUI()
   const t = postType(doc.type)
   const cat = categoryOf(doc)
-  const designs = doc.type === 'mvp' ? MVP_DESIGNS : DESIGNS
-  // los diseños que ya no existen (Lateral, Impacto, Paneles) se muestran como Centrado
-  const shownVariant = designs.some((x) => x.value === doc.variant) ? doc.variant : 0
+  // sólo los diseños que tiene esta publicación (en ese orden; el primero es el de por defecto)
+  const allowed = designsFor(doc.type, doc.fields)
+  const designs = allowed.map((v) => (doc.type === 'mvp' ? MVP_DESIGNS : DESIGNS).find((x) => x.value === v)!).filter(Boolean)
+  const shownVariant = designOf(doc)
 
   const warnFeed = (next: PostDoc) => {
     const nt = postType(next.type)
@@ -90,8 +89,8 @@ export function PostPanel({ s }: { s: AppState }) {
     const nd = newDoc(o.type, doc.roster, doc)
     nd.fields = { ...nd.fields, ...o.fields }
     nd.bg = forTeam(makeRecipe(postType(o.type).bgPreset(nd)), nd.roster)
-    // se mantiene el diseño elegido al cambiar de tipo (salvo hacia o desde MVP, que tiene los suyos)
-    if (doc.type !== 'mvp' && o.type !== 'mvp') nd.variant = doc.variant
+    // se mantiene el diseño elegido al cambiar de tipo si la nueva publicación también lo tiene
+    nd.variant = designOf({ ...nd, variant: doc.variant })
     if (nd.variant === 3 && o.type !== 'mvp') nd.bg = makeRecipe('neon')
     s.setDoc(() => nd)
     s.setSelected(null)

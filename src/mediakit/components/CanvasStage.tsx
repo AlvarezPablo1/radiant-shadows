@@ -307,7 +307,7 @@ function TextNode({ l, value, fontsV, ...p }: NodeProps<TextLayer> & { value: st
   const gref = useRef<Konva.Group>(null)
   const shadow = l.extrude
     ? { shadowColor: C.violet, shadowBlur: 0, shadowOffsetX: l.extrude, shadowOffsetY: l.extrude, shadowOpacity: 1, shadowEnabled: true }
-    : { shadowColor: C.violetLight, shadowBlur: l.glow * 40, shadowOpacity: l.glow ? Math.min(1, 0.4 + l.glow) : 0, shadowEnabled: l.glow > 0 }
+    : { shadowColor: l.glowColor ?? C.violetLight, shadowBlur: l.glow * 40, shadowOpacity: l.glow ? Math.min(1, 0.4 + l.glow) : 0, shadowEnabled: l.glow > 0 }
   if (l.background) {
     // etiqueta con fondo (ej. badge "MVP")
     const pad = size * 0.35
@@ -331,12 +331,20 @@ function TextNode({ l, value, fontsV, ...p }: NodeProps<TextLayer> & { value: st
       </Group>
     )
   }
+  // la caja de selección ocupa sólo lo que mide el texto (no todo el ancho de su caja), corrida según la alineación
+  measureCtx.font = `${style} ${size}px ${family}`
+  const lines = text.split('\n')
+  const widest = Math.max(1, ...lines.map((line) => measureCtx.measureText(line).width + line.length * l.letterSpacing))
+  const tight = widest <= l.width + 1
+  const w = tight ? Math.ceil(widest) + 2 : l.width
+  const dx = !tight ? 0 : l.align === 'center' ? (l.width - w) / 2 : l.align === 'right' ? l.width - w : 0
   return (
     <Text
       ref={ref}
       {...common(l, p)}
+      offsetX={-dx}
       text={text}
-      width={l.width}
+      width={w}
       fontFamily={family}
       fontStyle={style}
       fontSize={size}
@@ -361,6 +369,7 @@ function TextNode({ l, value, fontsV, ...p }: NodeProps<TextLayer> & { value: st
           x: n.x(),
           y: n.y(),
           rotation: n.rotation(),
+          // la caja se escala con lo que se agrandó o achicó el texto (la caja visible es la del texto)
           width: Math.max(20, l.width * sx),
           fontSize: uniform ? Math.max(6, l.fontSize * sy) : l.fontSize,
         } as Partial<TextLayer>)
@@ -374,7 +383,7 @@ function ImageNode({ l, src, ...p }: NodeProps<ImageLayer> & { src?: string }) {
   const processed = useMemo(() => (img ? processImage(img, l.filter, l.fadeBottom, l.blur ?? 0) : undefined), [img, l.filter, l.fadeBottom, l.blur])
   const ref = useRef<Konva.Group>(null)
   if (!src) return null
-  // ajuste "contain" anclado abajo-centro, o "cover" con recorte
+  // ajuste "contain" anclado abajo-centro, o "cover" (rellenar caja) que recorta desde el centro de arriba
   let iw = l.width,
     ih = l.height,
     ix = 0,
@@ -394,7 +403,7 @@ function ImageNode({ l, src, ...p }: NodeProps<ImageLayer> & { src?: string }) {
       const cw = l.width / k,
         ch = l.height / k
       const pw = processed instanceof HTMLCanvasElement ? processed.width / nw : 1
-      crop = { x: ((nw - cw) / 2) * pw, y: (nh - ch) * (l.cropY ?? 0.5) * pw, width: cw * pw, height: ch * pw }
+      crop = { x: ((nw - cw) / 2) * pw, y: (nh - ch) * (l.cropY ?? 0) * pw, width: cw * pw, height: ch * pw }
     }
   }
   return (
@@ -421,7 +430,7 @@ function ImageNode({ l, src, ...p }: NodeProps<ImageLayer> & { src?: string }) {
           height={ih}
           scaleX={l.flipX ? -1 : 1}
           crop={crop}
-          shadowColor={C.violet}
+          shadowColor={l.glowColor ?? C.violet}
           shadowBlur={l.glow * 70}
           shadowOpacity={Math.min(1, l.glow * 1.6)}
           shadowEnabled={l.glow > 0}
@@ -434,7 +443,7 @@ function ImageNode({ l, src, ...p }: NodeProps<ImageLayer> & { src?: string }) {
 
 function ShapeNode({ l, ...p }: NodeProps<ShapeLayer>) {
   const ref = useRef<any>(null) // eslint-disable-line @typescript-eslint/no-explicit-any
-  const glow = { shadowColor: C.violetLight, shadowBlur: l.glow * 30, shadowEnabled: l.glow > 0, shadowOpacity: 0.9 }
+  const glow = { shadowColor: l.glowColor ?? C.violetLight, shadowBlur: l.glow * 30, shadowEnabled: l.glow > 0, shadowOpacity: 0.9 }
   const props = {
     ...common(l, p),
     ...glow,
