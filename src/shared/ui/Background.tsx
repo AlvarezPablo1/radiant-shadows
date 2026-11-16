@@ -14,7 +14,7 @@ export function Background({ year }: { year: number }) {
       <div aria-hidden="true" className="fixed inset-0 z-0 overflow-hidden bg-brand">
         <div className="absolute inset-[-10%] bg-hex opacity-16" />
         <img
-          src="/brand/logos/rs-negative.webp"
+          src="/brand/logos/rs-negative-bg.webp"
           alt=""
           className="absolute top-1/2 right-[-18vh] w-[min(110vh,1100px)] max-w-none -translate-y-1/2 opacity-[0.045] tint-violet"
         />

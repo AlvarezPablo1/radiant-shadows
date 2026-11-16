@@ -54,8 +54,11 @@ export default function App() {
   const [box, setBox] = useState({ w: 600, h: 600 })
   const cutout = useCutoutModelStatus()
 
-  // el modelo de recorte se descarga en segundo plano al entrar
+  // el modelo de recorte (~80 MB la primera vez) se descarga en segundo plano al entrar, salvo con datos móviles,
+  // ahorro de datos o conexión lenta: ahí se baja recién cuando se usa "quitar fondo"
   useEffect(() => {
+    const net = (navigator as Navigator & { connection?: { saveData?: boolean; type?: string; effectiveType?: string } }).connection
+    if (net && (net.saveData || net.type === 'cellular' || (net.effectiveType && net.effectiveType !== '4g'))) return
     const id = setTimeout(preloadCutoutModel, 1500)
     return () => clearTimeout(id)
   }, [])

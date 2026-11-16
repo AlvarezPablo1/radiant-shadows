@@ -12,7 +12,7 @@ export function PersonArt({ name, photo, className }: { name: string; photo: str
       {/* luz violeta de fondo */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_72%_45%,rgb(142_68_255/0.55),transparent_60%),radial-gradient(ellipse_at_15%_20%,rgb(90_20_170/0.45),transparent_55%)]" />
       {/* dragón de la marca, grande y apagado */}
-      <img loading="lazy" decoding="async" src="/brand/logos/rs-negative.webp" alt="" className="absolute top-1/2 left-[2%] w-[58%] -translate-y-1/2 opacity-[0.07]" />
+      <img loading="lazy" decoding="async" src="/brand/logos/rs-negative-bg.webp" alt="" className="absolute top-1/2 left-[2%] w-[58%] -translate-y-1/2 opacity-[0.07]" />
       {/* trazos diagonales */}
       <div className="absolute inset-0 bg-[repeating-linear-gradient(118deg,transparent_0_46px,rgb(142_68_255/0.28)_46px_52px,transparent_52px_120px,rgb(186_120_255/0.18)_120px_123px,transparent_123px_190px)] mask-l-from-40% mask-l-to-90%" />
       {/* trama de puntos */}
