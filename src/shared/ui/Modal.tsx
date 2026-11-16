@@ -16,6 +16,8 @@ interface Props {
 /** Modal base: fondo oscuro, tarjeta con la × y cierre con Escape o click afuera */
 export function Modal({ open, onClose, labelledBy, children, className, wide }: Props) {
   const dialog = useRef<HTMLDialogElement>(null)
+  // se cierra sólo si el clic empieza y termina afuera de la tarjeta (al seleccionar texto y soltar afuera, sigue abierto)
+  const pressedOutside = useRef(false)
 
   useScrollLock(open)
   useEffect(() => {
@@ -29,8 +31,12 @@ export function Modal({ open, onClose, labelledBy, children, className, wide }: 
       ref={dialog}
       aria-labelledby={labelledBy}
       onClose={onClose}
-      // click afuera de la tarjeta cierra
-      onClick={(e) => e.target === e.currentTarget && onClose()}
+      // un clic afuera de la tarjeta la cierra, sólo si empezó y terminó afuera
+      onPointerDown={(e) => (pressedOutside.current = e.target === e.currentTarget)}
+      onPointerUp={(e) => {
+        if (pressedOutside.current && e.target === e.currentTarget) onClose()
+        pressedOutside.current = false
+      }}
       className={cx(
         'm-auto max-h-[calc(100dvh-32px)] overflow-visible bg-transparent p-0 text-fg backdrop:bg-night/72 backdrop:backdrop-blur-[6px] open:animate-pop-in open:backdrop:animate-fade-in',
         wide ? 'w-[min(680px,calc(100%-32px))]' : 'w-[min(520px,calc(100%-32px))]',
