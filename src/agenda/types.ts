@@ -7,11 +7,10 @@ export type AgendaEvent = CalendarItem & { id: string }
 /** Tipos de la agenda, con su color en el calendario */
 export const AGENDA_TYPES: TypeStyles = {
   publicacion: { label: 'Publicación', color: '#8e44ff' },
-  historia: { label: 'Historia', color: '#ff6fb5' },
   video: { label: 'Video / Reel', color: '#3dd6c6' },
   stream: { label: 'Stream', color: '#4fa3ff' },
   partido: { label: 'Partido', color: '#ffb347' },
-  reunion: { label: 'Reunión', color: '#949494' },
+  reunion: { label: 'Reunión', color: '#ff6fb5' },
   otro: { label: 'Otro', color: '#ffffff' },
 }
 

@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import type { FieldDef } from '../schemas'
+import { DatePicker } from '../../shared/ui/DatePicker'
 import { Select } from '../../shared/ui/Select'
+import { TimePicker } from '../../shared/ui/TimePicker'
 import { ImageField } from './ImageField'
 import { LinkField } from './LinkField'
 import { inputCls } from './styles'
@@ -20,7 +22,8 @@ function localDateKey() {
 export function Field({ field, value, onChange }: Props) {
   const id = `f-${field.key.replace('.', '-')}`
   const text = value == null ? '' : String(value)
-  const [today, setToday] = useState(localDateKey)
+  // se calcula al abrir el formulario: no se pueden elegir días que ya pasaron
+  const [today] = useState(localDateKey)
 
   if (field.type === 'checkbox') {
     return (
@@ -36,6 +39,9 @@ export function Field({ field, value, onChange }: Props) {
   else if (field.type === 'link') control = <LinkField id={id} value={text} onChange={onChange} />
   else if (field.type === 'textarea')
     control = <textarea id={id} rows={3} value={text} required={field.required} placeholder={field.placeholder} onChange={(e) => onChange(e.target.value)} className={inputCls + ' resize-y'} />
+  // fecha y hora con selectores propios (hora en 24 hs, sin a. m. / p. m.)
+  else if (field.type === 'date') control = <DatePicker id={id} value={text} onChange={onChange} required={field.required} min={today} />
+  else if (field.type === 'time') control = <TimePicker id={id} value={text} onChange={onChange} required={field.required} />
   else if (field.type === 'select')
     control = (
       <Select
@@ -52,8 +58,6 @@ export function Field({ field, value, onChange }: Props) {
       <input
         id={id}
         type={field.type}
-        min={field.type === 'date' ? today : undefined}
-        onFocus={field.type === 'date' ? () => setToday(localDateKey()) : undefined}
         step={field.step}
         value={text}
         required={field.required}
