@@ -49,7 +49,7 @@ export function Nav({ sections, page, team, ready, menuOpen, onToggleMenu, onCon
     <header
       className={cx(
         'fixed inset-x-0 top-0 z-20 border-b transition-[opacity,translate,background-color,border-color] duration-700 ease-out-soft',
-        scrolled || menuOpen ? 'border-violet-hi/18 bg-night/78 backdrop-blur-md' : 'border-transparent',
+        scrolled || menuOpen ? 'border-violet-hi/18 bg-night/80 backdrop-blur-md' : 'border-transparent',
         ready ? 'translate-y-0 opacity-100' : '-translate-y-3 opacity-0',
       )}
     >

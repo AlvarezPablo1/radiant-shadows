@@ -4,7 +4,7 @@ import { SocialIcon } from '../socials/SocialIcon'
 /** Barra fina arriba del nav: sólo los íconos de las redes, centrados */
 export function TopBar() {
   return (
-    <div className="border-b border-violet-hi/12 bg-night/45">
+    <div className="bg-night/45">
       <nav aria-label="Redes sociales" className="mx-auto flex h-(--bar-h) max-w-page items-center justify-center gap-7 px-4">
         {SOCIALS.map((s) => (
           <a
