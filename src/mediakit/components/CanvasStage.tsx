@@ -336,7 +336,8 @@ function TextNode({ l, value, fontsV, ...p }: NodeProps<TextLayer> & { value: st
   const lines = text.split('\n')
   const widest = Math.max(1, ...lines.map((line) => measureCtx.measureText(line).width + line.length * l.letterSpacing))
   const tight = widest <= l.width + 1
-  const w = tight ? Math.ceil(widest) + 2 : l.width
+  // margen de medio carácter: Konva mide algún píxel más que el canvas y cortaría la última letra
+  const w = tight ? Math.min(l.width, Math.ceil(widest + size * 0.5 + Math.abs(l.letterSpacing) * 2)) : l.width
   const dx = !tight ? 0 : l.align === 'center' ? (l.width - w) / 2 : l.align === 'right' ? l.width - w : 0
   return (
     <Text
@@ -345,6 +346,8 @@ function TextNode({ l, value, fontsV, ...p }: NodeProps<TextLayer> & { value: st
       offsetX={-dx}
       text={text}
       width={w}
+      // si ya entra en su caja no se corta nunca (la medida de Konva puede diferir en algún píxel)
+      wrap={tight ? 'none' : 'word'}
       fontFamily={family}
       fontStyle={style}
       fontSize={size}

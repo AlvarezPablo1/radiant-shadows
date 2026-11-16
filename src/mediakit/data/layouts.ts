@@ -47,5 +47,7 @@ export function buildLayout(d: PostDoc, r: Roster, fmt: FormatId): Layer[] {
     const feliz = layers.find((l) => l.name === 'Frase')
     if (feliz && feliz.type === 'text') Object.assign(feliz, fmt === 'x' ? { x: 718, y: 52, rotation: -4, align: 'left' } : { x: 76, y: 154 + c.safeTop, rotation: -4, align: 'left' })
   }
+  // el link de Twitch ("Dónde verlo") siempre en una sola línea: se achica hasta entrar en su caja
+  for (const l of layers) if (l.type === 'text' && l.bind === 'foot') l.autoFit = true
   return brandMarks(c, layers)
 }
