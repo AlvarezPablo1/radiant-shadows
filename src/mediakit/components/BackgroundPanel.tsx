@@ -8,7 +8,8 @@ import type { BgRecipe } from '../types'
 import { Step } from './PostPanel'
 import { Icon } from './icons'
 import { Thumb } from './Thumb'
-import { Field, Seg, Slider, useUI } from './ui'
+import { Field, Seg, Slider } from './ui'
+import { useUI } from './uiContext'
 
 function PresetThumb({ r }: { r: BgRecipe }) {
   const [url, setUrl] = useState<string>()

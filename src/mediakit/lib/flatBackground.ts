@@ -32,8 +32,14 @@ export async function removeFlatBackground(src: string): Promise<string> {
     e.n++
     counts.set(k, e)
   }
-  for (let x = 0; x < W; x += 2) (sample(x, 0), sample(x, H - 1))
-  for (let y = 0; y < H; y += 2) (sample(0, y), sample(W - 1, y))
+  for (let x = 0; x < W; x += 2) {
+    sample(x, 0)
+    sample(x, H - 1)
+  }
+  for (let y = 0; y < H; y += 2) {
+    sample(0, y)
+    sample(W - 1, y)
+  }
   const bg = [...counts.values()].sort((a, b) => b.n - a.n)[0].rgb
   const dist = (i: number) => Math.max(Math.abs(px[i] - bg[0]), Math.abs(px[i + 1] - bg[1]), Math.abs(px[i + 2] - bg[2]))
 

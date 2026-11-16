@@ -7,6 +7,9 @@ import { loadAgenda, saveAgenda } from './api'
 import { EventForm } from './EventForm'
 import type { AgendaEvent } from './types'
 
+/** el año del costado del fondo (se calcula al cargar la página) */
+const YEAR = new Date().getFullYear()
+
 type Status = { kind: 'idle' | 'saving' | 'ok' | 'error'; text?: string }
 
 /** /agenda: calendario de contenido del staff (sólo con la sesión del admin; no se comparte con la web) */
@@ -48,7 +51,7 @@ export function AgendaApp() {
 
   return (
     <>
-      <Background year={new Date().getFullYear()} />
+      <Background year={YEAR} />
       <main className="relative z-2 mx-auto min-h-svh w-full max-w-page pt-10 pb-24 max-md:pt-6 max-md:pb-16">
         <header className="flex items-center gap-4 px-16 max-lg:px-10 max-md:px-4">
           <img src="/brand/logos/rs-nav.webp" alt="" className="size-12 drop-shadow-[0_0_14px_rgb(142_68_255/0.5)]" />

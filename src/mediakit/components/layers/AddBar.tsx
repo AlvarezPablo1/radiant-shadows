@@ -3,7 +3,7 @@ import { I, S as Shape, T } from '../../data/layouts'
 import type { AppState } from '../../state'
 import { FORMATS, type Layer, type ShapeLayer } from '../../types'
 import { Icon } from '../icons'
-import { useUI } from '../ui'
+import { useUI } from '../uiContext'
 
 /** Botones para sumar elementos al diseño */
 export function AddBar({ s }: { s: AppState }) {

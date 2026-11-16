@@ -3,7 +3,7 @@ import { removeFlatBackground } from '../../lib/flatBackground'
 import { normalizeImage, pickFile, storeBlob } from '../../lib/images'
 import { Icon } from '../icons'
 import { Thumb } from '../Thumb'
-import { useUI } from '../ui'
+import { useUI } from '../uiContext'
 
 const LS_LOGOS = 'rs-logos-v1'
 

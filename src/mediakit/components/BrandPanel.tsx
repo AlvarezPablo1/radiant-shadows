@@ -3,7 +3,8 @@ import { C, FONT_ROLES, LOGOS, type FontRole } from '../brand'
 import { addCustomFont, customFonts, fileFontName, fontFamily, hasOfficial, removeCustomFont, removeRoleFont, roleFontName, uploadRoleFont, useFontsVersion } from '../lib/fonts'
 import { pickFile } from '../lib/images'
 import { Icon } from './icons'
-import { Field, useUI } from './ui'
+import { Field } from './ui'
+import { useUI } from './uiContext'
 
 const FONT_FILES = '.otf,.ttf,.woff,.woff2'
 

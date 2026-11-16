@@ -5,7 +5,8 @@ import type { AppState } from '../../state'
 import type { Person } from '../../types'
 import { Icon } from '../icons'
 import { Thumb } from '../Thumb'
-import { Slider, useUI } from '../ui'
+import { Slider } from '../ui'
+import { useUI } from '../uiContext'
 
 /** Quién aparece en la placa: elegir, ordenar y cambiar la foto. En filas, también la separación. */
 export function PeoplePicker({ s }: { s: AppState }) {

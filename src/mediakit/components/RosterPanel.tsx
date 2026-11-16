@@ -3,7 +3,8 @@ import type { AppState } from '../state'
 import type { Person, RosterId } from '../types'
 import { Icon } from './icons'
 import { Thumb } from './Thumb'
-import { Seg, useUI } from './ui'
+import { Seg } from './ui'
+import { useUI } from './uiContext'
 
 /**
  * Roster: los jugadores y el cuerpo técnico vienen de /admin (una sola fuente para la web y el mediakit).

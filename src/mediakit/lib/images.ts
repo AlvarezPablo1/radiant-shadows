@@ -35,21 +35,19 @@ export function loadImage(src: string): Promise<HTMLImageElement> {
 }
 
 export function useImage(src?: string): HTMLImageElement | undefined {
-  const [img, setImg] = useState<HTMLImageElement>()
+  // se guarda junto con su src: si cambia la imagen, la anterior deja de mostrarse sin esperar a un efecto
+  const [loaded, setLoaded] = useState<{ src: string; img?: HTMLImageElement }>()
   useEffect(() => {
+    if (!src) return
     let alive = true
-    if (!src) {
-      setImg(undefined)
-      return
-    }
     loadImage(src)
-      .then((i) => alive && setImg(i))
-      .catch(() => alive && setImg(undefined))
+      .then((img) => alive && setLoaded({ src, img }))
+      .catch(() => alive && setLoaded({ src }))
     return () => {
       alive = false
     }
   }, [src])
-  return img
+  return src && loaded?.src === src ? loaded.img : undefined
 }
 
 const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36)

@@ -3,25 +3,27 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { BackgroundPanel } from './components/BackgroundPanel'
 import { BrandPanel } from './components/BrandPanel'
-import { CanvasStage, type Guides } from './components/CanvasStage'
+import { CanvasStage } from './components/CanvasStage'
 import { CopyPanel } from './components/CopyPanel'
 import { DownloadModal, type DownloadOpts } from './components/DownloadModal'
 import { Icon } from './components/icons'
 import { LayersPanel } from './components/LayersPanel'
 import { PostPanel } from './components/PostPanel'
 import { RosterPanel } from './components/RosterPanel'
-import { useUI } from './components/ui'
+import { useUI } from './components/uiContext'
+import { CanvasBar } from './components/app/CanvasBar'
+import { ExportStage } from './components/app/ExportStage'
+import { useGuides } from './hooks/useGuides'
+import { useShortcuts } from './hooks/useShortcuts'
 import { buildLayout } from './data/layouts'
 import { computeValues, postType, resolveImageBind } from './data/postTypes'
 import { getBackground } from './lib/background'
 import { loadImage, preloadCutoutModel, useCutoutModelStatus } from './lib/images'
 import { useAppState } from './state'
-import { FORMAT_IDS, FORMATS, type FormatId, type ImageLayer, type Layer } from './types'
+import { FORMATS, type FormatId, type ImageLayer, type Layer } from './types'
 
 type LeftTab = 'post' | 'bg' | 'roster' | 'brand'
 type RightTab = 'layers' | 'copy'
-
-const DEFAULT_GUIDES: Guides = { margin: 7, rows: 12, cols: 2, center: true, snap: true }
 
 export default function App() {
   const s = useAppState()
@@ -32,23 +34,9 @@ export default function App() {
   const [right, setRight] = useState<RightTab>('layers')
   const [safe, setSafe] = useState(false)
   const [guidesOn, setGuidesOn] = useState(false)
-  const [guidesMenu, setGuidesMenu] = useState(false)
-  const [guides, setGuides] = useState<Guides>(() => {
-    try {
-      return { ...DEFAULT_GUIDES, ...JSON.parse(localStorage.getItem('rs-guides') || '{}') }
-    } catch {
-      return DEFAULT_GUIDES
-    }
-  })
-  useEffect(() => {
-    try {
-      localStorage.setItem('rs-guides', JSON.stringify(guides))
-    } catch {
-      /* sin storage */
-    }
-  }, [guides])
+  const [guides, setGuides] = useGuides()
   const [dl, setDl] = useState(false)
-  const [exporting, setExporting] = useState<{ fmt: FormatId; layers: Layer[]; resolve: (url: string) => void; mime: string } | null>(null)
+  const [exporting, setExporting] = useState<{ id: number; fmt: FormatId; layers: Layer[]; resolve: (url: string) => void; mime: string } | null>(null)
   const stageRef = useRef<Konva.Stage>(null)
   const wrapRef = useRef<HTMLDivElement>(null)
   const [box, setBox] = useState({ w: 600, h: 600 })
@@ -89,61 +77,26 @@ export default function App() {
     s.setFormat(f)
   }
 
-  // atajos de teclado
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      const tag = (e.target as HTMLElement).tagName
-      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return
-      const mod = e.metaKey || e.ctrlKey
-      if (!mod && e.key.toLowerCase() === 'g') {
-        setGuidesOn((g) => !g)
-        return
-      }
-      if (mod && e.key.toLowerCase() === 'z') {
-        e.preventDefault()
-        if (e.shiftKey) s.redo()
-        else s.undo()
-        return
-      }
-      if (mod && e.key.toLowerCase() === 'a') {
-        e.preventDefault()
-        s.setSelection(layers.filter((l) => l.visible && !l.locked).map((l) => l.id))
-        return
-      }
-      const sel = layers.filter((x) => s.selection.includes(x.id))
-      if (!sel.length) return
-      if (e.key === 'Delete' || e.key === 'Backspace') {
-        e.preventDefault()
-        s.removeLayers(sel.map((l) => l.id))
-      } else if (e.key.startsWith('Arrow')) {
-        e.preventDefault()
-        const d = e.shiftKey ? 20 : 2
-        const dx = e.key === 'ArrowLeft' ? -d : e.key === 'ArrowRight' ? d : 0
-        const dy = e.key === 'ArrowUp' ? -d : e.key === 'ArrowDown' ? d : 0
-        s.updateLayers(sel.filter((l) => !l.locked).map((l) => ({ id: l.id, patch: { x: l.x + dx, y: l.y + dy } })))
-      } else if (e.key === 'Escape') s.setSelected(null)
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [s, layers])
+  const toggleGuides = useCallback(() => setGuidesOn((g) => !g), [setGuidesOn])
+  useShortcuts(s, layers, toggleGuides)
 
   /** Renderiza un formato en un stage oculto a tamaño real y devuelve el dataURL. */
-  const renderFormat = useCallback(
-    async (fmt: FormatId, mime: string) => {
-      const ls = doc.layers[fmt] ?? buildLayout(doc, roster, fmt)
-      const { w, h } = FORMATS[fmt]
-      await Promise.all([
-        getBackground(doc.bg, w, h),
-        ...ls.filter((l): l is ImageLayer => l.type === 'image' && l.visible).map((l) => {
-          const src = imageFor(l)
-          return src ? loadImage(src).catch(() => undefined) : undefined
-        }),
-        document.fonts.ready,
-      ])
-      return new Promise<string>((resolve) => setExporting({ fmt, layers: ls, resolve, mime }))
-    },
-    [doc, roster, imageFor],
-  )
+  const exportSeq = useRef(0)
+  const renderFormat = async (fmt: FormatId, mime: string) => {
+    const ls = doc.layers[fmt] ?? buildLayout(doc, roster, fmt)
+    const { w, h } = FORMATS[fmt]
+    await Promise.all([
+      getBackground(doc.bg, w, h),
+      ...ls.filter((l): l is ImageLayer => l.type === 'image' && l.visible).map((l) => {
+        const src = imageFor(l)
+        return src ? loadImage(src).catch(() => undefined) : undefined
+      }),
+      document.fonts.ready,
+    ])
+    // cada exportación monta un stage nuevo (id distinto), aunque sea el mismo formato
+    const id = ++exportSeq.current
+    return new Promise<string>((resolve) => setExporting({ id, fmt, layers: ls, resolve, mime }))
+  }
 
   const download = async (o: DownloadOpts) => {
     setDl(false)
@@ -200,70 +153,7 @@ export default function App() {
 
       {/* clic en cualquier lugar fuera del diseño (área gris, barra de arriba): deselecciona */}
       <main className="center" onMouseDown={(e) => !(e.target as Element).closest('.konvajs-content') && s.setSelected(null)}>
-        <div className="canvas-bar">
-          <nav className="formats" aria-label="Formato">
-            {FORMAT_IDS.filter((f) => f !== 'story' || storyOk).map((f) => {
-              const off = f === 'feed' && !feedOk
-              return (
-                <button key={f} className={(format === f ? 'on ' : '') + (off ? 'off' : '')} onClick={() => goFormat(f)} title={off ? 'Las publicaciones no tan relevantes no van en este formato' : `${FORMATS[f].w}×${FORMATS[f].h}`}>
-                  <i className={'ratio r-' + f} />
-                  {FORMATS[f].label}
-                </button>
-              )
-            })}
-          </nav>
-          <div className="canvas-tools">
-            <div className="guides-wrap">
-              <button className={'tbtn' + (guidesOn ? ' active' : '')} onClick={() => setGuidesOn(!guidesOn)} title="Mostrar márgenes y renglones (G)">
-                <Icon name="grid" />
-                Guías
-              </button>
-              <button className={'tbtn icon' + (guidesMenu ? ' active' : '')} aria-label="Configurar guías" aria-expanded={guidesMenu} onClick={() => setGuidesMenu(!guidesMenu)}>
-                <Icon name="settings" />
-              </button>
-              {guidesMenu && (
-                <div className="popover" onMouseLeave={() => setGuidesMenu(false)}>
-                  <label className="num">
-                    <span>Márgenes</span>
-                    <input type="number" min={0} max={25} value={guides.margin} onChange={(e) => setGuides({ ...guides, margin: Number(e.target.value) })} />
-                    <em>%</em>
-                  </label>
-                  <label className="num">
-                    <span>Renglones</span>
-                    <input type="number" min={0} max={60} value={guides.rows} onChange={(e) => setGuides({ ...guides, rows: Number(e.target.value) })} />
-                  </label>
-                  <label className="num">
-                    <span>Columnas</span>
-                    <input type="number" min={0} max={12} value={guides.cols} onChange={(e) => setGuides({ ...guides, cols: Number(e.target.value) })} />
-                  </label>
-                  <label className="switch">
-                    <input type="checkbox" checked={guides.center} onChange={(e) => setGuides({ ...guides, center: e.target.checked })} />
-                    <span className="track" />
-                    <span>Ejes centrales</span>
-                  </label>
-                  <label className="switch">
-                    <input type="checkbox" checked={guides.snap} onChange={(e) => setGuides({ ...guides, snap: e.target.checked })} />
-                    <span className="track" />
-                    <span>Imantar al mover</span>
-                  </label>
-                  <button className="link" onClick={() => setGuides(DEFAULT_GUIDES)}>
-                    Restablecer guías
-                  </button>
-                </div>
-              )}
-            </div>
-            {format === 'story' && (
-              <button className={'tbtn' + (safe ? ' active' : '')} onClick={() => setSafe(!safe)} title="Zonas que tapa la interfaz de Instagram">
-                <Icon name="phone" />
-                Zonas seguras
-              </button>
-            )}
-            <button className="tbtn" onClick={() => s.setDoc((d) => ({ ...d, layers: { ...d.layers, [format]: undefined } }))} title="Vuelve a armar este formato desde la plantilla">
-              <Icon name="reset" />
-              Restablecer
-            </button>
-          </div>
-        </div>
+        <CanvasBar s={s} feedOk={feedOk} storyOk={storyOk} goFormat={goFormat} guides={guides} setGuides={setGuides} guidesOn={guidesOn} setGuidesOn={setGuidesOn} safe={safe} setSafe={setSafe} />
         <div className="canvas-wrap" ref={wrapRef}>
           <div className="canvas-frame" style={{ width: W * scale, height: H * scale }}>
             <CanvasStage
@@ -333,7 +223,7 @@ export default function App() {
         createPortal(
           <div className="export-host" aria-hidden>
             <ExportStage
-              key={exporting.fmt + Date.now()}
+              key={exporting.id}
               {...exporting}
               bg={doc.bg}
               values={values}
@@ -348,20 +238,4 @@ export default function App() {
         )}
     </div>
   )
-}
-
-function ExportStage(p: { fmt: FormatId; layers: Layer[]; mime: string; bg: Parameters<typeof CanvasStage>[0]['bg']; values: Record<string, string>; imageFor: (l: ImageLayer) => string | undefined; onDone: (url: string) => void }) {
-  const ref = useRef<Konva.Stage>(null)
-  const { w, h } = FORMATS[p.fmt]
-  useEffect(() => {
-    // los assets ya están cargados y en caché: esperamos a que React/Konva pinten
-    const id = setTimeout(() => {
-      const st = ref.current!
-      st.find('.overlay').forEach((n) => n.hide())
-      p.onDone(st.toDataURL({ pixelRatio: 1, mimeType: p.mime, quality: 0.95 }))
-    }, 450)
-    return () => clearTimeout(id)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-  return <CanvasStage ref={ref} width={w} height={h} scale={1} bg={p.bg} layers={p.layers} values={p.values} imageFor={p.imageFor} selection={[]} onSelect={() => {}} onChange={() => {}} interactive={false} />
 }

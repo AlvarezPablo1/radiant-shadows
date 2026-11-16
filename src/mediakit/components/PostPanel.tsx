@@ -10,7 +10,8 @@ import { designOf, designsFor } from '../data/designs'
 import { MascotPicker } from './post/MascotPicker'
 import { PeoplePicker } from './post/PeoplePicker'
 import { PostFields } from './post/PostFields'
-import { Advanced, Field, Seg, useUI } from './ui'
+import { Advanced, Field, Seg } from './ui'
+import { useUI } from './uiContext'
 
 export function Step({ n, title, aside, children, defaultOpen = true }: { n?: number; title: string; aside?: ReactNode; children: ReactNode; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen)

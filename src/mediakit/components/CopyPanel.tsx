@@ -1,24 +1,23 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { DEFAULT_HASHTAGS, HASHTAGS } from '../brand'
 import { COPY_VARIANTS, generateCopy, type Network } from '../data/copy'
 import type { AppState } from '../state'
-import { FORMATS } from '../types'
-import { useUI } from './ui'
+import { FORMATS, type FormatId } from '../types'
+import { useUI } from './uiContext'
 import { Icon } from './icons'
 
 export function CopyPanel({ s }: { s: AppState }) {
   const ui = useUI()
-  const [net, setNet] = useState<Network>(FORMATS[s.format].network)
+  // la red sigue al formato elegido, salvo que se cambie a mano (vale mientras no se cambie de formato)
+  const [netPick, setNetPick] = useState<{ format: FormatId; net: Network }>()
+  const net = netPick?.format === s.format ? netPick.net : FORMATS[s.format].network
   const [variant, setVariant] = useState(0)
   const [tags, setTags] = useState<string[]>(s.doc.roster === 'gc' ? ['#SomosDRAGONAS', '#ElFuegoSigue', '#VamosDRAGONES'] : DEFAULT_HASHTAGS)
   const generated = generateCopy(s.doc, s.roster, net, variant, tags)
-  const [text, setText] = useState(generated)
-  const [dirty, setDirty] = useState(false)
-
-  useEffect(() => setNet(FORMATS[s.format].network), [s.format])
-  useEffect(() => {
-    if (!dirty) setText(generated)
-  }, [generated, dirty])
+  // el texto es el generado hasta que se lo edita a mano
+  const [edited, setEdited] = useState<string | null>(null)
+  const text = edited ?? generated
+  const dirty = edited !== null
 
   const limit = net === 'x' ? 280 : 2200
   return (
@@ -28,7 +27,7 @@ export function CopyPanel({ s }: { s: AppState }) {
         <div className="two">
           <div className="seg">
             {(['ig', 'x'] as Network[]).map((n) => (
-              <button key={n} className={net === n ? 'on' : ''} onClick={() => setNet(n)}>
+              <button key={n} className={net === n ? 'on' : ''} onClick={() => setNetPick({ format: s.format, net: n })}>
                 {n === 'ig' ? 'Instagram' : 'X'}
               </button>
             ))}
@@ -36,7 +35,7 @@ export function CopyPanel({ s }: { s: AppState }) {
           <button
             className="btn"
             onClick={() => {
-              setDirty(false)
+              setEdited(null)
               setVariant((v) => (v + 1) % COPY_VARIANTS)
             }}
           >
@@ -47,17 +46,14 @@ export function CopyPanel({ s }: { s: AppState }) {
           className="copy-text"
           rows={14}
           value={text}
-          onChange={(e) => {
-            setText(e.target.value)
-            setDirty(true)
-          }}
+          onChange={(e) => setEdited(e.target.value)}
         />
         <div className="copy-meta">
           <span className={text.length > limit ? 'over' : ''}>
             {text.length} / {limit}
           </span>
           {dirty && (
-            <button className="link" onClick={() => setDirty(false)}>
+            <button className="link" onClick={() => setEdited(null)}>
               descartar cambios
             </button>
           )}

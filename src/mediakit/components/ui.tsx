@@ -1,4 +1,5 @@
-import { createContext, useCallback, useContext, useRef, useState, type ReactNode } from 'react'
+import { useCallback, useRef, useState, type ReactNode } from 'react'
+import { Ctx, type AskOpt } from './uiContext'
 import { PALETTE } from '../brand'
 import { Icon } from './icons'
 import { normalizeImage, pickFile, removeBackground, storeBlob } from '../lib/images'
@@ -109,21 +110,8 @@ export function ColorPick({ value, onChange }: { value: string; onChange: (v: st
 }
 
 /* ---------- diálogos / toasts / progreso ---------- */
+// (el contexto y useUI viven en uiContext.ts)
 
-interface AskOpt<T> {
-  title: string
-  body?: ReactNode
-  options: { label: string; value: T; primary?: boolean }[]
-}
-interface UICtx {
-  ask: <T>(o: AskOpt<T>) => Promise<T | undefined>
-  toast: (msg: string, kind?: 'info' | 'warn') => void
-  busy: (label: string | null, progress?: number) => void
-  uploadPhoto: (opts?: { askPng?: boolean }) => Promise<string | undefined>
-  cutout: (src: string) => Promise<string | undefined>
-}
-const Ctx = createContext<UICtx>(null!)
-export const useUI = () => useContext(Ctx)
 
 export function UIProvider({ children }: { children: ReactNode }) {
   const [dialog, setDialog] = useState<(AskOpt<unknown> & { resolve: (v: unknown) => void }) | null>(null)

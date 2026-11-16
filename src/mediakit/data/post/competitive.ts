@@ -1,0 +1,131 @@
+import { AGENTS } from '../agents'
+import { outcome } from './outcome'
+import type { PostType } from './types'
+
+/** palabras para el titular del día de partido (en vez de "Matchday"); la primera es la que va por defecto */
+export const MATCH_WORDS = ['DÍA DE BATALLA', 'MATCHDAY', 'GAMEDAY', 'A JUGAR', 'HOY JUGAMOS', 'EN BATALLA', 'SALEN LOS DRAGONES', 'LLEGÓ EL DÍA']
+
+/** publicaciones de competencia: día de partido, resultado, posición final, MVP y anuncio de torneo */
+export const COMPETITIVE_TYPES: PostType[] = [
+  {
+    id: 'matchday',
+    label: 'Día de partido',
+    group: 'Competitivo',
+    people: 'many',
+    defaultVisual: 'players',
+    defaultMascot: 'victoria',
+    fields: [
+      { key: 'word', label: 'Titular', kind: 'select', options: MATCH_WORDS.map((w) => ({ value: w, label: w })) },
+      { key: 'tournament', label: 'Torneo', kind: 'text', placeholder: 'Ej: Liga Dragones Split 2' },
+      { key: 'phase', label: 'Fase / instancia', kind: 'text', placeholder: 'Ej: Fecha 3 · Bo3' },
+      { key: 'rival', label: 'Rival', kind: 'text', placeholder: 'Nombre del equipo rival' },
+      { key: 'rivalLogo', label: 'Logo rival (opcional)', kind: 'image' },
+      { key: 'date', label: 'Fecha', kind: 'date' },
+      { key: 'time', label: 'Hora', kind: 'time' },
+      { key: 'where', label: 'Canal de Twitch (opcional)', kind: 'text', prefix: 'twitch.tv/', placeholder: 'radiant_shadowss' },
+    ],
+    bgPreset: () => 'competitivo',
+    feed: () => false,
+    checklist: ['Revisar rival', 'Revisar horario', 'Revisar torneo', 'Revisar nombres', 'Revisar @ de jugadores', 'Verificar que no falte ningún integrante relevante', 'Copy revisado', 'Revisar ortografía', 'Revisar etiquetas'],
+  },
+  {
+    id: 'resultado',
+    label: 'Resultado de partido',
+    group: 'Competitivo',
+    people: 'many',
+    defaultVisual: 'players',
+    defaultMascot: 'victoria',
+    fields: [
+      {
+        key: 'outcome',
+        label: 'Resultado',
+        kind: 'select',
+        options: [
+          { value: 'win', label: 'Victoria' },
+          { value: 'loss', label: 'Derrota' },
+          { value: 'draw', label: 'Empate' },
+        ],
+      },
+      { key: 'scoreUs', label: 'Nuestro marcador', kind: 'number', placeholder: '13' },
+      { key: 'scoreThem', label: 'Marcador rival', kind: 'number', placeholder: '9' },
+      { key: 'rival', label: 'Rival', kind: 'text' },
+      { key: 'rivalLogo', label: 'Logo rival (opcional)', kind: 'image' },
+      { key: 'tournament', label: 'Torneo', kind: 'text' },
+      { key: 'map', label: 'Mapa(s)', kind: 'text', placeholder: 'Ascent · Lotus' },
+    ],
+    bgPreset: (d) => (outcome(d) === 'loss' ? 'derrota' : outcome(d) === 'draw' ? 'competitivo' : 'victoria'),
+    feed: () => false,
+    checklist: ['Revisar rival', 'Revisar torneo', 'Revisar resultado', 'Revisar nombres', 'Copy revisado', 'Revisar ortografía', 'Revisar etiquetas'],
+  },
+  {
+    id: 'torneo',
+    label: 'Posición final de torneo',
+    group: 'Competitivo',
+    people: 'many',
+    defaultVisual: 'players',
+    defaultMascot: 'confiado',
+    fields: [
+      {
+        key: 'place',
+        label: 'Puesto',
+        kind: 'select',
+        options: [
+          { value: '1', label: '1° · Campeones' },
+          { value: '2', label: '2° · Subcampeones' },
+          { value: '3', label: '3° puesto' },
+          { value: '4', label: '4° puesto' },
+          { value: '5', label: 'Top 8 / 5° o menos' },
+          { value: '6', label: 'Participación' },
+        ],
+      },
+      { key: 'tournament', label: 'Torneo', kind: 'text' },
+      { key: 'prize', label: 'Dato extra (opcional)', kind: 'text', placeholder: 'Ej: Invictos en la fase de grupos' },
+    ],
+    bgPreset: (d) => (Number(d.fields.place || 1) <= 2 ? 'celebracion' : 'competitivo'),
+    feed: (d) => Number(d.fields.place || 1) <= 3,
+    checklist: ['Revisar torneo', 'Revisar nombres', 'Revisar @ de jugadores', 'Verificar que no falte ningún integrante relevante', 'Foto/material aprobado', 'Copy revisado', 'Revisar ortografía', 'Revisar etiquetas'],
+  },
+  {
+    id: 'mvp',
+    label: 'MVP',
+    group: 'Roster',
+    people: 'one',
+    defaultVisual: 'players',
+    defaultMascot: 'victoria',
+    fields: [
+      { key: 'mvpScope', label: 'Encabezado', kind: 'select', options: [
+        { value: 'partido', label: 'MVP del partido' },
+        { value: 'torneo', label: 'MVP del torneo' },
+        { value: 'semana', label: 'MVP de la semana' },
+      ] },
+      { key: 'kills', label: 'Kills', kind: 'number', placeholder: '24' },
+      { key: 'deaths', label: 'Deaths', kind: 'number', placeholder: '12' },
+      { key: 'assists', label: 'Assists', kind: 'number', placeholder: '6' },
+      { key: 'acs', label: 'ACS', kind: 'number', placeholder: '312' },
+      { key: 'hs', label: 'HS %', kind: 'number', placeholder: '31' },
+      { key: 'agent', label: 'Agente', kind: 'select', hint: 'Su retrato aparece difuminado detrás del jugador', options: [{ value: '', label: '— Elegí el agente —' }, ...AGENTS.map((a) => ({ value: a.name, label: `${a.name} · ${a.role}` }))] },
+      { key: 'rival', label: 'Rival (para el copy)', kind: 'text' },
+      { key: 'tournament', label: 'Torneo (para el copy)', kind: 'text' },
+    ],
+    bgPreset: () => 'sobrio',
+    feed: () => false,
+    checklist: ['Nombre correcto', '@ correcto', 'Revisar estadísticas', 'Foto/material aprobado', 'Copy revisado', 'Revisar ortografía', 'Revisar etiquetas'],
+  },
+  {
+    id: 'competencia',
+    label: 'Anuncio de torneo',
+    group: 'Competitivo',
+    people: 'many',
+    defaultVisual: 'players',
+    defaultMascot: 'victoria',
+    fields: [
+      { key: 'tournament', label: 'Torneo', kind: 'text', placeholder: 'Ej: Liga Dragones Split 2' },
+      { key: 'tournamentLogo', label: 'Logo del torneo (opcional)', kind: 'image' },
+      { key: 'date', label: 'Arranca el', kind: 'date' },
+      { key: 'format', label: 'Formato', kind: 'text', placeholder: 'Ej: Fase de grupos + playoffs Bo3' },
+    ],
+    bgPreset: () => 'competitivo',
+    feed: () => false,
+    checklist: ['Revisar torneo', 'Revisar horario', 'Revisar nombres', 'Copy revisado', 'Revisar ortografía', 'Revisar etiquetas'],
+  },
+]

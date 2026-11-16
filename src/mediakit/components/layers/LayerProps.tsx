@@ -2,8 +2,10 @@ import { newId } from '../../data/layouts'
 import type { AppState } from '../../state'
 import { FORMATS, type ImageLayer, type Layer, type TextLayer } from '../../types'
 import { Icon } from '../icons'
-import { Advanced, Slider, useUI } from '../ui'
-import { AlignGrid, alignDelta, bbox } from './align'
+import { Advanced, Slider } from '../ui'
+import { useUI } from '../uiContext'
+import { alignDelta, bbox } from '../../lib/align'
+import { AlignGrid } from './align'
 import { ImageProps, ShapeProps, TextProps } from './KindProps'
 
 const TYPE_LABEL = { text: 'Texto', image: 'Imagen', shape: 'Forma' }
