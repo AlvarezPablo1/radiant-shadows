@@ -129,9 +129,6 @@
       --nav-h: 70px;
     }
   }
-  * {
-    scrollbar-width: none;
-  }
   html.splashing {
     overflow: hidden;
   }
