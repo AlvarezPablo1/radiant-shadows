@@ -5,6 +5,7 @@ import { buildLayout } from './data/layouts'
 import { FORMAT_IDS, FORMATS, type FormatId, type Layer, type PostDoc } from './types'
 import { newId, reflowRow } from './data/layouts'
 import { GEOMETRY, keyOf, loadDoc, LS_DOC } from './data/doc'
+import { relayoutKeeping } from './data/relayout'
 
 export { GEOMETRY, newDoc } from './data/doc'
 
@@ -202,8 +203,11 @@ export function useAppState() {
     [doc, roster, format],
   )
 
-  /** Cambios de diseño: regeneran la composición en todos los formatos (los textos editados se mantienen). */
-  const relayout = useCallback((fn: (d: PostDoc) => PostDoc) => setDoc((d) => ({ ...fn(d), layers: {} })), [setDoc])
+  /**
+   * Cambios de diseño (diseño, quién aparece, orden…): regeneran la composición en todos los formatos.
+   * Se mantienen los textos editados, los elementos agregados, lo oculto/bloqueado y lo borrado.
+   */
+  const relayout = useCallback((fn: (d: PostDoc) => PostDoc) => setDoc((d) => relayoutKeeping(d, fn(d), rosters)), [setDoc, rosters])
 
 
   return {

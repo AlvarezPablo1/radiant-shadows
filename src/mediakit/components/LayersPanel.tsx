@@ -3,13 +3,15 @@ import type { Layer } from '../types'
 import type { AppState } from '../state'
 import { Icon } from './icons'
 import { AddBar } from './layers/AddBar'
-import { entries, groupOf, moveBlock } from './layers/groups'
+import { entries, groupOf, moveBlock, moveInGroup } from './layers/groups'
 import { LayerProps, MultiProps } from './layers/LayerProps'
 
 export function LayersPanel({ s, values }: { s: AppState; values: Record<string, string> }) {
   const { layers, selection } = s
   const sel = layers.filter((l) => selection.includes(l.id))
   const [drag, setDrag] = useState<string | null>(null)
+  // si lo que se arrastra es un elemento de adentro de un grupo
+  const [dragNested, setDragNested] = useState(false)
   const [over, setOver] = useState<string | null>(null)
 
   const [open, setOpen] = useState<string | null>(null)
@@ -17,6 +19,14 @@ export function LayersPanel({ s, values }: { s: AppState; values: Record<string,
   /** arrastrar una capa (o grupo) sobre otra: queda en su lugar (la lista se muestra invertida: arriba = adelante) */
   const reorder = (key: string, target: string) => s.setLayers((ls) => moveBlock(ls, idsOf(key), 1, idsOf(target)[0]))
   const move = (key: string, dir: number) => s.setLayers((ls) => moveBlock(ls, idsOf(key), dir))
+  // un elemento de adentro de un grupo sólo se mueve entre los de su grupo
+  const groupKey = (key: string) => {
+    const l = layers.find((x) => x.id === key)
+    return l ? groupOf(l) : null
+  }
+  // un elemento de un grupo sólo se suelta sobre otro del mismo grupo; los de afuera, sólo entre ellos
+  const canDrop = (to: string, nested: boolean) => !!drag && drag !== to && (nested ? dragNested && groupKey(drag) === groupKey(to) : !dragNested)
+  const moveNested = (id: string, dir: number) => s.setLayers((ls) => moveInGroup(ls, id, dir))
 
   const row = (key: string, members: Layer[], label: ReactNode, sub: string | undefined, kind: string, nested = false) => {
     const all = members.map((l) => l.id)
@@ -26,19 +36,21 @@ export function LayersPanel({ s, values }: { s: AppState; values: Record<string,
     return (
       <li
         key={key}
-        draggable={!nested}
+        draggable
         onDragStart={(e) => {
+          e.stopPropagation()
           setDrag(key)
+          setDragNested(nested)
           e.dataTransfer.effectAllowed = 'move'
         }}
         onDragOver={(e) => {
           e.preventDefault()
-          if (drag && drag !== key) setOver(key)
+          if (canDrop(key, nested)) setOver(key)
         }}
         onDragLeave={() => setOver((o) => (o === key ? null : o))}
         onDrop={(e) => {
           e.preventDefault()
-          if (drag && drag !== key) reorder(drag, key)
+          if (drag && canDrop(key, nested)) reorder(drag, key)
           setDrag(null)
           setOver(null)
         }}
@@ -59,16 +71,14 @@ export function LayersPanel({ s, values }: { s: AppState; values: Record<string,
           {label}
           {sub && <small>{sub}</small>}
         </span>
-        {!nested && (
-          <span className="row-actions">
-            <button className="ico" title="Traer adelante" aria-label="Traer adelante" onClick={(e) => (e.stopPropagation(), move(key, 1))}>
-              <Icon name="up" size={14} />
-            </button>
-            <button className="ico" title="Enviar atrás" aria-label="Enviar atrás" onClick={(e) => (e.stopPropagation(), move(key, -1))}>
-              <Icon name="down" size={14} />
-            </button>
-          </span>
-        )}
+        <span className="row-actions">
+          <button className="ico" title="Traer adelante" aria-label="Traer adelante" onClick={(e) => (e.stopPropagation(), nested ? moveNested(key, 1) : move(key, 1))}>
+            <Icon name="up" size={14} />
+          </button>
+          <button className="ico" title="Enviar atrás" aria-label="Enviar atrás" onClick={(e) => (e.stopPropagation(), nested ? moveNested(key, -1) : move(key, -1))}>
+            <Icon name="down" size={14} />
+          </button>
+        </span>
         <button className={'ico' + (visible ? '' : ' active')} title={visible ? 'Ocultar' : 'Mostrar'} aria-label={visible ? 'Ocultar' : 'Mostrar'} onClick={(e) => (e.stopPropagation(), s.updateLayers(members.map((l) => ({ id: l.id, patch: { visible: !visible } }))))}>
           <Icon name={visible ? 'eye' : 'eyeOff'} size={14} />
         </button>

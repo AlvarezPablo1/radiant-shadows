@@ -1,6 +1,6 @@
 import Konva from 'konva'
 import { forwardRef, useEffect, useRef, useState } from 'react'
-import { Image as KImage, Layer as KLayer, Rect, Stage, Transformer } from 'react-konva'
+import { Group, Image as KImage, Layer as KLayer, Rect, Stage, Transformer } from 'react-konva'
 import { C } from '../brand'
 import { useBackground } from '../lib/background'
 import { useFontsVersion } from '../lib/fonts'
@@ -94,15 +94,17 @@ export const CanvasStage = forwardRef<Konva.Stage, StageProps>(function CanvasSt
       <KLayer>
         <Rect name="bg" width={p.width} height={p.height} fill={C.black} />
         {bg && <KImage name="bg" image={bg} width={p.width} height={p.height} />}
-        {p.layers.map((l) =>
-          !l.visible ? null : l.type === 'text' ? (
-            <TextNode key={l.id} l={l} value={l.bind ? (p.values[l.bind] ?? l.text) : l.text} {...node} fontsV={fontsV} />
-          ) : l.type === 'image' ? (
-            <ImageNode key={l.id} l={l} src={l.bind ? p.imageFor(l) : l.src} {...node} />
-          ) : (
-            <ShapeNode key={l.id} l={l} {...node} />
-          ),
-        )}
+        <Group x={p.content?.x ?? 0} y={p.content?.y ?? 0} scaleX={p.content?.scale ?? 1} scaleY={p.content?.scale ?? 1}>
+          {p.layers.map((l) =>
+            !l.visible ? null : l.type === 'text' ? (
+              <TextNode key={l.id} l={l} value={l.bind ? (p.values[l.bind] ?? l.text) : l.text} {...node} fontsV={fontsV} />
+            ) : l.type === 'image' ? (
+              <ImageNode key={l.id} l={l} src={l.bind ? p.imageFor(l) : l.src} {...node} />
+            ) : (
+              <ShapeNode key={l.id} l={l} {...node} />
+            ),
+          )}
+        </Group>
         {p.guides && p.showGuides && <GuidesOverlay g={p.guides} w={p.width} h={p.height} scale={p.scale} />}
         {snap && <SnapOverlay snap={snap} w={p.width} h={p.height} scale={p.scale} />}
         {band && <BandOverlay band={band} scale={p.scale} />}

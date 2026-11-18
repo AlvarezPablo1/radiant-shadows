@@ -28,6 +28,9 @@ function FormBody({ schema, initial, isNew, onSave, onClose }: Omit<Props, 'item
   // lo que falte (p. ej. el equipo en jugadores cargados antes de que existiera el campo) toma el valor por defecto de la sección
   const [draft, setDraft] = useState<Item>(() => ({ ...schema.blank(), ...initial }))
 
+  const visible = schema.fields.filter((f) => !f.showIf || f.showIf(draft))
+  const hidden = schema.fields.filter((f) => !visible.includes(f))
+
   function submit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault()
     const form = e.currentTarget
@@ -50,7 +53,8 @@ function FormBody({ schema, initial, isNew, onSave, onClose }: Omit<Props, 'item
     const valid = form.checkValidity()
     if (!valid) form.reportValidity()
     restoreMins.forEach((restore) => restore())
-    if (valid) onSave(draft)
+    // lo de los campos ocultos (p. ej. la fecha de cierre en una noticia de comunidad) no se guarda
+    if (valid) onSave(hidden.reduce((it, f) => setField(it, f.key, undefined), draft))
   }
 
   return (
@@ -61,9 +65,11 @@ function FormBody({ schema, initial, isNew, onSave, onClose }: Omit<Props, 'item
           {isNew ? `AGREGAR ${schema.singular.replace(/^una? /, '').toUpperCase()}` : `EDITAR: ${schema.title(initial).toUpperCase()}`}
         </h2>
       </div>
-      {schema.fields.map((f) => (
-        <Field key={f.key} field={f} value={getField(draft, f.key)} onChange={(v) => setDraft((d) => setField(d, f.key, v))} />
-      ))}
+      {visible.map((f) => {
+        const cutout = typeof f.cutout === 'function' ? f.cutout(draft) : f.cutout
+        // con otra opción de recorte el campo se vuelve a montar (así arranca con quitar fondo prendido o apagado)
+        return <Field key={f.key + String(cutout)} field={{ ...f, cutout }} value={getField(draft, f.key)} onChange={(v) => setDraft((d) => setField(d, f.key, v))} />
+      })}
       <div className="sticky -bottom-7.5 -mx-8 mt-2 flex justify-end gap-3 border-t border-white/8 bg-night/90 px-8 py-4 backdrop-blur-md max-sm:-mx-5 max-sm:px-5">
         <button type="button" onClick={onClose} className="cursor-pointer rounded-full px-5 py-2.5 font-display text-[18px] tracking-[0.1em] text-mist hover:text-white">
           CANCELAR

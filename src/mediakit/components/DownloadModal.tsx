@@ -1,10 +1,13 @@
 import { useState } from 'react'
 import { postType } from '../data/postTypes'
 import type { AppState } from '../state'
+import { NEWS_SIZE_IDS, NEWS_SIZES, type NewsSize } from '../data/newsSizes'
 import { FORMAT_IDS, FORMATS, type FormatId } from '../types'
 
 export interface DownloadOpts {
   formats: FormatId[]
+  /** imágenes para las noticias de la web (salen del diseño de X) */
+  news: NewsSize[]
   type: 'png' | 'jpg'
 }
 
@@ -13,7 +16,9 @@ export function DownloadModal({ s, onClose, onDownload }: { s: AppState; onClose
   const allowed = FORMAT_IDS.filter((f) => f !== 'feed' || t.feed(s.doc))
   const [checks, setChecks] = useState<Record<string, boolean>>({})
   const [formats, setFormats] = useState<FormatId[]>([s.format])
+  const [news, setNews] = useState<NewsSize[]>([])
   const [type, setType] = useState<'png' | 'jpg'>('png')
+  const total = formats.length + news.length
   const done = t.checklist.every((c) => checks[c])
 
   return (
@@ -51,6 +56,16 @@ export function DownloadModal({ s, onClose, onDownload }: { s: AppState; onClose
                 </label>
               )
             })}
+            <h4>Noticias de la web</h4>
+            {NEWS_SIZE_IDS.map((n) => (
+              <label key={n} className="toggle" title="Se arma con el diseño de X, entero y centrado">
+                <input type="checkbox" checked={news.includes(n)} onChange={(e) => setNews((x) => (e.target.checked ? [...x, n] : x.filter((y) => y !== n)))} />
+                <span>
+                  {NEWS_SIZES[n].label} <em>{NEWS_SIZES[n].w}×{NEWS_SIZES[n].h}</em>
+                </span>
+              </label>
+            ))}
+            <p className="note">Salen del diseño de X.</p>
             <h4>Archivo</h4>
             <div className="seg">
               {(['png', 'jpg'] as const).map((x) => (
@@ -66,12 +81,12 @@ export function DownloadModal({ s, onClose, onDownload }: { s: AppState; onClose
             Cancelar
           </button>
           {!done && (
-            <button className="btn" disabled={!formats.length} onClick={() => onDownload({ formats, type })} title="Descargar aunque falten ítems del checklist">
+            <button className="btn" disabled={!total} onClick={() => onDownload({ formats, news, type })} title="Descargar aunque falten ítems del checklist">
               Descargar sin completar
             </button>
           )}
-          <button className="btn primary" disabled={!done || !formats.length} onClick={() => onDownload({ formats, type })}>
-            Descargar {formats.length > 1 ? `${formats.length} imágenes` : ''}
+          <button className="btn primary" disabled={!done || !total} onClick={() => onDownload({ formats, news, type })}>
+            Descargar {total > 1 ? `${total} imágenes` : ''}
           </button>
         </div>
       </div>

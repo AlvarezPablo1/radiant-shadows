@@ -56,7 +56,8 @@ export function CollectionEditor({ schema, items, onSaved }: Props) {
   }
 
   const save = (item: Item) => {
-    const next = editing?.index == null ? [...items, item] : items.map((it, i) => (i === editing.index ? item : it))
+    const index = editing?.index ?? null
+    const next = schema.arrange ? schema.arrange(items, item, index) : index === null ? [...items, item] : items.map((it, i) => (i === index ? item : it))
     setEditing(null)
     commit(next, editing?.index == null ? 'Agregado' : 'Cambios guardados')
   }

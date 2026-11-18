@@ -13,6 +13,7 @@ import { RosterPanel } from './components/RosterPanel'
 import { useUI } from './components/uiContext'
 import { CanvasBar } from './components/app/CanvasBar'
 import { ExportStage } from './components/app/ExportStage'
+import { bleed, NEWS_SIZES, type NewsSize } from './data/newsSizes'
 import { useGuides } from './hooks/useGuides'
 import { useShortcuts } from './hooks/useShortcuts'
 import { buildLayout } from './data/layouts'
@@ -36,7 +37,7 @@ export default function App() {
   const [guidesOn, setGuidesOn] = useState(false)
   const [guides, setGuides] = useGuides()
   const [dl, setDl] = useState(false)
-  const [exporting, setExporting] = useState<{ id: number; fmt: FormatId; layers: Layer[]; resolve: (url: string) => void; mime: string } | null>(null)
+  const [exporting, setExporting] = useState<{ id: number; fmt: FormatId; layers: Layer[]; resolve: (url: string) => void; mime: string; size?: NewsSize } | null>(null)
   const stageRef = useRef<Konva.Stage>(null)
   const wrapRef = useRef<HTMLDivElement>(null)
   const [box, setBox] = useState({ w: 600, h: 600 })
@@ -80,11 +81,12 @@ export default function App() {
   const toggleGuides = useCallback(() => setGuidesOn((g) => !g), [setGuidesOn])
   useShortcuts(s, layers, toggleGuides)
 
-  /** Renderiza un formato en un stage oculto a tamaño real y devuelve el dataURL. */
+  /** Renderiza un formato en un stage oculto a tamaño real y devuelve el dataURL (las noticias de la web salen del diseño de X). */
   const exportSeq = useRef(0)
-  const renderFormat = async (fmt: FormatId, mime: string) => {
-    const ls = doc.layers[fmt] ?? buildLayout(doc, roster, fmt)
-    const { w, h } = FORMATS[fmt]
+  const renderFormat = async (fmt: FormatId, mime: string, size?: NewsSize) => {
+    const { w, h } = size ? NEWS_SIZES[size] : FORMATS[fmt]
+    const base = doc.layers[fmt] ?? buildLayout(doc, roster, fmt)
+    const ls = size ? bleed(base, w, h) : base
     await Promise.all([
       getBackground(doc.bg, w, h),
       ...ls.filter((l): l is ImageLayer => l.type === 'image' && l.visible).map((l) => {
@@ -95,7 +97,7 @@ export default function App() {
     ])
     // cada exportación monta un stage nuevo (id distinto), aunque sea el mismo formato
     const id = ++exportSeq.current
-    return new Promise<string>((resolve) => setExporting({ id, fmt, layers: ls, resolve, mime }))
+    return new Promise<string>((resolve) => setExporting({ id, fmt, layers: ls, resolve, mime, size }))
   }
 
   const download = async (o: DownloadOpts) => {
@@ -103,16 +105,20 @@ export default function App() {
     ui.busy('Generando imágenes…')
     try {
       const mime = o.type === 'jpg' ? 'image/jpeg' : 'image/png'
-      for (const f of o.formats) {
-        const url = await renderFormat(f, mime)
+      const date = new Date().toISOString().slice(0, 10)
+      const jobs = [
+        ...o.formats.map((f) => ({ fmt: f, size: undefined, name: FORMATS[f].label.replace(/\s+/g, '-') })),
+        ...o.news.map((n) => ({ fmt: 'x' as FormatId, size: n, name: NEWS_SIZES[n].file })),
+      ]
+      for (const j of jobs) {
+        const url = await renderFormat(j.fmt, mime, j.size)
         const a = document.createElement('a')
         a.href = url
-        const date = new Date().toISOString().slice(0, 10)
-        a.download = `RS_${doc.type}_${FORMATS[f].label.replace(/\s+/g, '-')}_${date}.${o.type}`
+        a.download = `RS_${doc.type}_${j.name}_${date}.${o.type}`
         a.click()
         await new Promise((r) => setTimeout(r, 250))
       }
-      ui.toast(o.formats.length > 1 ? `${o.formats.length} imágenes descargadas` : 'Imagen descargada')
+      ui.toast(jobs.length > 1 ? `${jobs.length} imágenes descargadas` : 'Imagen descargada')
     } finally {
       ui.busy(null)
     }

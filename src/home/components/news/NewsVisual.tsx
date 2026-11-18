@@ -2,6 +2,7 @@ import type { NewsItem } from '../../../shared/content/news'
 import { ofTeam } from '../../../shared/content/rosters'
 import { cx } from '../../../shared/lib/cx'
 import { useContent } from '../../lib/useContent'
+import { useImageKind } from '../../lib/useImageKind'
 import { PersonArt } from './PersonArt'
 
 const TRYOUTS_ART = '/brand/news/tryouts-valorant.webp'
@@ -10,15 +11,18 @@ const DEFAULT_ART = '/brand/news/default.webp'
 const fade = 'mask-b-from-60% mask-b-to-100%'
 
 /**
- * Imagen de la noticia: tryouts → logo de Valorant; foto grupal del roster; foto recortada del jugador;
- * y si no habla de ningún jugador, la imagen por defecto ocupando todo el recuadro.
+ * Imagen de la noticia: tryouts → logo de Valorant; foto grupal del roster; una imagen con fondo, entera y a todo
+ * el ancho; un recorte sin fondo → placa con el nombre (o la foto recortada); y si no hay imagen, la de por defecto.
  */
 export function NewsVisual({ item, color, className }: { item: NewsItem; color: string; className: string }) {
   const content = useContent()
   const group = ofTeam(content.players, 'Masculino').filter((p) => p.photo)
   const roster = item.showRoster && group.length > 0 && item.category !== 'tryouts'
-  // noticia de una persona: placa con su nombre y su foto
-  if (item.image && !roster && item.category !== 'tryouts') {
+  const kind = useImageKind(item.image && !roster && item.category !== 'tryouts' ? item.image : undefined)
+  // imagen con fondo: entera, sin recortarla
+  if (item.image && kind === 'photo' && !roster && item.category !== 'tryouts') return <FullImage src={item.image} className={className} />
+  // noticia de una persona (recorte sin fondo): placa con su nombre y su foto (las de comunidad no llevan placa)
+  if (item.image && kind === 'cutout' && !roster && item.category !== 'tryouts' && item.category !== 'comunidad') {
     const name = personName(item, [...content.players, ...content.coaches].map((m) => ({ name: m.name, photo: m.photo })).concat([...content.staff, ...content.creators].map((p) => ({ name: p.nick, photo: p.photo }))))
     if (name) return <PersonArt name={name} photo={item.image} className={className} />
   }
@@ -42,9 +46,9 @@ export function NewsVisual({ item, color, className }: { item: NewsItem; color: 
             />
           ))}
         </div>
-      ) : item.image ? (
+      ) : item.image && kind ? (
         <img loading="lazy" decoding="async" src={item.image} alt="" className={cx('absolute top-4 left-1/2 h-[115%] w-auto max-w-none -translate-x-1/2 object-contain object-top', fade)} />
-      ) : (
+      ) : item.image ? null : (
         <img src={DEFAULT_ART} alt="" loading="lazy" className="absolute inset-0 size-full object-cover" />
       )}
     </div>
@@ -62,4 +66,14 @@ function personName(item: NewsItem, people: { name?: string; photo?: string }[])
   if (byTitle) return byTitle
   const after = item.title.split(':').pop()?.trim() ?? ''
   return item.title.includes(':') && after.split(/\s+/).length <= 2 ? after : ''
+}
+
+/** imagen con fondo: entera y a todo el ancho posible; lo que sobra se rellena con la misma imagen desenfocada */
+function FullImage({ src, className }: { src: string; className: string }) {
+  return (
+    <div className={cx('relative shrink-0 overflow-hidden bg-night', className)}>
+      <img src={src} alt="" aria-hidden="true" loading="lazy" decoding="async" className="absolute inset-0 size-full scale-110 object-cover opacity-45 blur-2xl" />
+      <img src={src} alt="" loading="lazy" decoding="async" className="absolute inset-0 size-full object-contain" />
+    </div>
+  )
 }

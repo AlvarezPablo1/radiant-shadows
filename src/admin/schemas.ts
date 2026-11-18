@@ -14,8 +14,10 @@ export interface FieldDef {
   placeholder?: string
   help?: string
   step?: number
-  /** imágenes de personas: ofrecer quitar el fondo al subir */
-  cutout?: boolean
+  /** imágenes de personas: ofrecer quitar el fondo al subir (puede depender del elemento, p. ej. de la categoría) */
+  cutout?: boolean | ((item: Item) => boolean)
+  /** el campo sólo se muestra (y se guarda) cuando esto da true */
+  showIf?: (item: Item) => boolean
 }
 
 export interface CollectionSchema {
@@ -31,6 +33,8 @@ export interface CollectionSchema {
   image?: (item: Item) => string | undefined
   /** elemento nuevo con valores por defecto */
   blank: () => Item
+  /** dónde queda un elemento al guardarlo (index: su lugar si se estaba editando, null si es nuevo); por defecto, los nuevos al final */
+  arrange?: (items: Item[], saved: Item, index: number | null) => Item[]
 }
 
 const opts = (values: string[]) => values.map((v) => ({ value: v, label: v }))
@@ -40,6 +44,21 @@ const join = (...parts: unknown[]) => parts.map(str).filter(Boolean).join(' · '
 const today = () => new Date().toLocaleDateString('sv')
 /** en la lista del admin: avisa si la noticia ya cerró (no se ve en el sitio) o hasta cuándo sigue */
 const closedLabel = (until: unknown) => (typeof until !== 'string' || !until ? '' : until < today() ? 'Cerrada: ya no se ve en el sitio' : `Hasta el ${until.split('-').reverse().join('/')}`)
+
+/**
+ * Lugar de una noticia al guardarla: la principal va primera (y la que lo era deja de serlo);
+ * una nueva, o la que dejó de ser principal, va segunda; las demás quedan donde estaban.
+ */
+function arrangeNews(items: Item[], saved: Item, index: number | null): Item[] {
+  const rest = items.filter((_, i) => i !== index)
+  if (saved.featured) return [saved, ...rest.map((it) => (it.featured ? { ...it, featured: undefined } : it))]
+  const wasFeatured = index !== null && !!items[index]?.featured
+  if (index === null || wasFeatured) return [...rest.slice(0, 1), saved, ...rest.slice(1)]
+  return items.map((it, i) => (i === index ? saved : it))
+}
+
+/** las noticias de comunidad no llevan placa con nombre ni fecha de cierre */
+const notCommunity = (i: Item) => i.category !== 'comunidad'
 
 const TEAMS = opts(['Masculino', 'Game Changers'])
 const PLAYER_ROLES = opts(['Duelista', 'Iniciador', 'Controlador', 'Centinela', 'Flex'])
@@ -90,23 +109,37 @@ export const SCHEMAS: CollectionSchema[] = [
     key: 'news',
     label: 'Noticias',
     singular: 'una noticia',
-    description: 'La primera de la lista sale destacada. Las que tienen fecha de cierre se quitan solas del sitio pasado ese día. Las de tryouts aparecen también en la home.',
+    description: 'La primera de la lista sale destacada; las nuevas se agregan arriba de todo. Las que tienen fecha de cierre se quitan solas del sitio pasado ese día. Las de tryouts aparecen también en la home.',
     fields: [
       { key: 'category', label: 'Categoría', type: 'select', required: true, options: Object.entries(NEWS_CATEGORIES).map(([value, c]) => ({ value, label: c.label })) },
       { key: 'title', label: 'Título', type: 'text', required: true },
       { key: 'summary', label: 'Bajada', type: 'textarea', required: true },
+      { key: 'featured', label: 'Noticia principal (se muestra grande, arriba de todo)', type: 'checkbox', help: 'Hay una sola: al marcar esta, la anterior deja de serlo. Las que no son principales se agregan en el segundo lugar' },
       { key: 'date', label: 'Fecha a mostrar', type: 'text', placeholder: 'Noviembre 2026' },
-      { key: 'image', label: 'Foto de la persona', type: 'image', cutout: true, help: 'Opcional. Si la noticia es de alguien, su foto: se arma la placa con su nombre grande. Sin foto se usa la imagen por defecto' },
-      { key: 'person', label: 'Nombre en la placa', type: 'text', placeholder: 'Skull', help: 'Opcional. Si se deja vacío, se usa el nombre del jugador de la foto' },
+      {
+        key: 'image',
+        label: 'Imagen',
+        type: 'image',
+        cutout: (i) => i.category !== 'comunidad',
+        help: 'Opcional. Para la tarjeta común (ideal 1600 × 800, 2:1). La foto de una persona sin fondo arma la placa con su nombre grande; una imagen con fondo se muestra entera',
+      },
+      {
+        key: 'imageWide',
+        label: 'Imagen apaisada (noticia principal)',
+        type: 'image',
+        help: 'Opcional. Se usa cuando la noticia es la principal (ideal 1800 × 600, 3:1). Si falta, se usa la imagen de arriba',
+      },
+      { key: 'person', label: 'Nombre en la placa', type: 'text', placeholder: 'Skull', help: 'Opcional. Si se deja vacío, se usa el nombre del jugador de la foto', showIf: notCommunity },
       { key: 'showRoster', label: 'Usar la foto grupal del roster masculino actual', type: 'checkbox' },
-      { key: 'until', label: 'Fecha de cierre', type: 'date', help: 'Opcional. Pasado ese día la noticia se quita sola del sitio' },
+      { key: 'until', label: 'Fecha de cierre', type: 'date', help: 'Opcional. Pasado ese día la noticia se quita sola del sitio', showIf: notCommunity },
       { key: 'action.href', label: 'Botón: a dónde lleva', type: 'link', help: 'Elegí una sección del sitio, el formulario de contacto o un link externo (se abre en otra pestaña)' },
       { key: 'action.label', label: 'Botón: texto', type: 'text', placeholder: 'Ver más' },
     ],
     title: (i) => str(i.title),
-    subtitle: (i) => join(NEWS_CATEGORIES[i.category as keyof typeof NEWS_CATEGORIES]?.label, i.date, closedLabel(i.until)),
+    subtitle: (i) => join(i.featured ? 'Principal' : '', NEWS_CATEGORIES[i.category as keyof typeof NEWS_CATEGORIES]?.label, i.date, closedLabel(i.until)),
     image: (i) => str(i.image) || undefined,
     blank: () => ({ id: Date.now().toString(36), category: 'competencia' }),
+    arrange: arrangeNews,
   },
   {
     key: 'events',

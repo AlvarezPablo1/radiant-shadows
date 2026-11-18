@@ -1,4 +1,4 @@
-export type NewsCategory = 'competencia' | 'logro' | 'tryouts' | 'jugadores' | 'despedida' | 'incorporacion'
+export type NewsCategory = 'competencia' | 'logro' | 'tryouts' | 'jugadores' | 'despedida' | 'incorporacion' | 'comunidad'
 
 export interface NewsItem {
   id: string
@@ -11,8 +11,12 @@ export interface NewsItem {
   /** último día en que sigue vigente (AAAA-MM-DD): después deja de mostrarse en la home */
   /** fecha de cierre (AAAA-MM-DD, opcional): pasado ese día la noticia deja de mostrarse en el sitio */
   until?: string
-  /** foto recortada; si falta se usa el fondo del color de la categoría */
+  /** imagen de la tarjeta común (ideal 2:1): un recorte sin fondo (placa con el nombre) o una imagen con fondo; si falta, la apaisada o la de por defecto */
   image?: string
+  /** imagen apaisada para cuando es la noticia principal (ideal 3:1); si falta, se usa `image` */
+  imageWide?: string
+  /** noticia principal: se muestra grande, arriba de todo (hay una sola) */
+  featured?: boolean
   /** nombre grande en la placa cuando la imagen es de una persona (si falta, se toma del jugador de la foto) */
   person?: string
   /** mostrar como imagen la foto grupal del roster masculino actual (en lugar de `image`) */
@@ -28,6 +32,7 @@ export const NEWS_CATEGORIES: Record<NewsCategory, { label: string; color: strin
   jugadores: { label: 'Jugadores', color: '#3dd6c6' },
   despedida: { label: 'Despedida', color: '#c79bff' },
   incorporacion: { label: 'Incorporación', color: '#7ee2a8' },
+  comunidad: { label: 'Comunidad', color: '#4fa3ff' },
 }
 
 /** Noticias, de la más nueva a la más vieja: la primera se muestra destacada */

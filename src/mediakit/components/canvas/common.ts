@@ -23,6 +23,8 @@ export interface StageProps {
   guides?: Guides | null
   showGuides?: boolean
   interactive?: boolean
+  /** escala y corrimiento de los elementos dentro del lienzo (el fondo ocupa todo); para exportar a otros tamaños */
+  content?: { scale: number; x: number; y: number }
 }
 
 export interface DragCtx {

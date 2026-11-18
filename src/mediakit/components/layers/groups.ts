@@ -59,3 +59,17 @@ export function moveBlock(ls: Layer[], ids: string[], dir: number, target?: stri
   }
   return [...rest.slice(0, at), ...block, ...rest.slice(at)]
 }
+
+/** mueve un elemento dentro de su grupo (p. ej. un jugador): cambia de lugar con el vecino del grupo (dir 1 = más adelante) */
+export function moveInGroup(ls: Layer[], id: string, dir: number): Layer[] {
+  const l = ls.find((x) => x.id === id)
+  const g = l && groupOf(l)
+  if (!l || !g) return ls
+  const slots = ls.flatMap((x, i) => (groupOf(x) === g ? [i] : []))
+  const pos = slots.indexOf(ls.indexOf(l))
+  const to = pos + dir
+  if (to < 0 || to >= slots.length) return ls
+  const out = [...ls]
+  ;[out[slots[pos]], out[slots[to]]] = [out[slots[to]], out[slots[pos]]]
+  return out
+}
