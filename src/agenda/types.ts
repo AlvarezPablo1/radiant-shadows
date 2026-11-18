@@ -11,6 +11,7 @@ export const AGENDA_TYPES: TypeStyles = {
   stream: { label: 'Stream', color: '#4fa3ff' },
   partido: { label: 'Partido', color: '#ffb347' },
   reunion: { label: 'Reunión', color: '#ff6fb5' },
+  tryouts: { label: 'Tryouts', color: '#D42300' },
   otro: { label: 'Otro', color: '#ffffff' },
 }
 
